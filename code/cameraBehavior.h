@@ -17,7 +17,7 @@ class CCamera;
 // クラスの定義
 //****************************************************
 class CCameraBehavior
-{
+{// 基底クラス
 public:
 	CCameraBehavior();
 	virtual ~CCameraBehavior();
@@ -28,10 +28,19 @@ private:
 };
 
 class CCameraBehaviorFollowPlayer : public CCameraBehavior
-{
+{// プレイヤーの追従
 public:
 	CCameraBehaviorFollowPlayer();
 	~CCameraBehaviorFollowPlayer();
+
+	void Update(CCamera *pCamera) override;
+};
+
+class CCameraBehaviorApperPlayer : public CCameraBehavior
+{// プレイヤーの登場
+public:
+	CCameraBehaviorApperPlayer();
+	~CCameraBehaviorApperPlayer();
 
 	void Update(CCamera *pCamera) override;
 };

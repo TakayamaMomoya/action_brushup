@@ -162,6 +162,9 @@
     <ClCompile Include="code\cameraBehavior.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="code\slow.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
@@ -323,6 +326,9 @@
       <Filter>VFX</Filter>
     </ClInclude>
     <ClInclude Include="code\cameraBehavior.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\slow.h">
       <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>

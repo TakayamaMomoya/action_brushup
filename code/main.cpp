@@ -141,16 +141,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 				dwFrameCount = 0;
 			}
 
-
 			//現在時刻の取得
 			dwCurrentTime = timeGetTime();
+
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
 			{//60分の1秒経過
+				float fDeltaTime = ((float)dwCurrentTime - (float)dwExecLastTime) * 0.001f;
+
 				//処理開始の時刻を計算
 				dwExecLastTime = dwCurrentTime;
 
 				if (pManager != nullptr)
 				{
+					// ティックの設定
+					CManager::SetDeltaTime(fDeltaTime);
+
 					// 更新処理
 					pManager->Update();
 
@@ -161,8 +166,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 				//FPSカウンタ経過
 				dwFrameCount++;
 			}
-
-			
 		}
 	}
 

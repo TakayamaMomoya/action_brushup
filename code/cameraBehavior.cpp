@@ -92,3 +92,49 @@ void CCameraBehaviorFollowPlayer::Update(CCamera *pCamera)
 	pInfoCamera->posR += (pInfoCamera->posRDest - pInfoCamera->posR) * SPEED_FOLLOW;
 	pInfoCamera->posV += (pInfoCamera->posVDest - pInfoCamera->posV) * SPEED_FOLLOW;
 }
+
+//************************************************************
+// プレイヤー登場
+//************************************************************
+
+//====================================================
+// コンストラクタ
+//====================================================
+CCameraBehaviorApperPlayer::CCameraBehaviorApperPlayer()
+{
+
+}
+
+//====================================================
+// デストラクタ
+//====================================================
+CCameraBehaviorApperPlayer::~CCameraBehaviorApperPlayer()
+{
+
+}
+
+//====================================================
+// 更新処理
+//====================================================
+void CCameraBehaviorApperPlayer::Update(CCamera *pCamera)
+{
+	// プレイヤー取得
+	CPlayer *pPlayer = CPlayer::GetInstance();
+
+	if (pPlayer == nullptr)
+	{
+		return;
+	}
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	D3DXVECTOR3 pos = pPlayer->GetPosition();
+
+	pInfoCamera->posR = pos;
+
+	pInfoCamera->posV =
+	{
+		pInfoCamera->posRDest.x + sinf(ANGLE_FOLLOW) * sinf(D3DX_PI) * pInfoCamera->fLength,
+		pInfoCamera->posRDest.y + cosf(ANGLE_FOLLOW) * pInfoCamera->fLength,
+		pInfoCamera->posRDest.z + sinf(ANGLE_FOLLOW) * cosf(D3DX_PI) * pInfoCamera->fLength
+	};
+}

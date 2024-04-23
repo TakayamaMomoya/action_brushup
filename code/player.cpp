@@ -177,6 +177,8 @@ HRESULT CPlayer::Init(void)
 		if (pCamera != nullptr)
 		{
 			pCamera->SetDist(100.0f);
+
+			pCamera->ChangeBehavior(new CCameraBehaviorApperPlayer);
 		}
 	}
 	else

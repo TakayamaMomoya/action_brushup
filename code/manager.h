@@ -47,6 +47,8 @@ public:
 	static CScene::MODE GetMode(void) { return m_mode; }
 	static void SetScore(int nScore) { m_nScore = nScore; }
 	static int GetScore(void) { return m_nScore; }
+	static void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }
+	static float GetDeltaTime(void) { return m_fDeltaTime; }
 
 private:
 	static CCamera *m_pCamera;	// カメラのポインタ
@@ -54,6 +56,7 @@ private:
 	static CScene *m_pScene;	// 現在のシーン
 	static CScene::MODE m_mode;	// 現在のモード
 	static int m_nScore;	// スコア
+	static float m_fDeltaTime;	// 前回のフレームからかかった時間
 };
 
 #endif

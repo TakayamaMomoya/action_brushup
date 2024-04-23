@@ -73,6 +73,7 @@
     <ClCompile Include="code\shadow.cpp" />
     <ClCompile Include="code\shockwave.cpp" />
     <ClCompile Include="code\skybox.cpp" />
+    <ClCompile Include="code\slow.cpp" />
     <ClCompile Include="code\sound.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\timer.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="code\shadow.h" />
     <ClInclude Include="code\shockwave.h" />
     <ClInclude Include="code\skybox.h" />
+    <ClInclude Include="code\slow.h" />
     <ClInclude Include="code\sound.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\timer.h" />
