@@ -62,16 +62,28 @@ CTexture *CTexture::Create(void)
 HRESULT CTexture::Load(void)
 {
 	// ファイル名の設定
-	char *apFileName[MAX_TEX] = 
+	char *apFileName[] = 
 	{
+		"data\\TEXTURE\\EFFECT\\muzzleFlush.png",
+		"data\\TEXTURE\\EFFECT\\beam.png",
+		"data\\TEXTURE\\EFFECT\\hit00.png",
+		"data\\TEXTURE\\UI\\pause_quit.png",
+		"data\\TEXTURE\\UI\\pause_restart.png",
+		"data\\TEXTURE\\UI\\pause_resume.png",
+		"data\\TEXTURE\\EFFECT\\energy00.png",
+		"data\\TEXTURE\\EFFECT\\blade.png",
+		"data\\TEXTURE\\EFFECT\\explosion.png",
+		"data\\TEXTURE\\UI\\menu_resume.png",
+		"data\\TEXTURE\\UI\\menu_retry.png",
+		"data\\TEXTURE\\UI\\menu_quit.png",
 	};
 
-	for ( int nCntTex = 0;nCntTex < MAX_TEX;nCntTex++)
+	for ( int nCntTex = 0;nCntTex < sizeof(apFileName) / sizeof(char*);nCntTex++)
 	{
 		if (apFileName[nCntTex] != nullptr)
 		{// ファイル名があったらテクスチャの読込
 			// デバイスの取得
-			LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+			LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 			// テクスチャの読込
 			D3DXCreateTextureFromFile
@@ -112,6 +124,11 @@ void CTexture::Unload(void)
 //=====================================================
 int CTexture::Regist(const char *pFileName)
 {
+	if (pFileName == nullptr)
+	{
+		return -1;
+	}
+
 	for (int nCntTex = 0; nCntTex < MAX_TEX; nCntTex++)
 	{
 		if (m_apFilename[nCntTex] != nullptr)
@@ -126,7 +143,7 @@ int CTexture::Regist(const char *pFileName)
 	// 新しくテクスチャを読み込む場合↓
 
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile
@@ -135,7 +152,6 @@ int CTexture::Regist(const char *pFileName)
 	m_apFilename[m_nNumAll] = new char[MAX_STRING];
 
 	// ファイル名の保存
-	strcpy(m_apFilename[m_nNumAll], "\0");
 	strcpy(m_apFilename[m_nNumAll], pFileName);
 
 	// 現在の番号を保存
@@ -160,4 +176,19 @@ LPDIRECT3DTEXTURE9 CTexture::GetAddress(int nIdx)
 	{
 		return m_apTexture[nIdx];
 	}
+}
+
+namespace Texture
+{
+int GetIdx(const char *pFileName)
+{
+	CTexture *pTexture = CTexture::GetInstance();
+
+	if (pTexture == nullptr)
+		return -1;
+
+	int nIdx = pTexture->Regist(pFileName);
+
+	return nIdx;
+}
 }

@@ -17,7 +17,7 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CSkybox;
+class CMeshCylinder;
 
 //*****************************************************
 // マクロ定義
@@ -61,7 +61,7 @@ private:
 	int m_nCntState;	// 状態遷移カウンタ
 	int m_nTimerTrans;	// 画面遷移カウンター
 	CNumber *m_apNumber[NUM_RANK];	// ランキングの数字
-	CSkybox *m_pSkybox;	// スカイボックス
+	CMeshCylinder *m_pCylinder;	// シリンダー
 };
 
 #endif

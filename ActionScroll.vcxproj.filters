@@ -5,7 +5,6 @@
     <ClCompile Include="code\bullet.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\light.cpp" />
-    <ClCompile Include="code\meshcylinder.cpp" />
     <ClCompile Include="code\model.cpp" />
     <ClCompile Include="code\motion.cpp" />
     <ClCompile Include="code\objectX.cpp" />
@@ -165,13 +164,15 @@
     <ClCompile Include="code\slow.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="code\meshcylinder.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
     <ClInclude Include="code\bullet.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\light.h" />
-    <ClInclude Include="code\meshcylinder.h" />
     <ClInclude Include="code\model.h" />
     <ClInclude Include="code\motion.h" />
     <ClInclude Include="code\objectX.h" />
@@ -330,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="code\slow.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\meshcylinder.h">
+      <Filter>mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

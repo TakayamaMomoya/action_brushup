@@ -19,6 +19,9 @@
 #include "skybox.h"
 #include "universal.h"
 #include "sound.h"
+#include "meshcylinder.h"
+#include "texture.h"
+#include "camera.h"
 
 //*****************************************************
 // マクロ定義
@@ -34,6 +37,15 @@
 #define RANKING_PATH	"data\\TEXTURE\\UI\\ranking.png"	// 項目テクスチャ名
 #define ROTATION_SPEED	(0.001f)	// 回転速度
 
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const float SPEED_ROTATION = 0.003f;	// 回るスピード
+const float HEIGHT_CYLINDER = 800.0f;	// シリンダーの高さ
+}
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -46,7 +58,6 @@ CRanking::CRanking()
 	m_nTimerTrans = 0;
 	ZeroMemory(&m_aScore[0],sizeof(int) * NUM_RANK);
 	m_state = STATE_NORMAL;
-	m_pSkybox = nullptr;
 }
 
 //=====================================================
@@ -90,15 +101,39 @@ HRESULT CRanking::Init(void)
 	// 保存
 	Save();
 
-	// スカイボックス
-	m_pSkybox = CSkybox::Create();
-
 	CSound *pSound = CSound::GetInstance();
 
 	if (pSound != nullptr)
 	{
 		pSound->Play(CSound::LABEL_BGM000);
 	}
+
+	if (m_pCylinder == nullptr)
+	{
+		// シリンダーの生成
+		m_pCylinder = CMeshCylinder::Create();
+
+		if (m_pCylinder != nullptr)
+		{
+			m_pCylinder->SetRadius(1500.0f);
+			m_pCylinder->SetHeight(HEIGHT_CYLINDER);
+			m_pCylinder->SetVtx();
+
+			int nIdx = Texture::GetIdx("data\\TEXTURE\\BG\\result.jpg");
+			m_pCylinder->SetIdxTexture(nIdx);
+		}
+	}
+
+	// カメラ位置の設定
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera == nullptr)
+		return E_FAIL;
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	pInfoCamera->posV = { 0.0f,HEIGHT_CYLINDER * 0.5f,0.0f };
+	pInfoCamera->posR = { 0.0f,HEIGHT_CYLINDER * 0.5f,1.0f };
 
 	return S_OK;
 }
@@ -108,10 +143,10 @@ HRESULT CRanking::Init(void)
 //=====================================================
 void CRanking::Uninit(void)
 {
-	if (m_pSkybox != nullptr)
+	if (m_pCylinder != nullptr)
 	{
-		m_pSkybox->Uninit();
-		m_pSkybox = nullptr;
+		m_pCylinder->Uninit();
+		m_pCylinder = nullptr;
 	}
 
 	CObject::ReleaseAll();
@@ -179,20 +214,19 @@ void CRanking::Update(void)
 		}
 	}
 
-	// スカイボックスの回転
-	if (m_pSkybox != nullptr)
-	{
-		D3DXVECTOR3 rot = m_pSkybox->GetRot();
+	// 遷移タイマー進行
+	m_nTimerTrans++;
 
-		rot.y += ROTATION_SPEED;
+	if (m_pCylinder != nullptr)
+	{
+		D3DXVECTOR3 rot = m_pCylinder->GetRotation();
+
+		rot.y += SPEED_ROTATION;
 
 		universal::LimitRot(&rot.y);
 
-		m_pSkybox->SetRot(rot);
+		m_pCylinder->SetRotation(rot);
 	}
-
-	// 遷移タイマー進行
-	m_nTimerTrans++;
 }
 
 //=====================================================
