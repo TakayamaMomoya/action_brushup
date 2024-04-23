@@ -40,23 +40,22 @@
 #include "frame.h"
 #include "timer.h"
 #include "cameraBehavior.h"
+#include "slow.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define BODY_PATH	"data\\MOTION\\rayleigh.txt"	// 見た目のパス
-#define PARAM_PATH	"data\\TEXT\\player.txt"	// パラメーターのパス
-#define SPEED_MOVE	(0.3f)	// 移動速度
-#define GRAVITY	(0.09f)	// 重力
-#define MOVE_FACT	(0.8f)	// 移動量減衰
-#define ROLL_FACT	(0.2f)	// 回転係数
-#define LINE_STOP	(0.3f)	// 動いてる判定のしきい値
-#define TIME_AFTERIMAGE	(4)	// 残像を出す頻度
-#define ATTACK_JUMP	(2.8f)	// 空中攻撃のジャンプ力
-#define BULLET_SPEED	(5.0f)	// 弾速度
-#define BULLET_SIZE	(3.0f)	// 弾サイズ
-#define TIME_FLASH	(4)	// 点滅速度
-#define MODE_DEATH	(CScene::MODE_GAME)	// 死んだ後に遷移するモード
+namespace
+{
+const char* PARAM_PATH = "data\\TEXT\\player.txt";	// パラメーターのパス
+const float LINE_STOP = 0.3f;	// 動いてる判定のしきい値
+const int TIME_AFTERIMAGE = 4;	// 残像を出す頻度
+const float BULLET_SPEED = 5.0f;	// 弾いた弾速度
+const float BULLET_SIZE = 3.0f;	// 弾いた弾サイズ
+const CScene::MODE MODE_DEATH = CScene::MODE_GAME;	// 死んだ後に遷移するモード
+const float TIME_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップ時間
+const float SCALE_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップタイムスケール
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -87,24 +86,12 @@ HRESULT CPlayer::Init(void)
 	// 情報の読込
 	Load();
 
-	// 初期体力の設定
-	m_info.nInitialLife = m_info.nLife;
-
+	// 初期位置に設定
 	SetPosition(D3DXVECTOR3(0.0f, -16.0f, 0.0f));
 
 	// 値の初期化
 	m_info.state = STATE_NORMAL;
 	m_info.jump = JUMPSTATE_NORMAL;
-
-	if (m_info.pBody == nullptr)
-	{// 体の生成
-		m_info.pBody = CMotion::Create(BODY_PATH);
-
-		if (m_info.pBody != nullptr)
-		{
-			m_info.pBody->EnableShadow(true);
-		}
-	}
 
 	if (m_info.pCollisionCube == nullptr)
 	{// 立方体の当たり判定
@@ -156,32 +143,32 @@ HRESULT CPlayer::Init(void)
 		nProgress = pGame->GetProgress();
 	}
 
-	if (nProgress == 0)
-	{
-		SetMotion(MOTION_APPER);
+	//if (nProgress == 0)
+	//{
+	//	SetMotion(MOTION_APPER);
 
-		// タイマーを止める
-		CTimer *pTimer = CTimer::GetInstance();
+	//	// タイマーを止める
+	//	CTimer *pTimer = CTimer::GetInstance();
 
-		if (pTimer != nullptr)
-		{
-			pTimer->EnableStop(true);
-		}
+	//	if (pTimer != nullptr)
+	//	{
+	//		pTimer->EnableStop(true);
+	//	}
 
-		// フレーム演出の生成
-		CFrame::Create(20, 120, 70);
+	//	// フレーム演出の生成
+	//	CFrame::Create(20, 120, 70);
 
-		// カメラ距離の設定
-		CCamera *pCamera = CManager::GetCamera();
+	//	// カメラ距離の設定
+	//	CCamera *pCamera = CManager::GetCamera();
 
-		if (pCamera != nullptr)
-		{
-			pCamera->SetDist(100.0f);
+	//	if (pCamera != nullptr)
+	//	{
+	//		pCamera->SetDist(100.0f);
 
-			pCamera->ChangeBehavior(new CCameraBehaviorApperPlayer);
-		}
-	}
-	else
+	//		pCamera->ChangeBehavior(new CCameraBehaviorApperPlayer);
+	//	}
+	//}
+	//else
 	{
 		// カメラに追従ビヘイビアを設定
 		CCamera *pCamera = CManager::GetCamera();
@@ -262,20 +249,22 @@ void CPlayer::Update(void)
 		// 目標方向を向く処理
 		RotDest();
 
+		float fScale = Slow::GetScale();
+
 		// 位置に移動量を反映
-		m_info.pos += m_info.move;
+		m_info.pos += m_info.move * fScale;
 
 		// 当たり判定管理
 		ManageCollision();
 
 		// 移動量減衰
-		m_info.move.x *= MOVE_FACT;
+		m_info.move.x += (0 - m_info.move.x) * m_param.fFactMove * fScale;
 
 		if (m_info.pBody != nullptr)
 		{
 			if (m_info.pBody->GetMotion() != MOTION_DASH || m_info.pBody->IsFinish())
 			{
-				m_info.move.y -= GRAVITY;
+				m_info.move.y -= m_param.fGravity * fScale;
 			}
 		}
 	}
@@ -349,7 +338,7 @@ void CPlayer::ManageState(void)
 
 		m_info.nCntState++;
 
-		if (m_info.nCntState >= m_info.nTimeDamage)
+		if (m_info.nCntState >= m_param.nTimeDamage)
 		{
 			m_info.state = STATE_NORMAL;
 
@@ -377,9 +366,6 @@ void CPlayer::Input(void)
 
 	// 攻撃操作
 	InputAttack();
-
-	// カメラ操作
-	InputCamera();
 }
 
 //=====================================================
@@ -397,10 +383,10 @@ void CPlayer::InputMove(void)
 		return;
 	}
 
-	// 変数宣言
 	D3DXVECTOR3 move = { 0.0f,0.0f,0.0f }, rot = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 vecStick;
 	int nMotion = m_info.pBody->GetMotion();
+	float fScale = Slow::GetScale();
 
 	{// 攻撃中でなければ
 		if (nMotion != MOTION_PARRY ||
@@ -408,12 +394,12 @@ void CPlayer::InputMove(void)
 		{// 地上でパリィしてなければ移動
 			if (pInputManager->GetPress(CInputManager::BUTTON_MOVE_LEFT))
 			{// 左移動
-				move.x -= SPEED_MOVE;
+				move.x -= m_param.fSpeedMove * fScale;
 				m_info.rotDest.y = D3DX_PI * 0.5f;
 			}
 			if (pInputManager->GetPress(CInputManager::BUTTON_MOVE_RIGHT))
 			{// 右移動
-				move.x += SPEED_MOVE;
+				move.x += m_param.fSpeedMove * fScale;
 				m_info.rotDest.y = -D3DX_PI * 0.5f;
 			}
 
@@ -422,7 +408,7 @@ void CPlayer::InputMove(void)
 			{
 				if (m_info.jump == JUMPSTATE_NONE)
 				{
-					move.y += m_info.fPowJump;
+					move.y += m_param.fPowJump;
 
 					m_info.jump = JUMPSTATE_NORMAL;
 
@@ -451,7 +437,7 @@ void CPlayer::InputMove(void)
 				{// 空中攻撃
 					SetMotion(MOTION_AIRATTACK);
 
-					D3DXVECTOR3 move = { GetMove().x,ATTACK_JUMP,GetMove().z };
+					D3DXVECTOR3 move = { GetMove().x,m_param.fPowAttackJump,GetMove().z };
 
 					// 移動量加算
 					SetMove(move);
@@ -528,7 +514,7 @@ void CPlayer::InputAttack(void)
 		}
 	}
 
-	if (m_info.nCntDash >= m_info.nTimeDash)
+	if (m_info.nCntDash >= m_param.nTimeDash)
 	{
 		if (pInputManager->GetTrigger(CInputManager::BUTTON_DASH))
 		{// ダッシュ
@@ -536,7 +522,7 @@ void CPlayer::InputAttack(void)
 			{
 				D3DXVECTOR3 move = GetMove();
 
-				move.x -= sinf(m_info.rotDest.y) * m_info.fSpeedDash;
+				move.x -= sinf(m_info.rotDest.y) * m_param.fSpeedDash;
 				move.y = 0;
 
 				SetMove(move);
@@ -903,11 +889,11 @@ void CPlayer::ManageAttack(void)
 	{
 		if (m_info.pBody->GetMotion() == m_info.pAttackInfo[i].nIdxMotion)
 		{// 攻撃モーション中の判定
-			int nFrame = m_info.pBody->GetFrame();
+			float fFrame = m_info.pBody->GetFrame();
 			int nKey = m_info.pBody->GetKey();
 			D3DXVECTOR3 pos;
 
-			if (nFrame == m_info.pAttackInfo[i].nFrame && nKey == m_info.pAttackInfo[i].nKey)
+			if (fFrame == m_info.pAttackInfo[i].nFrame && nKey == m_info.pAttackInfo[i].nKey)
 			{// 当たり判定の設定
 				bool bHit = false;
 				D3DXMATRIX mtx;
@@ -921,23 +907,22 @@ void CPlayer::ManageAttack(void)
 					mtx._43
 				};
 
+#ifdef _DEBUG
+				CEffect3D::Create(pos, m_info.pAttackInfo[i].fRadius, 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 攻撃判定の可視化
+#endif
+
 				// 位置設定
 				m_info.pClsnAttack->SetPosition(pos);
 				
 				// 半径の設定
 				m_info.pClsnAttack->SetRadius(m_info.pAttackInfo[i].fRadius);
 
-#ifdef _DEBUG
-				//CEffect3D::Create(pos, m_info.pAttackInfo[i].fRadius, 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-#endif
-				// 命中したかの判定
 				bHit = m_info.pClsnAttack->SphereCollision(CCollision::TAG_ENEMY);
-				
-				// 命中したオブジェクトの取得
 				CObject *pObj = m_info.pClsnAttack->GetOther();
 
 				if (bHit == true && pObj != nullptr)
 				{// 命中時のヒット処理
+					// アニメーションエフェクトの再生
 					CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
 
 					if (pAnim3D != nullptr)
@@ -945,13 +930,23 @@ void CPlayer::ManageAttack(void)
 						pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
 					}
 
+					// 当たったオブジェクトのヒット処理
 					pObj->Hit(5.0f);
 
+					// 音の再生
 					CSound *pSound = CSound::GetInstance();
 
 					if (pSound != nullptr)
 					{
 						pSound->Play(CSound::LABEL_SE_HIT_NORMAL);
+					}
+
+					// ヒットストップの発生
+					CSlow *pSlow = CSlow::GetInstance();
+
+					if (pSlow != nullptr)
+					{
+						pSlow->SetSlowTime(m_info.pAttackInfo[i].fTimeHitStop, m_info.pAttackInfo[i].fScaleHitStop);
 					}
 				}
 			}
@@ -980,7 +975,7 @@ void CPlayer::RotDest(void)
 	}
 
 	// 角度補正
-	SetRot(D3DXVECTOR3(rot.x, rot.y + fRotDiff * ROLL_FACT, rot.z));
+	SetRot(D3DXVECTOR3(rot.x, rot.y + fRotDiff * m_param.fFactRoll, rot.z));
 
 	// 角度の修正
 	rot = GetRot();
@@ -995,14 +990,6 @@ void CPlayer::RotDest(void)
 		// 角度補正
 		SetRot(D3DXVECTOR3(GetRot().x, GetRot().y + 6.28f, GetRot().z));
 	}
-}
-
-//=====================================================
-// カメラ操作
-//=====================================================
-void CPlayer::InputCamera(void)
-{
-
 }
 
 //=====================================================
@@ -1095,7 +1082,6 @@ void CPlayer::Draw(void)
 	CDebugProc::GetInstance()->Print("\nプレイヤーの位置：[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	CDebugProc::GetInstance()->Print("\nプレイヤー体力[%d]", m_info.nLife);
 	CDebugProc::GetInstance()->Print("\n攻撃[%d]", m_info.bAttack);
-	CDebugProc::GetInstance()->Print("\nリセット[F3]");
 #else
 	CDebugProc::GetInstance()->Print("\n");
 	CDebugProc::GetInstance()->Print("//----------------------------\n");
@@ -1115,11 +1101,13 @@ void CPlayer::Draw(void)
 CPlayer *CPlayer::Create(void)
 {
 	if (m_pPlayer == nullptr)
-	{// インスタンス生成
+	{
 		m_pPlayer = new CPlayer;
 
-		// 初期化処理
-		m_pPlayer->Init();
+		if (m_pPlayer != nullptr)
+		{
+			m_pPlayer->Init();
+		}
 	}
 
 	return m_pPlayer;
@@ -1161,6 +1149,10 @@ void CPlayer::Load(void)
 					for (int i = 0; i < m_info.nNumAttack; i++)
 					{// 情報のクリア
 						ZeroMemory(&m_info.pAttackInfo[i], sizeof(AttackInfo));
+
+						// ヒットストップ情報の初期化
+						m_info.pAttackInfo[i].fScaleHitStop = 1.0f;
+						m_info.pAttackInfo[i].fTimeHitStop = 0.0f;
 					}
 				}
 				else
@@ -1223,6 +1215,20 @@ void CPlayer::Load(void)
 								fscanf(pFile, "%f", &m_info.pAttackInfo[nCntAttack].fRadius);
 							}
 
+							if (strcmp(cTemp, "SCALE_HITSTOP") == 0)
+							{// ヒットストップのタイムスケール
+								fscanf(pFile, "%s", &cTemp[0]);
+
+								fscanf(pFile, "%f", &m_info.pAttackInfo[nCntAttack].fScaleHitStop);
+							}
+
+							if (strcmp(cTemp, "TIME_HITSTOP") == 0)
+							{// ヒットストップ継続時間
+								fscanf(pFile, "%s", &cTemp[0]);
+
+								fscanf(pFile, "%f", &m_info.pAttackInfo[nCntAttack].fTimeHitStop);
+							}
+
 							if (strcmp(cTemp, "END_ATTACKSET") == 0)
 							{// パラメーター読込終了
 								nCntAttack++;
@@ -1240,7 +1246,7 @@ void CPlayer::Load(void)
 			}
 
 			if (strcmp(cTemp, "PARRYSET") == 0)
-			{// 攻撃判定読込開始
+			{// パリィ判定読込開始
 				while (true)
 				{
 					// 文字読み込み
@@ -1295,38 +1301,92 @@ void CPlayer::Load(void)
 //=====================================================
 void CPlayer::LoadParam(FILE *pFile, char *pTemp)
 {
+	if (strcmp(pTemp, "BODY") == 0)
+	{// 見た目の読み込み
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%s", pTemp);
+
+		if (m_info.pBody == nullptr)
+		{// 体の生成
+			m_info.pBody = CMotion::Create(pTemp);
+
+			if (m_info.pBody != nullptr)
+			{
+				m_info.pBody->EnableShadow(true);
+			}
+		}
+	}
+
 	if (strcmp(pTemp, "LIFE") == 0)
 	{// 体力
 		fscanf(pFile, "%s", pTemp);
 
-		fscanf(pFile, "%d", &m_info.nLife);
+		fscanf(pFile, "%d", &m_param.nInitialLife);
+
+		m_info.nLife = m_param.nInitialLife;
+	}
+
+	if (strcmp(pTemp, "SPEED_MOVE") == 0)
+	{// 通常移速度
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%f", &m_param.fSpeedMove);
+	}
+
+	if (strcmp(pTemp, "GRAVITY") == 0)
+	{// 重力
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%f", &m_param.fGravity);
+	}
+
+	if (strcmp(pTemp, "MOVE_FACT") == 0)
+	{// 移動減衰係数
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%f", &m_param.fFactMove);
+	}
+
+	if (strcmp(pTemp, "ROLL_FACT") == 0)
+	{// 移動減衰係数
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%f", &m_param.fFactRoll);
 	}
 
 	if (strcmp(pTemp, "TIME_DASH") == 0)
 	{// ダッシュのクールタイム
 		fscanf(pFile, "%s", pTemp);
 
-		fscanf(pFile, "%d", &m_info.nTimeDash);
+		fscanf(pFile, "%d", &m_param.nTimeDash);
 	}
 
 	if (strcmp(pTemp, "SPEED_DASH") == 0)
 	{// ダッシュの速度
 		fscanf(pFile, "%s", pTemp);
 
-		fscanf(pFile, "%f", &m_info.fSpeedDash);
+		fscanf(pFile, "%f", &m_param.fSpeedDash);
 	}
 
 	if (strcmp(pTemp, "JUMP_POW") == 0)
 	{// ジャンプ力
 		fscanf(pFile, "%s", pTemp);
 
-		fscanf(pFile, "%f", &m_info.fPowJump);
+		fscanf(pFile, "%f", &m_param.fPowJump);
+	}
+
+	if (strcmp(pTemp, "ATTACKJUMP_POW") == 0)
+	{// ジャンプ力
+		fscanf(pFile, "%s", pTemp);
+
+		fscanf(pFile, "%f", &m_param.fPowAttackJump);
 	}
 
 	if (strcmp(pTemp, "TIME_DAMAGE") == 0)
 	{// 無敵時間
 		fscanf(pFile, "%s", pTemp);
 
-		fscanf(pFile, "%d", &m_info.nTimeDamage);
+		fscanf(pFile, "%d", &m_param.nTimeDamage);
 	}
 }

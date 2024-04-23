@@ -33,6 +33,20 @@ class CShadow;
 class CPlayer : public CObject
 {
 public:
+	struct SParam
+	{// パラメーター
+		int nInitialLife;	// 初期体力
+		float fSpeedMove;	// 移動速度
+		float fGravity;	// 重力
+		float fFactMove;	// 移動減衰係数
+		float fFactRoll;	// 回転係数
+		float fSpeedDash;	// ダッシュの速度
+		float fPowJump;	// ジャンプ力
+		float fPowAttackJump;	// 二段ジャンプ力
+		int nTimeDamage;	// ダメージ状態の時間
+		int nTimeDash;	// ダッシュのクールタイム
+	};
+
 	CPlayer(int nPriority = 4);	// コンストラクタ
 	~CPlayer();	// デストラクタ
 
@@ -52,7 +66,7 @@ public:
 	D3DXVECTOR3 GetRot(void) { return m_info.rot; }
 	static CPlayer *GetInstance(void) { return m_pPlayer; }
 	int GetLife(void) { return m_info.nLife; }
-	int GetinitialLife(void) { return m_info.nInitialLife; }
+	SParam GetParam(void) { return m_param; }
 	CMotion *GetBody(void) { return m_info.pBody; }
 
 private:
@@ -87,6 +101,8 @@ private:
 		int nKey;	// キー番号
 		int nFrame;	// 発生するフレーム
 		float fRadius;	// 半径
+		float fScaleHitStop;	// ヒットストップのタイムスケール
+		float fTimeHitStop;	// ヒットストップの持続時間
 	};
 	enum JUMPSTATE
 	{// ジャンプ状態
@@ -96,18 +112,13 @@ private:
 		JUMPSTATE_MAX
 	};
 	struct SInfo
-	{
+	{// ステータス情報
 		int nLife;	// 体力
-		int nInitialLife;	// 初期体力
 		int nCntAfterImage;	// 残像を出すカウンター
 		int nCntState;	// 状態遷移カウンター
 		int nTimeParry;	// パリィ継続時間
 		int nCntParry;	// パリィのカウンター
-		int nTimeDash;	// ダッシュのクールタイム
 		int nCntDash;	// ダッシュのカウンター
-		int nTimeDamage;	// ダメージ状態の時間
-		float fSpeedDash;	// ダッシュの速度
-		float fPowJump;	// ジャンプ力
 		bool bSprint;	// ダッシュ状態かどうか
 		bool bAttack;	// 攻撃フラグ
 		float fRadiusParry;	// パリィ判定の半径
@@ -135,7 +146,6 @@ private:
 	void InputMove(void);
 	void InputAttack(void);
 	void Parry(void);
-	void InputCamera(void);
 	void ManageMotion(void);
 	void ManageCollision(void);
 	void RotDest(void);
@@ -144,6 +154,7 @@ private:
 	void SetMotion(MOTION motion);
 
 	SInfo m_info;	// 自身の情報
+	SParam m_param;	// パラメーター
 
 	static CPlayer *m_pPlayer;	// 自身のポインタ
 };

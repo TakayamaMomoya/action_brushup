@@ -112,7 +112,7 @@ public:
 	float GetRadiusMax(void);
 	void SetAfterImage(D3DXCOLOR col = { 0.0f,0.0f,0.0f,0.0f }, int m_nLife = 10);
 	int GetKey(void) { return m_nKey; }
-	int GetFrame(void) { return m_nCounterMotion; }
+	float GetFrame(void) { return m_fCounterMotion; }
 	void SetAllCol(D3DXCOLOR col);
 	void ResetAllCol(void);
 	void InitPose(int nMotion);
@@ -128,7 +128,7 @@ private:
 	bool m_bLoopMotion;	//ループするかどうか
 	int m_nNumKey;	//キーの総数
 	int m_nKey;	//現在のキー
-	int m_nCounterMotion;	//モーションカウンター
+	float m_fCounterMotion;	//モーションカウンター
 	int m_nNumParts;	// パーツの数
 	D3DXVECTOR3 m_pos;	// 位置
 	D3DXVECTOR3 m_posOld;	// 前回の位置

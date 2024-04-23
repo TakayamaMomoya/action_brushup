@@ -151,10 +151,10 @@ void CLife::UpdatePulse(void)
 
 	// ‘Ì—Í‚Æ‰Šú‘Ì—Í‚ÌŽæ“¾
 	int nLife = pPlayer->GetLife();
-	int nInitialLife = pPlayer->GetinitialLife();
+	CPlayer::SParam param = pPlayer->GetParam();
 
 	// Š„‡‚ÌŽZo
-	float fRate = (float)nLife / (float)nInitialLife;
+	float fRate = (float)nLife / (float)param.nInitialLife;
 
 	D3DXCOLOR colPulse = m_pPulse->GetCol();
 	D3DXCOLOR colDiff;

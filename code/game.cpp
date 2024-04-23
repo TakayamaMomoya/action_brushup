@@ -36,6 +36,7 @@
 #include "timer.h"
 #include "pause.h"
 #include "inputManager.h"
+#include "slow.h"
 
 //*****************************************************
 // マクロ定義
@@ -60,6 +61,7 @@ CGame::CGame()
 	m_pPosCheckPoint = nullptr;
 	m_nNumCheckPoint = 0;
 	m_nCntState = 0;
+	m_bStop = false;
 }
 
 //=====================================================
@@ -129,6 +131,9 @@ HRESULT CGame::Init(void)
 	{
 		pSound->Play(CSound::LABEL_BGM_BATTLE);
 	}
+
+	// スロー管理の生成
+	CSlow::Create();
 
 	return S_OK;
 }

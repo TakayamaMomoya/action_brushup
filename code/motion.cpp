@@ -18,6 +18,7 @@
 #include "sound.h"
 #include "afterimage.h"
 #include "universal.h"
+#include "slow.h"
 
 //*****************************************************
 // マクロ定義
@@ -35,7 +36,7 @@ CMotion::CMotion(int nPriority) : CObject(nPriority)
 	m_bLoopMotion = false;
 	m_motionType = 0;
 	m_motionTypeOld = 0;
-	m_nCounterMotion = 0;
+	m_fCounterMotion = 0;
 	m_nKey = 0;
 	m_nNumKey = 0;
 	m_nNumMotion = 0;
@@ -106,7 +107,7 @@ void CMotion::Update(void)
 		for (int nCntParticle = 0; nCntParticle < m_aMotionInfo[m_motionType].nNumParticle; nCntParticle++)
 		{// 全てのパーティクルを確認
 			if (m_nKey == m_aMotionInfo[m_motionType].pParticle[nCntParticle].nKey &&
-				m_nCounterMotion == m_aMotionInfo[m_motionType].pParticle[nCntParticle].nFrame)
+				m_fCounterMotion == m_aMotionInfo[m_motionType].pParticle[nCntParticle].nFrame)
 			{// パーティクル生成
 				// 親パーツの位置取得
 				D3DXMATRIX *pMtx = m_apParts[m_aMotionInfo[m_motionType].pParticle[nCntParticle].nIdxParent]->m_pParts->GetMatrix();
@@ -162,22 +163,22 @@ void CMotion::Update(void)
 
 		//目的の値=======================================================================================================
 		float DestPosX = pos.x + m_aKeyOld[nCntParts].fPosX +
-			DiffPosX * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffPosX * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		float DestPosY = pos.y + m_aKeyOld[nCntParts].fPosY +
-			DiffPosY * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffPosY * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		float DestPosZ = pos.z + m_aKeyOld[nCntParts].fPosZ +
-			DiffPosZ * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffPosZ * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		float DestRotX = m_aKeyOld[nCntParts].fRotX +
-			DiffRotX * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffRotX * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		float DestRotY = m_aKeyOld[nCntParts].fRotY +
-			DiffRotY * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffRotY * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		float DestRotZ = m_aKeyOld[nCntParts].fRotZ +
-			DiffRotZ * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_nCounterMotion;
+			DiffRotZ * (float)(1.0f / (float)m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame) * m_fCounterMotion;
 
 		//パーツの向き・位置設定
 		m_apParts[nCntParts]->m_pParts->SetPosition(D3DXVECTOR3(DestPosX, DestPosY, DestPosZ));
@@ -191,7 +192,9 @@ void CMotion::Update(void)
 		m_apParts[nCntParts]->m_pParts->SetRot(rot);
 	}
 
-	m_nCounterMotion++;
+	float fScale = Slow::GetScale();
+
+	m_fCounterMotion += fScale;
 
 	if (m_nKey >= m_aMotionInfo[m_motionType].nNumKey - 1)
 	{// モーションが終了していたら
@@ -206,13 +209,13 @@ void CMotion::Update(void)
 		}
 	}
 
-	if (m_nCounterMotion > m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame)
+	if (m_fCounterMotion > m_aMotionInfo[m_motionType].aKeyInfo[m_nKey].nFrame)
 	{//キーのフレーム数に達したら
 		if (m_nKey < m_aMotionInfo[m_motionType].nNumKey)
 		{
 			m_nKey++;
 
-			m_nCounterMotion = 0;
+			m_fCounterMotion = 0;
 
 			SetKeyOld();
 		}
@@ -234,7 +237,7 @@ void CMotion::SetMotion(int nMotionType)
 	// モーション情報の設定
 	m_motionType = nMotionType;
 	m_nKey = 0;
-	m_nCounterMotion = 0;
+	m_fCounterMotion = 0;
 }
 
 //=====================================================
