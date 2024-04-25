@@ -294,16 +294,6 @@ void CPlayer::Update(void)
 				}
 			}
 		}
-
-		m_info.nCntAfterImage++;
-
-		if (m_info.nCntAfterImage >= TIME_AFTERIMAGE)
-		{
-			// 残像の生成
-			m_info.pBody->SetAfterImage(D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f), 20);
-
-			m_info.nCntAfterImage = 0;
-		}
 	}
 
 	if (m_info.pBody != nullptr)
@@ -781,8 +771,8 @@ void CPlayer::ManageMotion(void)
 	// 移動量の計算
 	float fSpeed = D3DXVec3Length(&move);
 
-	if (fSpeed * fSpeed > LINE_STOP * LINE_STOP)
-	{
+	if (nMotion == MOTION_AIRATTACK || nMotion == MOTION_APPER || nMotion == MOTION_DASH)
+	{// 特定モーションの場合に残像を出す
 		m_info.nCntAfterImage++;
 
 		if (m_info.nCntAfterImage >= TIME_AFTERIMAGE)
