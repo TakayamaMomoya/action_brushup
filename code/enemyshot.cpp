@@ -19,15 +19,18 @@
 #include "bullet.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define INITIAL_LIFE	(5)	// 初期体力
-#define INITIAL_SCORE	(500)	// 初期スコア
-#define TIME_SHOT	(240)	// 射撃までのカウンター
-#define ROLL_FACT	(0.1f)	// 回転係数
-#define BULLET_SPEED	(2.0f)	// 弾の速度
-#define BULLET_SIZE	(2.5f)	// 弾の大きさ
-#define GRAVITY	(0.3f)	// 重力
+namespace
+{
+const int INITIAL_LIFE = 5;	// 初期体力
+const float DELAY_SHOT = 4.0f;	// 射撃のディレイ
+const int INITIAL_SCORE = 500;	// 初期スコア
+const float ROLL_FACT = 0.1f;	// 回転係数
+const float BULLET_SPEED = 2.0f;	// 弾の速度
+const float BULLET_SIZE = 2.5f;	// 弾のサイズ
+const float GRAVITY = 0.3f;	// 重力
+}
 
 //=====================================================
 // コンストラクタ
@@ -105,7 +108,7 @@ void CEnemyShot::ManageAttack(void)
 	int nFrame = (int)GetFrame();
 	int nKey = GetKey();
 
-	if (GetAttackCounter() >= TIME_SHOT && nMotion != MOTION_SHOT)
+	if (GetAttackCounter() >= DELAY_SHOT && nMotion != MOTION_SHOT)
 	{// 射撃モーション
 		SetMotion(MOTION_SHOT);
 	}

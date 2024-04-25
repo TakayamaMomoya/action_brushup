@@ -22,6 +22,7 @@ public:
 	CCameraBehavior();
 	virtual ~CCameraBehavior();
 
+	virtual void Init(CCamera *pCamera) = 0;
 	virtual void Update(CCamera *pCamera) = 0;
 
 private:
@@ -33,6 +34,7 @@ public:
 	CCameraBehaviorFollowPlayer();
 	~CCameraBehaviorFollowPlayer();
 
+	void Init(CCamera *pCamera) override;
 	void Update(CCamera *pCamera) override;
 };
 
@@ -42,6 +44,7 @@ public:
 	CCameraBehaviorApperPlayer();
 	~CCameraBehaviorApperPlayer();
 
+	void Init(CCamera *pCamera) override;
 	void Update(CCamera *pCamera) override;
 };
 

@@ -19,6 +19,7 @@
 #include "player.h"
 #include "game.h"
 #include "enemyManager.h"
+#include "slow.h"
 
 //*****************************************************
 // マクロ定義
@@ -40,15 +41,16 @@ int CEnemyNormal::m_nNumAll = 0;	// 総数
 //=====================================================
 CEnemyNormal::CEnemyNormal()
 {
-	// 総数カウントアップ
 	m_nNumAll++;
 
-	// 値のクリア
 	m_fLife = 0;
 	m_nScore = 0;
-	m_nCntAttack = 0;
+	m_fCntAttack = 0.0f;
 	m_nTimerState = 0;
 	m_pCollisionSphere = nullptr;
+	m_pCollisionCube = nullptr;
+	m_pNext = nullptr;
+	m_pPrev = nullptr;
 }
 
 //=====================================================
@@ -137,11 +139,14 @@ void CEnemyNormal::Update(void)
 
 	if (state != STATE_DEATH)
 	{
-		m_nCntAttack++;
+		float fScale = Slow::GetScale();
+		float DeltaTime = CManager::GetDeltaTime();
 
-		if (m_nCntAttack == INT_MAX)
+		m_fCntAttack += DeltaTime * fScale;
+
+		if (m_fCntAttack == INT_MAX)
 		{
-			m_nCntAttack = 0;
+			m_fCntAttack = 0;
 		}
 
 		// 継承クラスの更新

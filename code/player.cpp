@@ -289,7 +289,6 @@ void CPlayer::Update(void)
 
 				if (pCamera != nullptr)
 				{
-					pCamera->SetDist(180.0f);
 					pCamera->ChangeBehavior(new CCameraBehaviorFollowPlayer);
 				}
 			}

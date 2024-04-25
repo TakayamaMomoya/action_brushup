@@ -419,6 +419,11 @@ void CCamera::ChangeBehavior(CCameraBehavior *pBehavior)
 	}
 
 	m_pBehavior = pBehavior;
+
+	if (m_pBehavior != nullptr)
+	{
+		m_pBehavior->Init(this);
+	}
 }
 
 //====================================================

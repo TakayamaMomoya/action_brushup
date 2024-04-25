@@ -26,7 +26,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static void Load(void);	// 読込
 	static int GetNumAll(void) { return m_nNumAll; }
 	float GetLife(void) { return m_fLife; }
 	void SetSpherePosition(D3DXVECTOR3 pos);
@@ -35,8 +34,8 @@ public:
 	CEnemyNormal *GetNext(void) { return m_pNext; }
 	int GetScore(void) { return m_nScore; }
 	void SetScore(int nScore) { m_nScore = nScore; }
-	int GetAttackCounter(void) { return m_nCntAttack; }
-	void SetAttackCounter(int nCounter) { m_nCntAttack = nCounter; }
+	float GetAttackCounter(void) { return m_fCntAttack; }
+	void SetAttackCounter(float fCounter) { m_fCntAttack = fCounter; }
 
 private:
 	void ManageState(void);
@@ -48,7 +47,7 @@ private:
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
 	CCollisionCube *m_pCollisionCube;	// 立方体の当たり判定
 	int m_nScore;	// スコア値
-	unsigned int m_nCntAttack;	// 攻撃カウンタ
+	float m_fCntAttack;	// 攻撃カウンタ
 
 	CEnemyNormal *m_pPrev;	// 前のアドレス
 	CEnemyNormal *m_pNext;	// 次のアドレス
