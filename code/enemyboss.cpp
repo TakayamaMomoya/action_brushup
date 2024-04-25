@@ -24,28 +24,33 @@
 #include "score.h"
 #include "sound.h"
 #include "particle.h"
+#include "slow.h"
+#include "camera.h"
+#include "cameraBehavior.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define INITIAL_LIFE	(60.0f)	// 初期体力
-#define INITIAL_SCORE	(30000)	// 初期スコア
-#define TIME_SHOT	(240)	// 射撃までのカウンター
-#define ROLL_FACT	(0.1f)	// 回転係数
-#define BULLET_SPEED	(2.0f)	// 弾の速度
-#define BULLET_SIZE	(2.5f)	// 弾の大きさ
-#define GRAVITY	(0.3f)	// 重力
-#define TIME_MISSILE	(20)	// ミサイル発射頻度
-#define MISSILE_UP	(3.0f)	// ミサイルの初速
-#define NUM_MISSILE	(3)	// ミサイルの発射数
-#define MOVE_FACT	(0.04f)	// 移動係数
-#define LINE_END	(5.0f)	// 移動終了のしきい値
-#define MID_POINT	(2740.0f)	// 真ん中の値
-#define WIDTH_STAGE	(160.0f)	// ステージの幅
-#define DAMAGE_FRAME	(10)	// ダメージ状態の時間
-#define FLOAT_HEIGTH	(180.0f)	// 高さ
-#define SHOT_TIME	(3)	// 射撃の頻度
-#define SHOT_HEIGHT	(30.0f)	// 射撃時の高度
+namespace
+{
+const float INITIAL_LIFE = 60.0f;	// 初期体力
+const int INITIAL_SCORE = 3000;	// 初期スコア
+const float ROLL_FACT = 0.1f;	// 回転係数
+const float BULLET_SPEED = 2.0f;	// 弾の速度
+const float BULLET_SIZE = 2.5f;	// 弾の大きさ
+const float DELAY_MISSILE = 0.2f;	// ミサイル発射のディレイ
+const float INITIALSPEED_MISSILE = 3.0f;	// ミサイルの初速
+const int NUM_MISSILE = 3;	// ミサイルの発射数
+const float MOVE_FACT = 0.04f;	// 移動量減衰係数
+const float LINE_END_MOVE = 5.0f;	// 移動終了のしきい値
+const float MID_POINT = 2740.0f;	// ボス戦ステージの中央X座標
+const float WIDTH_STAGE = 160.0f;	// ステージの幅
+const float TIME_DAMAGE = 0.2f;	// 無敵時間
+const float FLOAT_HEIGHT = 180.0f;	// 浮かんでいる高さ
+const float DELAY_SHOT = 0.5f; // 射撃のディレイ
+const float SHOT_HEIGHT = 30.0f;	// 射撃時の高さ
+const float RADIUS_COLLISION = 35.0f;	// 当たり判定の半径
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -181,7 +186,8 @@ void CEnemyBoss::ManageState(void)
 {
 	CEnemy::STATE state = CEnemy::GetState();
 
-	int nTimer = GetCntState();
+	float fTimer = GetCntState();
+	float fAddTime = CManager::GetDeltaTime() * Slow::GetScale();
 
 	switch (state)
 	{
@@ -189,26 +195,26 @@ void CEnemyBoss::ManageState(void)
 		break;
 	case CEnemy::STATE_DAMAGE:
 
-		nTimer++;
+		fTimer += fAddTime;
 
 		SetAllCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
-		if (nTimer > DAMAGE_FRAME)
+		if (fTimer > TIME_DAMAGE)
 		{// 通常状態に戻る
-			nTimer = 0;
+			fTimer = 0;
 			state = CEnemy::STATE_NORMAL;
 
 			ResetAllCol();
 		}
 		break;
 	case CEnemy::STATE_DEATH:
-		if (m_info.nCntState >= 180)
+		if (m_info.fTimerState >= 180)
 		{
 			Death();
 		}
 		else
 		{
-			m_info.nCntState++;
+			m_info.fTimerState++;
 		}
 
 		break;
@@ -218,7 +224,7 @@ void CEnemyBoss::ManageState(void)
 
 	CEnemy::SetState(state);
 
-	SetCntState(nTimer);
+	SetCntState(fTimer);
 }
 
 //=====================================================
@@ -252,6 +258,14 @@ void CEnemyBoss::UpdateApper(void)
 
 		m_info.state = STATE_BATTLE;
 		SwitchState();
+
+		// カメラをボス戦のものに変更
+		CCamera *pCamera = CManager::GetCamera();
+
+		if (pCamera != nullptr)
+		{
+			pCamera->ChangeBehavior(new CCameraBehaviorBossBattle);
+		}
 	}
 }
 
@@ -288,11 +302,11 @@ void CEnemyBoss::UpdateMissile(void)
 
 	if (pos.x < MID_POINT)
 	{// 左にいた場合
-		m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGTH, 0.0f };
+		m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
 	}
 	else
 	{
-		m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGTH, 0.0f };
+		m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
 	}
 
 
@@ -302,9 +316,9 @@ void CEnemyBoss::UpdateMissile(void)
 	if (bEnd)
 	{
 		// ミサイル攻撃
-		m_info.nCntAttack++;
+		m_info.fTimerAttack++;
 
-		if (TIME_MISSILE <= m_info.nCntAttack)
+		if (DELAY_MISSILE <= m_info.fTimerAttack)
 		{// ミサイル発射
 			D3DXVECTOR3 posMissile = GetMtxPos(IDX_SHOULDER_L);
 
@@ -312,7 +326,7 @@ void CEnemyBoss::UpdateMissile(void)
 
 			if (pMissile != nullptr)
 			{
-				pMissile->SetMove(D3DXVECTOR3(0.0f, MISSILE_UP, 0.0f));
+				pMissile->SetMove(D3DXVECTOR3(0.0f, INITIALSPEED_MISSILE, 0.0f));
 			}
 
 			CSound *pSound = CSound::GetInstance();
@@ -322,7 +336,7 @@ void CEnemyBoss::UpdateMissile(void)
 				pSound->Play(CSound::LABEL_SE_MISSILE);
 			}
 
-			m_info.nCntAttack = 0;
+			m_info.fTimerAttack = 0;
 
 			// 攻撃回数加算
 			m_info.nNumAttack++;
@@ -372,9 +386,9 @@ void CEnemyBoss::UpdateShotUnder(void)
 
 	if (nKey == 3)
 	{
-		m_info.nCntAttack++;
+		m_info.fTimerAttack++;
 
-		if (m_info.nCntAttack >= SHOT_TIME)
+		if (m_info.fTimerAttack >= DELAY_SHOT)
 		{
 			D3DXMATRIX mtxWeapon = *GetParts(IDX_WEAPON)->m_pParts->GetMatrix();
 			D3DXMATRIX mtxMazzle;
@@ -406,7 +420,7 @@ void CEnemyBoss::UpdateShotUnder(void)
 
 			CBullet::Create(posMazzle, vecBullet, 400, CBullet::TYPE_ENEMY, false, 10.0f, 5.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
-			m_info.nCntAttack = 0;
+			m_info.fTimerAttack = 0;
 
 			CSound *pSound = CSound::GetInstance();
 
@@ -444,15 +458,9 @@ void CEnemyBoss::FollowCollision(void)
 	{
 		D3DXVECTOR3 pos = GetMtxPos(IDX_WAIST);
 
-		pos.y -= 25.0f;
-
-#ifdef _DEBUG
-		//dCEffect3D::Create(pos, pCollision->GetRadius(), 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-#endif
-
 		pCollision->SetPositionOld(pCollision->GetPosition());
 		pCollision->SetPosition(pos);
-		pCollision->SetRadius(35.0f);
+		pCollision->SetRadius(RADIUS_COLLISION);
 	}
 }
 
@@ -470,7 +478,7 @@ bool CEnemyBoss::FollowDest(void)
 	// 差分距離の取得
 	float fLength = D3DXVec3Length(&vecDiff);
 
-	if (LINE_END > fLength)
+	if (LINE_END_MOVE > fLength)
 	{
 		bEnd = true;
 	}
@@ -518,11 +526,11 @@ void CEnemyBoss::SwitchState(void)
 
 		if (pos.x < MID_POINT)
 		{// 左にいた場合
-			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGTH, 0.0f };
+			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
 		}
 		else
 		{
-			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGTH, 0.0f };
+			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
 		}
 	}
 		break;
@@ -543,11 +551,11 @@ void CEnemyBoss::SwitchState(void)
 
 		if (pos.x < MID_POINT)
 		{// 左にいた場合
-			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGTH + SHOT_HEIGHT, 0.0f };
+			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT + SHOT_HEIGHT, 0.0f };
 		}
 		else
 		{
-			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGTH + SHOT_HEIGHT, 0.0f };
+			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT + SHOT_HEIGHT, 0.0f };
 		}
 	}
 		break;

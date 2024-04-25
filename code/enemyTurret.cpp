@@ -102,7 +102,7 @@ void CEnemyTurret::Update(void)
 void CEnemyTurret::ManageAttack(void)
 {
 	int nMotion = GetMotion();
-	int nFrame = GetFrame();
+	int nFrame = (int)GetFrame();
 	int nKey = GetKey();
 
 	if (GetAttackCounter() >= TIME_SHOT && nMotion != MOTION_SHOT)

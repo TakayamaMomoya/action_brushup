@@ -68,8 +68,8 @@ public:
 	CEnemy *GetNext(void) { return m_pNext; }
 	int GetScore(void) { return m_nScore; }
 	void SetScore(int nScore) { m_nScore = nScore; }
-	int GetCntState(void) { return m_nTimerState; }
-	void SetCntState(int nCnt) { m_nTimerState = nCnt; }
+	float GetCntState(void) { return m_fTimerState; }
+	void SetCntState(float fCnt) { m_fTimerState = fCnt; }
 	void DeleteCollision(void);
 
 protected:
@@ -82,7 +82,7 @@ private:
 
 	static int m_nNumAll;	// 総数
 	float m_fLife;	// 体力
-	int m_nTimerState;	// 状態遷移カウンター
+	float m_fTimerState;	// 状態遷移カウンター
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
 	CCollisionCube *m_pCollisionCube;	// 立方体の当たり判定
 	CShadow *m_pShadow;	// 影のポインタ

@@ -21,17 +21,19 @@
 #include "enemyshot.h"
 #include "enemyManager.h"
 #include "shadow.h"
+#include "slow.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define SPEED_MOVE	(1.0f)	// 移動速度
-#define RATE_RADIUS	(1.5f)	// 当たり判定の大きさの倍率
-#define INITIAL_LIFE	(5.0f)	// 初期体力
-#define DAMAGE_FRAME	(10)	// ダメージ状態の継続フレーム数
-#define INITIAL_SCORE	(1000)	// 初期スコア
-#define TIME_DEATH	(30)	// 死亡までのタイム
-#define ROLL_FACT	(0.1f)	// 回転係数
+namespace
+{
+const float INITIAL_LIFE = 5.0f;	// 初期体力
+const float TIME_DAMAGE = 0.1f;	// ダメージ状態の継続時間
+const int INITIAL_SCORE = 1000;	// 初期スコア
+const float TIME_DEATH = 0.5f;	// 死亡後の消える時間
+const float ROLL_FACT = 0.1f;	// 回転係数
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -59,7 +61,7 @@ CEnemy::CEnemy()
 
 	m_fLife = 0;
 	m_nScore = 0;
-	m_nTimerState = 0;
+	m_fTimerState = 0;
 	m_pCollisionSphere = nullptr;
 	m_pCollisionCube = nullptr;
 	m_pShadow = nullptr;
@@ -280,34 +282,36 @@ void CEnemy::ManageState(void)
 {
 	D3DXCOLOR col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
+	float fAddTime = CManager::GetDeltaTime() * Slow::GetScale();
+
 	switch (m_state)
 	{
 	case STATE_NORMAL:
 		break;
 	case STATE_DAMAGE:
-		if (m_nTimerState > DAMAGE_FRAME)
+		if (m_fTimerState > TIME_DAMAGE)
 		{// 通常状態に戻る
-			m_nTimerState = 0;
+			m_fTimerState = 0;
 			m_state = STATE_NORMAL;
 		}
 		else
 		{// カウントアップ
-			m_nTimerState++;
+			m_fTimerState += fAddTime;
 		}
 
 		break;
 	case STATE_DEATH:
 
-		m_nTimerState++;
+		m_fTimerState += fAddTime;
 
 		// 透明になりながら消える
 		col = D3DXCOLOR(1.0f,0.0f,0.0f,1.0f);
 
-		col.a = 1.0f - (float)((float)(m_nTimerState) / (TIME_DEATH));
+		col.a = 1.0f - (m_fTimerState / (TIME_DEATH));
 
 		SetAllCol(col);
 
-		if (m_nTimerState >= TIME_DEATH)
+		if (m_fTimerState >= TIME_DEATH)
 		{// 死亡
 			Death();
 		}

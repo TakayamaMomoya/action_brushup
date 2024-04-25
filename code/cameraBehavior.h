@@ -48,4 +48,14 @@ public:
 	void Update(CCamera *pCamera) override;
 };
 
+class CCameraBehaviorBossBattle : public CCameraBehavior
+{// ƒ{ƒXí‚Å‚Ì“®‚«
+public:
+	CCameraBehaviorBossBattle();
+	~CCameraBehaviorBossBattle();
+
+	void Init(CCamera *pCamera) override;
+	void Update(CCamera *pCamera) override;
+};
+
 #endif

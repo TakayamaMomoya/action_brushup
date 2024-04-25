@@ -12,6 +12,8 @@
 #include "camera.h"
 #include "player.h"
 #include "motion.h"
+#include "player.h"
+#include "enemyboss.h"
 
 //*****************************************************
 // 定数定義
@@ -159,4 +161,83 @@ void CCameraBehaviorApperPlayer::Update(CCamera *pCamera)
 		pInfoCamera->posRDest.y + cosf(ANGLE_FOLLOW) * pInfoCamera->fLength,
 		pInfoCamera->posRDest.z + sinf(ANGLE_FOLLOW) * cosf(D3DX_PI) * pInfoCamera->fLength
 	};
+}
+
+//************************************************************
+// ボス戦時の動き
+//************************************************************
+
+//====================================================
+// コンストラクタ
+//====================================================
+CCameraBehaviorBossBattle::CCameraBehaviorBossBattle()
+{
+
+}
+
+//====================================================
+// デストラクタ
+//====================================================
+CCameraBehaviorBossBattle::~CCameraBehaviorBossBattle()
+{
+
+}
+
+//====================================================
+// 初期化
+//====================================================
+void CCameraBehaviorBossBattle::Init(CCamera *pCamera)
+{
+
+}
+
+//====================================================
+// 更新処理
+//====================================================
+void CCameraBehaviorBossBattle::Update(CCamera *pCamera)
+{
+	CPlayer *pPlayer = CPlayer::GetInstance();
+	CEnemyBoss *pBoss = CEnemyBoss::GetInstance();
+
+	if (pBoss == nullptr || pPlayer == nullptr)
+		return;
+
+	CMotion *pPlayerBody = pPlayer->GetBody();
+
+	if (pPlayerBody == nullptr)
+		return;
+
+	// ボスとプレイヤーの中心を映す
+	D3DXVECTOR3 posPlayer = pPlayerBody->GetMtxPos(0);
+	D3DXVECTOR3 posBoss = pBoss->GetMtxPos(CEnemyBoss::IDXPARTS::IDX_HEAD);
+
+	D3DXVECTOR3 vecDiff = posBoss - posPlayer;
+
+	D3DXVECTOR3 posMid = posPlayer + vecDiff * 0.5f;
+
+	// 注視点を中間位置に設定
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	
+	pInfoCamera->posRDest = posMid;
+
+	// カメラの画角内に二体を収める
+	float fAngleView = pInfoCamera->fViewAngle;
+
+	float fAngle = (D3DX_PI - D3DXToRadian(fAngleView)) * 0.5f;	// キャラクター間のベクトルの端からの角度
+
+	float fLengthDiff = D3DXVec3Length(&vecDiff) * 0.5f;
+
+	float fLength = fLengthDiff / tan(D3DXToRadian(fAngleView * 0.5f));
+
+	// 注視点からの極座標に視点を設定
+	pInfoCamera->posVDest =
+	{
+		pInfoCamera->posRDest.x + sinf(ANGLE_FOLLOW) * sinf(D3DX_PI) * fLength,
+		pInfoCamera->posRDest.y + cosf(ANGLE_FOLLOW) * fLength,
+		pInfoCamera->posRDest.z + sinf(ANGLE_FOLLOW) * cosf(D3DX_PI) * fLength
+	};
+
+	// 位置の補正
+	pInfoCamera->posR += (pInfoCamera->posRDest - pInfoCamera->posR) * SPEED_FOLLOW;
+	pInfoCamera->posV += (pInfoCamera->posVDest - pInfoCamera->posV) * SPEED_FOLLOW;
 }
