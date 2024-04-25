@@ -19,14 +19,16 @@
 #include "bullet.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define INITIAL_LIFE	(5)	// 初期体力
-#define INITIAL_SCORE	(500)	// 初期スコア
-#define TIME_SHOT	(120)	// 射撃までのカウンター
-#define BULLET_SPEED	(2.0f)	// 弾の速度
-#define BULLET_SIZE	(1.0f)	// 弾の大きさ
-#define GRAVITY	(0.3f)	// 重力
+namespace
+{
+const int INITIAL_LIFE = 5;	// 初期体力
+const int INITIAL_SCORE = 500;	// 初期スコア
+const float DELAY_SHOT = 2.0f;	// 射撃カウンター
+const float BULLET_SPEED = 2.0f;	// 弾の速度
+const float BULLET_SIZE = 1.0f;	// 弾の大きさ
+}
 
 //=====================================================
 // コンストラクタ
@@ -93,7 +95,7 @@ void CEnemyDrone::Update(void)
 //=====================================================
 void CEnemyDrone::ManageAttack(void)
 {
-	if (GetAttackCounter() >= TIME_SHOT)
+	if (GetAttackCounter() >= DELAY_SHOT)
 	{// 攻撃
 		D3DXVECTOR3 pos = GetPosition();
 		D3DXVECTOR3 posTarget = { 0.0f,0.0f,0.0f };
