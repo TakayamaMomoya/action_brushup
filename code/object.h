@@ -51,6 +51,7 @@ public:
 	virtual void Draw(void) {};	// 描画処理
 	static void ReleaseAll(void);	// 全てリリース
 	static void UpdateAll(void);	// 全て更新
+	static void DeleteAll(void);	// 全削除処理
 	static void DrawAll(void);	// 全て描画
 	virtual void Hit(float fDamage){}	// ヒット処理
 	void SetType(TYPE type);
@@ -62,12 +63,20 @@ public:
 	virtual float GetHeight(void) { return 0.0f; }	// サイズ取得
 	void EnableWire(bool bWire) { m_bWire = bWire; }
 	static int GetNumAll(void) { return m_nNumAll; }
+	bool IsDeath(void) { return m_bDeath; }
+	void EnableZtest(bool bZtest) { m_bZtest = bZtest; }
+	void EnableLighting(bool bLighting) { m_bLighting = bLighting; }
+	void EnableAdd(bool bAdd) { m_bAdd = bAdd; }
+	void EnableFog(bool bFog) { m_bFog = bFog; }
+	void EnableCull(bool bCull) { m_bCull = bCull; }
+	void SetAlphaTest(DWORD dValue) { m_dAlpha = dValue; }
+	DWORD GetAlpha(void) { return m_dAlpha; }
 
 protected:
 	void Release(void);	// 個別リリース処理
 
 private:
-	void Delete(void);	// 個別リリース処理
+	void Delete(void);	// 個別削除処理
 
 	static int m_nNumAll;	// 総数
 	int m_nID;	// 自分のID
@@ -79,6 +88,18 @@ private:
 	CObject *m_pNext;	// 次のオブジェクトのアドレス
 	bool m_bDeath;	// 死亡フラグ
 	bool m_bWire;	// ワイヤーフレームで表示するかどうか
+	bool m_bZtest;	// Zテストで前に出すかどうか
+	bool m_bLighting;	// ライティングを有効化するかどうか
+	bool m_bAdd;	// 加算合成するかどうか
+	bool m_bFog;	// フォグをかけるかどうか
+	bool m_bCull;	// カリングするかどうか
+	DWORD m_dAlpha;	// アルファテストの値
 };
+
+namespace Object
+{
+void DeleteObject(CObject **ppObject, int nSize = 1);
+}
+
 
 #endif

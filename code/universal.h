@@ -43,6 +43,7 @@ D3DXCOLOR ConvertRGB(BYTE r, BYTE g, BYTE b, BYTE a);
 D3DXVECTOR3 VecToRot(D3DXVECTOR3 vec);
 int RandRange(int nMax, int nMin);
 void VecConvertLength(D3DXVECTOR3 *pVec, float fLength);
+float DegreeToRadian(float fDegree);
 
 //======================================
 // ”»’èŒn

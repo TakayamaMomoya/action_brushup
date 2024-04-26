@@ -14,6 +14,7 @@
 #include "motion.h"
 #include "player.h"
 #include "enemyboss.h"
+#include "universal.h"
 
 //*****************************************************
 // 定数定義
@@ -25,6 +26,7 @@ const float SPEED_FOLLOW = 0.3f;	// 追従時の速度
 const float RATE_ADVANCE_FOLLOW = 10.0f;	// 追従時、移動量に対する先を見る割合
 const float DIST_FOLLOW_DEFAULT = 100.0f;	// 追従時のデフォルトカメラ距離
 const float DIST_APPER_PLAYER = 100.0f;	// プレイヤー出現時のカメラ距離
+const float DIST_MIN_BOSS = 85.0f;	// ボス戦のときの最小距離
 }
 
 //====================================================
@@ -225,16 +227,18 @@ void CCameraBehaviorBossBattle::Update(CCamera *pCamera)
 
 	float fAngle = (D3DX_PI - D3DXToRadian(fAngleView)) * 0.5f;	// キャラクター間のベクトルの端からの角度
 
-	float fLengthDiff = D3DXVec3Length(&vecDiff) * 0.5f;
+	float fLengthDiff = D3DXVec3Length(&vecDiff) * 0.5f;	// プレイヤーと敵の距離の半分
 
-	float fLength = fLengthDiff / tan(D3DXToRadian(fAngleView * 0.5f));
+	float fLengthToPosV = fLengthDiff / tanf(universal::DegreeToRadian(fAngleView * 0.5f));
+
+	universal::LimitValue(&fLengthToPosV, FLT_MAX, DIST_MIN_BOSS);
 
 	// 注視点からの極座標に視点を設定
 	pInfoCamera->posVDest =
 	{
-		pInfoCamera->posRDest.x + sinf(ANGLE_FOLLOW) * sinf(D3DX_PI) * fLength,
-		pInfoCamera->posRDest.y + cosf(ANGLE_FOLLOW) * fLength,
-		pInfoCamera->posRDest.z + sinf(ANGLE_FOLLOW) * cosf(D3DX_PI) * fLength
+		pInfoCamera->posRDest.x + sinf(ANGLE_FOLLOW) * sinf(D3DX_PI) * fLengthToPosV,
+		pInfoCamera->posRDest.y + cosf(ANGLE_FOLLOW) * fLengthToPosV,
+		pInfoCamera->posRDest.z + sinf(ANGLE_FOLLOW) * cosf(D3DX_PI) * fLengthToPosV
 	};
 
 	// 位置の補正

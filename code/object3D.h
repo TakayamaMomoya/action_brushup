@@ -20,7 +20,15 @@
 class CObject3D : public CObject
 {
 public:
-	CObject3D(int nPriority = 3);	// コンストラクタ
+	enum MODE
+	{
+		MODE_NORMAL = 0,	// 通常モード
+		MODE_BILLBOARD,	// ビルボード
+		MODE_STRETCHBILLBOARD,	// ストレッチビルボード
+		MODE_MAX
+	};
+
+	CObject3D(int nPriority = 5);	// コンストラクタ
 	~CObject3D();	// デストラクタ
 
 	HRESULT Init(void);
@@ -34,18 +42,24 @@ public:
 	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; }	// 設定処理
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }	// 取得処理
 	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }
-	D3DXVECTOR3 GetRot(void) { return m_rot; }
-	void SetRot(D3DXVECTOR3 rot = { D3DX_PI * 0.5f,0.0f,0.0f }) { m_rot = rot; }
+	D3DXVECTOR3 GetRotation(void) { return m_rot; }
+	void SetRotation(D3DXVECTOR3 rot = { D3DX_PI * 0.5f,0.0f,0.0f }) { m_rot = rot; }
 	void SetIdxTexture(int nIdx) { m_nIdxTexture = nIdx; }
 	int GetIdxTexture(void) { return m_nIdxTexture; }
+	D3DXCOLOR GetColor(void) { return m_col; }
 	void SetColor(D3DXCOLOR col);
-	void SetTex(D3DXVECTOR2 texLeftUp, D3DXVECTOR2 texRightDown);
+	void SetTex(D3DXVECTOR2 rd, D3DXVECTOR2 lu);
+	void SetFactSB(float fFact) { m_fFactSB = fFact; }
+	void SetVtx(void);
+	void SetMode(MODE mode);
+	MODE GetMode(void) { return m_mode; }
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
-	void EnableAdd(bool bAdd) { m_bAdd = bAdd; }
 
 private:
-	void DrawNormal(void);
-	void DrawBillboard(void);
+	void SetVtxNormal(void);
+	void SetVtxStretchBillboard(void);
+	void SetMtx(void);
+	void SetMtxBillboard(void);
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
 	D3DXVECTOR3 m_pos;	// 位置
@@ -55,10 +69,9 @@ private:
 	D3DXCOLOR m_col;	// 色
 	float m_width;	// 幅
 	float m_heigth;	// 高さ
+	float m_fFactSB;	// ストレッチビルボードのときの見やすさの補正
 	int m_nIdxTexture;	// テクスチャの番号
-	bool m_bBillboard;	// ビルボードにするかどうか
-	bool m_bZTest;	// Zテストを無効化するかどうか
-	bool m_bAdd;	// 加算合成するかどうか
+	MODE m_mode;	// モード
 };
 
 #endif

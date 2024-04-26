@@ -33,11 +33,14 @@ CObject::CObject(int nPriority)
 	m_pNext = nullptr;
 	m_bDeath = false;
 	m_bWire = false;
-
-	if (nPriority == 7)
-	{
-		int n = 10;
-	}
+	m_bZtest = false;
+	m_bLighting = true;
+	m_bAdd = false;
+	m_bFog = true;
+	m_bCull = true;
+	m_type = TYPE::TYPE_NONE;
+	m_nID = -1;
+	m_dAlpha = 0;
 
 	m_nPriority = nPriority;
 
@@ -184,7 +187,6 @@ void CObject::UpdateAll(void)
 
 		while (pObject != nullptr)
 		{
-
 			// 次のアドレスを保存
 			CObject *pObjectNext = pObject->m_pNext;
 
@@ -219,12 +221,39 @@ void CObject::UpdateAll(void)
 }
 
 //=====================================================
+// オブジェクトの削除
+//=====================================================
+void CObject::DeleteAll(void)
+{
+	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+	{
+		// 先頭オブジェクトを代入
+		CObject *pObject = m_apTop[nCntPri];
+
+		while (pObject != nullptr)
+		{
+			// 次のアドレスを保存
+			CObject *pObjectNext = pObject->m_pNext;
+
+			if (pObject->m_bDeath)
+			{
+				// 終了処理
+				pObject->Delete();
+			}
+
+			// 次のアドレスを代入
+			pObject = pObjectNext;
+		}
+	}
+}
+
+//=====================================================
 // 全描画処理
 //=====================================================
 void CObject::DrawAll(void)
 {
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 	// カメラの取得
 	CCamera *pCamera = CManager::GetCamera();
@@ -245,9 +274,41 @@ void CObject::DrawAll(void)
 			CObject *pObjectNext = pObject->m_pNext;
 
 			if (pObject->m_bWire)
-			{
+			{// ワイヤーフレームの設定
 				pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 			}
+
+			if (pObject->m_bZtest)
+			{// Zテストの設定
+				pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+				pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+			}
+
+			if (pObject->m_bLighting == false)
+			{
+				// ライティングを無効化
+				pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+			}
+
+			if (pObject->m_bAdd)
+			{
+				// 加算合成かどうか
+				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			}
+
+			if (pObject->m_bCull == false)
+			{
+				pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+			}
+
+			//アルファテストの有効化
+			pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+			pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+			pDevice->SetRenderState(D3DRS_ALPHAREF, pObject->m_dAlpha);
+
+			pDevice->SetRenderState(D3DRS_FOGENABLE, pObject->m_bFog && CRenderer::GetInstance()->IsFog());
 
 			// 描画処理
 			pObject->Draw();
@@ -255,6 +316,57 @@ void CObject::DrawAll(void)
 			if (pObject->m_bWire)
 			{
 				pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+			}
+
+			if (pObject->m_bZtest)
+			{// Zテストの設定
+				pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+				pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+			}
+
+			if (pObject->m_bLighting == false)
+			{
+				// ライティングを有効化
+				pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+			}
+
+			if (pObject->m_bAdd)
+			{
+				// 加算合成を戻す
+				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+			}
+
+			if (pObject->m_bCull == false)
+			{
+				pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+			}
+
+			// アルファテストの無効化
+			pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+			pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+			pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+
+			// 次のアドレスを代入
+			pObject = pObjectNext;
+		}
+	}
+
+	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+	{
+		// 先頭オブジェクトを代入
+		CObject* pObject = m_apTop[nCntPri];
+
+		while (pObject != nullptr)
+		{
+			// 次のアドレスを保存
+			CObject* pObjectNext = pObject->m_pNext;
+
+			if (pObject->m_bDeath)
+			{
+				// 削除
+				pObject->Delete();
 			}
 
 			// 次のアドレスを代入
@@ -269,4 +381,19 @@ void CObject::DrawAll(void)
 void CObject::SetType(TYPE type)
 {
 	m_type = type;
+}
+
+namespace Object
+{
+void DeleteObject(CObject **ppObject,int nSize)
+{// オブジェクトの削除
+	for (int i = 0; i < nSize; i++)
+	{
+		if (ppObject[i] != nullptr)
+		{
+			ppObject[i]->Uninit();
+			ppObject[i] = nullptr;
+		}
+	}
+}
 }

@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// 爆発処理[explosion.cpp]
+// ３Dアニメーション処理[anim3D.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "texture.h"
 #include "debugproc.h"
+#include "universal.h"
 
 //=====================================================
 // コンストラクタ
@@ -44,6 +45,8 @@ HRESULT CAnim3D::Init(void)
 	CObject3D::Init();
 
 	SetAnim(m_nPatternAnim, m_nNumAnim);
+
+	EnableZtest(true);
 
 	return S_OK;
 }
@@ -95,7 +98,7 @@ void CAnim3D::Update(void)
 void CAnim3D::Draw(void)
 {
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 	// ライティングを無効化
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -105,10 +108,6 @@ void CAnim3D::Draw(void)
 
 	// ライティングを戻す
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-#ifdef _DEBUG
-	CDebugProc::GetInstance()->Print("\nパス：[%d]", GetIdxTexture());
-#endif
 }
 
 //=====================================================
@@ -176,4 +175,12 @@ void CAnim3D::SetAnim(int nAnim, int nNumAnim)
 		// 頂点バッファのアンロック
 		pVtxBuff->Unlock();
 	}
+}
+
+//=====================================================
+// アニメーション開始フレームをランダムで決める
+//=====================================================
+void CAnim3D::RandStart(void)
+{
+	m_nCounterAnim = universal::RandRange(m_nNumAnim - 1, 0);
 }

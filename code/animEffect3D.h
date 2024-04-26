@@ -33,7 +33,7 @@ public:
 	{
 		TYPE_EXPLOSION = 0,	// 爆発
 		TYPE_FLASH,	// 火花
-		TYPE_JUMP,	// ジャンプ
+		TYPE_JUMP,	// 血しぶき
 		TYPE_SLASH,	// 斬撃
 		TYPE_AIRSLASH,	// 空中斬撃
 		TYPE_MAX
@@ -56,8 +56,11 @@ private:
 		char acPath[MAX_STRING];	// パス
 		int nNumAnim;	// アニメーション数
 		int nSpeedAnim;	// アニメーション速度
+		float fSize;	// サイズ
 		D3DXCOLOR col;	// 色
 		bool bAdd;	// 加算合成するかどうか
+		bool bLoop;	// ループするかどうか
+		bool bBillboard;	// ビルボードにするかどうか
 	};
 	
 	void Load(void);
@@ -65,5 +68,10 @@ private:
 	static CAnimEffect3D *m_pAnimEffect3D;	// 自身のポインタ
 	SInfoAnimEffect *m_apAnimEffect[TYPE_MAX];	// 情報のポインタ
 };
+
+namespace Anim3D
+{
+CAnim3D *CreateAnim(D3DXVECTOR3 pos, CAnimEffect3D::TYPE type);
+}
 
 #endif

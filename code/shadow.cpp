@@ -40,7 +40,7 @@ HRESULT CShadow::Init(void)
 	// Œp³ƒNƒ‰ƒX‚Ì‰Šú‰»
 	CObject3D::Init();
 
-	SetRot(D3DXVECTOR3(D3DX_PI * 0.5f, 0.0f, 0.0f));
+	SetRotation(D3DXVECTOR3(D3DX_PI * 0.5f, 0.0f, 0.0f));
 
 	return S_OK;
 }

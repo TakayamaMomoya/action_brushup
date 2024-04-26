@@ -72,7 +72,7 @@ void CAnimEffect3D::Load(void)
 		while (true)
 		{
 			// 文字読み込み
-			fscanf(pFile, "%s", &cTemp[0]);
+			(void)fscanf(pFile, "%s", &cTemp[0]);
 
 			if (strcmp(cTemp, "EFFECTSET") == 0)
 			{// 読込開始
@@ -87,7 +87,7 @@ void CAnimEffect3D::Load(void)
 				while (true)
 				{
 					// 文字読み込み
-					fscanf(pFile, "%s", &cTemp[0]);
+					(void)fscanf(pFile, "%s", &cTemp[0]);
 
 					if (strcmp(cTemp, "END_EFFECTSET") == 0)
 					{// 終了条件
@@ -98,42 +98,49 @@ void CAnimEffect3D::Load(void)
 
 					if (strcmp(cTemp, "PATH") == 0)
 					{// パス
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 						
-						fscanf(pFile, "%s", &m_apAnimEffect[nCntEffect]->acPath[0]);
+						(void)fscanf(pFile, "%s", &m_apAnimEffect[nCntEffect]->acPath[0]);
 					}
 
 					if (strcmp(cTemp, "NUM_ANIM") == 0)
 					{// アニメーション数
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &m_apAnimEffect[nCntEffect]->nNumAnim);
+						(void)fscanf(pFile, "%d", &m_apAnimEffect[nCntEffect]->nNumAnim);
 					}
 
 					if (strcmp(cTemp, "SPEED_ANIM") == 0)
 					{// アニメーション速度
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &m_apAnimEffect[nCntEffect]->nSpeedAnim);
+						(void)fscanf(pFile, "%d", &m_apAnimEffect[nCntEffect]->nSpeedAnim);
+					}
+
+					if (strcmp(cTemp, "SIZE") == 0)
+					{// サイズ
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						(void)fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->fSize);
 					}
 
 					if (strcmp(cTemp, "COL") == 0)
 					{// 色読み込み
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.r);
-						fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.g);
-						fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.b);
-						fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.a);
+						(void)fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.r);
+						(void)fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.g);
+						(void)fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.b);
+						(void)fscanf(pFile, "%f", &m_apAnimEffect[nCntEffect]->col.a);
 					}
 
 					if (strcmp(cTemp, "IS_ADD") == 0)
 					{// 加算合成するかどうか
 						int i;
 
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &i);
+						(void)fscanf(pFile, "%d", &i);
 
 						if (i == 1)
 						{
@@ -142,6 +149,42 @@ void CAnimEffect3D::Load(void)
 						else
 						{
 							m_apAnimEffect[nCntEffect]->bAdd = false;
+						}
+					}
+
+					if (strcmp(cTemp, "IS_LOOP") == 0)
+					{// ループするかどうか
+						int i;
+
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						(void)fscanf(pFile, "%d", &i);
+
+						if (i == 1)
+						{
+							m_apAnimEffect[nCntEffect]->bLoop = true;
+						}
+						else
+						{
+							m_apAnimEffect[nCntEffect]->bLoop = false;
+						}
+					}
+
+					if (strcmp(cTemp, "IS_BILLBOARD") == 0)
+					{// ビルボードにするかどうか
+						int i;
+
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						(void)fscanf(pFile, "%d", &i);
+
+						if (i == 1)
+						{
+							m_apAnimEffect[nCntEffect]->bBillboard = true;
+						}
+						else
+						{
+							m_apAnimEffect[nCntEffect]->bBillboard = false;
 						}
 					}
 				}
@@ -217,7 +260,7 @@ CAnimEffect3D *CAnimEffect3D::Create(void)
 //=====================================================
 CAnim3D *CAnimEffect3D::CreateEffect(D3DXVECTOR3 pos, TYPE type)
 {
-	if ((type >= TYPE_MAX || type < 0 ) && 
+	if ((type >= TYPE_MAX || type < 0 ) &&
 		m_apAnimEffect[type] != nullptr)
 	{// エラー
 		return nullptr;
@@ -226,12 +269,14 @@ CAnim3D *CAnimEffect3D::CreateEffect(D3DXVECTOR3 pos, TYPE type)
 	CAnim3D *pAnim3D = nullptr;
 
 	// インスタンス生成
-	pAnim3D = CAnim3D::Create(pos, m_apAnimEffect[type]->nNumAnim, m_apAnimEffect[type]->nSpeedAnim);
+	pAnim3D = CAnim3D::Create(pos, m_apAnimEffect[type]->nNumAnim, m_apAnimEffect[type]->nSpeedAnim, m_apAnimEffect[type]->bLoop);
 
 	if (pAnim3D != nullptr)
 	{
 		// 色の設定
 		pAnim3D->SetColor(m_apAnimEffect[type]->col);
+
+		pAnim3D->SetSize(m_apAnimEffect[type]->fSize, m_apAnimEffect[type]->fSize);
 		pAnim3D->EnableAdd(m_apAnimEffect[type]->bAdd);
 
 		CTexture *pTexture = CTexture::GetInstance();
@@ -240,8 +285,30 @@ CAnim3D *CAnimEffect3D::CreateEffect(D3DXVECTOR3 pos, TYPE type)
 		{// テクスチャの設定
 			int nIdx = pTexture->Regist(&m_apAnimEffect[type]->acPath[0]);
 			pAnim3D->SetIdxTexture(nIdx);
+
+			if (m_apAnimEffect[type]->bBillboard)
+			{
+				pAnim3D->SetMode(CAnim3D::MODE_BILLBOARD);
+			}
+
+			pAnim3D->SetVtx();
 		}
 	}
 
 	return pAnim3D;
+}
+
+namespace Anim3D
+{
+CAnim3D *CreateAnim(D3DXVECTOR3 pos, CAnimEffect3D::TYPE type)
+{
+	CAnimEffect3D *pManager = CAnimEffect3D::GetInstance();
+
+	if (pManager == nullptr)
+		return nullptr;
+
+	CAnim3D *pAnim = pManager->CreateEffect(pos, type);
+
+	return pAnim;
+}
 }
