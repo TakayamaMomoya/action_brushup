@@ -37,7 +37,7 @@ private:
 	void Tilt(void);	// 傾く処理
 	void Death(void);	// 死亡処理
 
-	int m_nDeathTimer;	// 死亡カウンター
+	float m_fDeathTimer;	// 死亡カウンター
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
 	COrbit *m_pOrbit;	// 軌跡のポインタ
 };

@@ -18,23 +18,27 @@
 #include "collision.h"
 #include "orbit.h"
 #include "animEffect3D.h"
+#include "slow.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define MAX_SPEED	(2.0f)	// 移動速度
-#define CHASE_SPEED	(0.05f)	// 追跡速度
-#define INITIAL_LIFE	(1)	// 初期体力
-#define DEATH_TIME	(180)	// 自滅までの時間
-#define SIZE_ORBIT	(5.0f)	// 軌跡のサイズ
-#define LENGTH_ORBIT	(50)	// 軌跡の長さ
+namespace
+{
+const float MAX_SPEED = 2.0f;	// 最大速度
+const float CHASE_SPEED = 0.05f;	// 追跡速度
+const int INITIAL_LIFE = 1;	// 初期体力
+const float DEATH_TIME = 3.0f;	// 自滅までの時間
+const float SIZE_ORBIT = 5.0f;	// 軌跡のサイズ
+const int LENGTH_ORBIT = 50;	// 軌跡の長さ
+}
 
 //=====================================================
 // コンストラクタ
 //=====================================================
 CMissile::CMissile()
 {
-	m_nDeathTimer = 0;
+	m_fDeathTimer = 0;
 	m_pCollisionSphere = nullptr;
 	m_pOrbit = nullptr;
 }
@@ -216,11 +220,17 @@ void CMissile::Update(void)
 		m_pOrbit->SetPositionOffset(mtx, 0);
 	}
 
-	m_nDeathTimer++;
+	// 死亡タイマー
+	float fScale = Slow::GetScale();
+	float fDeltaTime = CManager::GetDeltaTime() * fScale;
 
-	if (m_nDeathTimer > DEATH_TIME)
+	m_fDeathTimer += fDeltaTime;
+
+	if (m_fDeathTimer > DEATH_TIME)
 	{
 		Death();
+
+		return;
 	}
 
 	// 傾きの制御
