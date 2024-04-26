@@ -6,7 +6,7 @@
 #====================================================================
 SCRIPT
 EFFECTSET		#0 爆発
-	PATH = data\TEXTURE\EFFECT\explosion.png
+	PATH = data\TEXTURE\EFFECT\explosion01.png
 	NUM_ANIM = 48
 	SPEED_ANIM = 1
 	SIZE = 20.0
