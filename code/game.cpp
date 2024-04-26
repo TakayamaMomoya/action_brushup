@@ -267,7 +267,9 @@ void CGame::CreateTutorial(void)
 			{// テクスチャの設定
 				int nIdx = pTexture->Regist(apPath[i]);
 				pAnim3D->SetIdxTexture(nIdx);
+				pAnim3D->SetRotation(D3DXVECTOR3(-D3DX_PI * 0.5f, 0.0f, 0.0f));
 				pAnim3D->SetSize(35.0f, 25.0f);
+				pAnim3D->EnableZtest(false);
 			}
 		}
 	}

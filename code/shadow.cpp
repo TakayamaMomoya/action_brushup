@@ -37,10 +37,9 @@ CShadow::~CShadow()
 //=====================================================
 HRESULT CShadow::Init(void)
 {
-	// 継承クラスの初期化
 	CObject3D::Init();
 
-	SetRotation(D3DXVECTOR3(D3DX_PI * 0.5f, 0.0f, 0.0f));
+	SetMode(MODE::MODE_NORMAL);
 
 	return S_OK;
 }
@@ -96,11 +95,12 @@ CShadow *CShadow::Create(D3DXVECTOR3 pos, float width, float height)
 
 		if (pShadow != nullptr)
 		{
-			pShadow->SetPosition(pos);
-			pShadow->SetSize(width, height);
-
 			// 初期化
 			pShadow->Init();
+
+			pShadow->SetPosition(pos);
+			pShadow->SetSize(width, height);
+			pShadow->SetVtx();
 
 			// テクスチャの読込
 			int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\EFFECT\\effect000.png");

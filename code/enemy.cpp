@@ -33,6 +33,7 @@ const float TIME_DAMAGE = 0.1f;	// ダメージ状態の継続時間
 const int INITIAL_SCORE = 1000;	// 初期スコア
 const float TIME_DEATH = 0.5f;	// 死亡後の消える時間
 const float ROLL_FACT = 0.1f;	// 回転係数
+const float INITIAL_SIZE_SHADOW = 10.0f;	// 影の初期サイズ
 }
 
 //*****************************************************
@@ -232,7 +233,7 @@ HRESULT CEnemy::Init(void)
 
 	if (m_pShadow == nullptr)
 	{// 影の生成
-		m_pShadow = CShadow::Create(GetPosition(), 10.0f, 10.0f);
+		m_pShadow = CShadow::Create(GetPosition(), INITIAL_SIZE_SHADOW, INITIAL_SIZE_SHADOW);
 	}
 
 	return S_OK;

@@ -50,6 +50,7 @@ const float FLOAT_HEIGHT = 180.0f;	// 浮かんでいる高さ
 const float DELAY_SHOT = 0.5f; // 射撃のディレイ
 const float SHOT_HEIGHT = 30.0f;	// 射撃時の高さ
 const float RADIUS_COLLISION = 35.0f;	// 当たり判定の半径
+const float SIZE_SHADOW = 40.0f;	// 影のサイズ
 }
 
 //*****************************************************
@@ -129,7 +130,7 @@ HRESULT CEnemyBoss::Init(void)
 
 	if (pShadow != nullptr)
 	{
-		pShadow->SetSize(40.0f, 40.0f);
+		pShadow->SetSize(SIZE_SHADOW, SIZE_SHADOW);
 	}
 
 	return S_OK;
