@@ -167,6 +167,9 @@
     <ClCompile Include="code\meshcylinder.cpp">
       <Filter>mesh</Filter>
     </ClCompile>
+    <ClCompile Include="code\blur.cpp">
+      <Filter>VFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
@@ -334,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="code\meshcylinder.h">
       <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="code\blur.h">
+      <Filter>VFX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
