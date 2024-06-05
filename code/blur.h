@@ -40,6 +40,12 @@ public:
     void DrawBuckBuffer(void);   // バックバッファへの描画
     void SwapBuffer(void);  // バッファーの入れ替え
 
+    // 変数取得・設定関数
+    D3DXCOLOR GetPolygonColor(void) { return m_colPolygon; }    // ポリゴンの色
+    void SetPolygonColor(D3DXCOLOR col) { m_colPolygon = col; }
+    float GetAddSizePolygon(void) { return m_fAddSizePolygon; }    // ポリゴンの追加サイズ
+    void SetAddSizePolygon(float fScale) { m_fAddSizePolygon = fScale; }
+
     // 静的メンバ関数
     static CBlur *Create(void);   // 生成
     static CBlur *GetInstance(void) { return m_pBlur; }    // 取得処理
@@ -59,8 +65,7 @@ private:
     D3DVIEWPORT9 m_viewportDef; // 保存用のビューポート
     D3DXMATRIX m_mtxViewDef;    // 保存用のビューマトリックス
     D3DXMATRIX m_mtxProjDef;    // 保存用のプロジェクションマトリックス
-    float m_fAlpha; // 重ねるポリゴンの透明度
-    float m_fDiffPolygon;   // ポリゴンの差分の大きさ
+    float m_fAddSizePolygon;   // ポリゴンの差分の大きさ
     D3DXCOLOR m_colPolygon; // ポリゴンの色
 
     // 静的メンバ変数

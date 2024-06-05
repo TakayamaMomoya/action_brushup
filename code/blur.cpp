@@ -14,6 +14,14 @@
 #include "camera.h"
 
 //*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const D3DXCOLOR COL_POLYGON_INITIAL = { 1.0f,1.0f,1.0f,0.1f };  // 初期の重ねるポリゴンの色
+}
+
+//*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
 CBlur *CBlur::m_pBlur = nullptr;    // 自身のポインタ
@@ -21,7 +29,7 @@ CBlur *CBlur::m_pBlur = nullptr;    // 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CBlur::CBlur() : m_colPolygon{}, m_apRenderMT{}, m_apTextureMT{}, m_viewpotrMT(), m_pZBuffMT(nullptr), m_pVtxBuffMT(nullptr), m_fDiffPolygon(0.0f), m_fAlpha(0.0f),
+CBlur::CBlur() : m_colPolygon{}, m_apRenderMT{}, m_apTextureMT{}, m_viewpotrMT(), m_pZBuffMT(nullptr), m_pVtxBuffMT(nullptr), m_fAddSizePolygon(0.0f),
                     m_pRenderDef(nullptr), m_pZBuffDef(nullptr),m_viewportDef(),m_mtxProjDef(),m_mtxViewDef()
 {
 
@@ -58,7 +66,7 @@ CBlur *CBlur::Create(void)
 //=====================================================
 void CBlur::Init(void)
 {
-    m_colPolygon = { 1.0f,1.0f,1.0f,0.6f };
+    m_colPolygon = COL_POLYGON_INITIAL;
 
     // デバイスの取得
     LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
@@ -325,10 +333,10 @@ void CBlur::OverlapLastTexture(void)
     m_pVtxBuffMT->Lock(0, 0, (void**)&pVtx, 0);
 
     // 頂点座標の設定
-    pVtx[0].pos = D3DXVECTOR3(m_fDiffPolygon, m_fDiffPolygon, 0.0f);
-    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fDiffPolygon, m_fDiffPolygon, 0.0f);
-    pVtx[2].pos = D3DXVECTOR3(m_fDiffPolygon, SCREEN_HEIGHT - m_fDiffPolygon, 0.0f);
-    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fDiffPolygon, SCREEN_HEIGHT - m_fDiffPolygon, 0.0f);
+    pVtx[0].pos = D3DXVECTOR3(m_fAddSizePolygon, m_fAddSizePolygon, 0.0f);
+    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fAddSizePolygon, m_fAddSizePolygon, 0.0f);
+    pVtx[2].pos = D3DXVECTOR3(m_fAddSizePolygon, SCREEN_HEIGHT - m_fAddSizePolygon, 0.0f);
+    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fAddSizePolygon, SCREEN_HEIGHT - m_fAddSizePolygon, 0.0f);
 
     // 頂点カラーの設定
     pVtx[0].col = m_colPolygon;

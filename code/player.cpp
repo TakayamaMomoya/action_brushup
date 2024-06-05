@@ -41,6 +41,7 @@
 #include "timer.h"
 #include "cameraBehavior.h"
 #include "slow.h"
+#include "blur.h"
 
 //*****************************************************
 // ’è”’è‹`
