@@ -10,11 +10,19 @@
 //*****************************************************
 #include "blur.h"
 #include "renderer.h"
+#include "manager.h"
+#include "camera.h"
+
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+CBlur *CBlur::m_pBlur = nullptr;    // 自身のポインタ
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CBlur::CBlur() : m_colPolygon{}, m_apRenderMT{}, m_apTextureMT{}, m_viewpotrMT(), m_pZBuffMT(nullptr), m_pVtxBuffMT(nullptr), m_fDiffPolygon(0.0f), m_fAlpha(0.0f)
+CBlur::CBlur() : m_colPolygon{}, m_apRenderMT{}, m_apTextureMT{}, m_viewpotrMT(), m_pZBuffMT(nullptr), m_pVtxBuffMT(nullptr), m_fDiffPolygon(0.0f), m_fAlpha(0.0f),
+                    m_pRenderDef(nullptr), m_pZBuffDef(nullptr),m_viewportDef(),m_mtxProjDef(),m_mtxViewDef()
 {
 
 }
@@ -28,10 +36,30 @@ CBlur::~CBlur()
 }
 
 //=====================================================
+// 生成処理
+//=====================================================
+CBlur *CBlur::Create(void)
+{
+    if (m_pBlur == nullptr)
+    {
+        m_pBlur = new CBlur;
+
+        if (m_pBlur != nullptr)
+        {
+            m_pBlur->Init();
+        }
+    }
+
+    return m_pBlur;
+}
+
+//=====================================================
 // 初期化
 //=====================================================
 void CBlur::Init(void)
 {
+    m_colPolygon = { 1.0f,1.0f,1.0f,0.6f };
+
     // デバイスの取得
     LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
 
@@ -45,10 +73,10 @@ void CBlur::Init(void)
             D3DFMT_X8R8G8B8,
             D3DPOOL_DEFAULT,
             &m_apTextureMT[i],
-            NULL)))
+            nullptr)))
         {
             // ターゲットレンダリング用インターフェイス生成
-            if (FAILED(m_apTextureMT[0]->GetSurfaceLevel(0, &m_apRenderMT[i])))
+            if (FAILED(m_apTextureMT[i]->GetSurfaceLevel(0, &m_apRenderMT[i])))
             {
                 assert(("ターゲットレンダリング用インターフェース生成に失敗", false));
             }
@@ -67,7 +95,7 @@ void CBlur::Init(void)
         0,
         TRUE,
         &m_pZBuffMT,
-        NULL)))
+        nullptr)))
     {
         assert(("ターゲットレンダリング用Zバッファ生成に失敗", false));
     }
@@ -78,16 +106,18 @@ void CBlur::Init(void)
     pDevice->GetRenderTarget(0, &pRenderDef);
     pDevice->GetDepthStencilSurface(&pZBuffDef);
 
-    for (int i = 0; i < 2; i++)
+    // Zバッファの設定
+    pDevice->SetDepthStencilSurface(m_pZBuffMT);
+
+    for (int i = 0; i < Blur::NUM_RENDER; i++)
     {
-        // レンダリングターゲットとZバッファを設定
+        // レンダリングターゲットを設定
         pDevice->SetRenderTarget(0, m_apRenderMT[i]);
-        pDevice->SetDepthStencilSurface(m_pZBuffMT);
 
         // クリアする
         pDevice->Clear(0, nullptr,
             (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-            D3DCOLOR_RGBA(255, 0, 0, 0), 1.0f, 0);
+            D3DCOLOR_RGBA(255, 0, 255, 255), 1.0f, 0);
     }
 
     // レンダリングターゲットとZバッファを元に戻す
@@ -104,6 +134,53 @@ void CBlur::Init(void)
 
     // ポリゴンの生成
     CreatePolygon();
+}
+
+//=====================================================
+// 終了
+//=====================================================
+void CBlur::Uninit(void)
+{
+    m_pBlur = nullptr;
+
+    for (int i = 0; i < Blur::NUM_RENDER; i++)
+    {
+        if (m_apRenderMT[i] != nullptr)
+        {
+            m_apRenderMT[i]->Release();
+            m_apRenderMT[i] = nullptr;
+        }
+
+        if (m_apTextureMT[i] != nullptr)
+        {
+            m_apTextureMT[i]->Release();
+            m_apTextureMT[i] = nullptr;
+        }
+    }
+
+    if (m_pZBuffMT != nullptr)
+    {
+        m_pZBuffMT->Release();
+        m_pZBuffMT = nullptr;
+    }
+
+    if (m_pVtxBuffMT != nullptr)
+    {
+        m_pVtxBuffMT->Release();
+        m_pVtxBuffMT = nullptr;
+    }
+
+    if (m_pRenderDef != nullptr)
+    {
+        m_pRenderDef->Release();
+        m_pRenderDef = nullptr;
+    }
+
+    if (m_pZBuffDef != nullptr)
+    {
+        m_pZBuffDef->Release();
+        m_pZBuffDef = nullptr;
+    }
 }
 
 //=====================================================
@@ -125,7 +202,182 @@ void CBlur::CreatePolygon(void)
         assert(("頂点バッファの生成に失敗", false));
     }
 
-    //頂点情報のポインタ
+    // 頂点情報のポインタ
+    VERTEX_2D *pVtx;
+    
+    // 頂点バッファをロックし、頂点情報へのポインタを取得
+    m_pVtxBuffMT->Lock(0, 0, (void**)&pVtx, 0);
+
+    // 頂点座標の設定
+    pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
+    pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
+    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+
+    // 法線ベクトルの設定
+    pVtx[0].rhw = 1.0f;
+    pVtx[1].rhw = 1.0f;
+    pVtx[2].rhw = 1.0f;
+    pVtx[3].rhw = 1.0f;
+
+    // 頂点カラーの設定
+    pVtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+    pVtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+    pVtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+    pVtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
+
+    // テクスチャ座標
+    pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+    pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+    pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+    pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+    // 頂点バッファをアンロック
+    m_pVtxBuffMT->Unlock();
+}
+
+//=====================================================
+// 描画に必要な情報の保存
+//=====================================================
+void CBlur::SaveRenderInfo(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    // もろもろ保存
+    pDevice->GetRenderTarget(0, &m_pRenderDef);
+    pDevice->GetDepthStencilSurface(&m_pZBuffDef);
+    pDevice->GetViewport(&m_viewportDef);
+    pDevice->GetTransform(D3DTS_VIEW, &m_mtxViewDef);
+    pDevice->GetTransform(D3DTS_PROJECTION, &m_mtxProjDef);
+}
+
+//=====================================================
+// レンダーターゲットの変更
+//=====================================================
+void CBlur::ChangeTarget(void)
+{
+    CCamera *pCamera = CManager::GetCamera();
+
+    if (pCamera == nullptr)
+        return;
+
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    D3DXMATRIX mtxView, mtxProj;
+    float fAspect;
+
+    // レンダリングターゲットとZバッファを設定
+    pDevice->SetRenderTarget(0, m_apRenderMT[0]);
+    pDevice->SetDepthStencilSurface(m_pZBuffMT);
+
+    // テクスチャ用ビューポートに設定
+    pDevice->SetViewport(&m_viewpotrMT);
+
+    //プロジェクションマトリックス初期化
+    D3DXMatrixIdentity(&mtxProj);
+
+    fAspect = (float)m_viewpotrMT.Width / (float)m_viewpotrMT.Height;
+
+    //プロジェクションマトリックス作成
+    D3DXMatrixPerspectiveFovLH(&mtxProj,
+        D3DXToRadian(45.0f),
+        fAspect,
+        0.0f,
+        1.0f);
+
+    //マトリックス設定
+    pDevice->SetTransform(D3DTS_PROJECTION, &mtxProj);
+
+    //ビューマトリックス初期化
+    D3DXMatrixIdentity(&mtxView);
+
+    CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+    //ビューマトリックス作成
+    D3DXMatrixLookAtLH(&mtxView,
+        &pInfoCamera->posV,
+        &pInfoCamera->posR,
+        &pInfoCamera->vecU);
+
+    //ビューマトリックス設定
+    pDevice->SetTransform(D3DTS_VIEW, &mtxView);
+
+    // クリアする
+    pDevice->Clear(0, nullptr,
+        (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+        D3DCOLOR_RGBA(255, 255, 0, 255), 1.0f, 0);
+}
+
+//=====================================================
+// 前回のテクスチャを重ねる
+//=====================================================
+void CBlur::OverlapLastTexture(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    // 頂点情報のポインタ
+    VERTEX_2D *pVtx;
+
+    // 頂点バッファをロックし、頂点情報へのポインタを取得
+    m_pVtxBuffMT->Lock(0, 0, (void**)&pVtx, 0);
+
+    // 頂点座標の設定
+    pVtx[0].pos = D3DXVECTOR3(m_fDiffPolygon, m_fDiffPolygon, 0.0f);
+    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fDiffPolygon, m_fDiffPolygon, 0.0f);
+    pVtx[2].pos = D3DXVECTOR3(m_fDiffPolygon, SCREEN_HEIGHT - m_fDiffPolygon, 0.0f);
+    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH - m_fDiffPolygon, SCREEN_HEIGHT - m_fDiffPolygon, 0.0f);
+
+    // 頂点カラーの設定
+    pVtx[0].col = m_colPolygon;
+    pVtx[1].col = m_colPolygon;
+    pVtx[2].col = m_colPolygon;
+    pVtx[3].col = m_colPolygon;
+
+    // 頂点バッファをアンロック
+    m_pVtxBuffMT->Unlock();
+
+    // 頂点バッファをデータストリームに設定
+    pDevice->SetStreamSource(0, m_pVtxBuffMT, 0, sizeof(VERTEX_2D));
+
+    // 頂点フォーマットの設定
+    pDevice->SetFVF(FVF_VERTEX_2D);
+
+    LPDIRECT3DTEXTURE9 pTexture = m_apTextureMT[1];
+
+    // テクスチャ設定
+    pDevice->SetTexture(0, pTexture);
+
+    // 描画
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+//=====================================================
+// レンダーターゲットの復元
+//=====================================================
+void CBlur::RestoreTarget(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    pDevice->SetRenderTarget(0, m_pRenderDef);
+    pDevice->SetDepthStencilSurface(m_pZBuffDef);
+    pDevice->SetViewport(&m_viewportDef);
+    pDevice->SetTransform(D3DTS_VIEW, &m_mtxViewDef);
+    pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjDef);
+}
+
+//=====================================================
+// バックバッファへの描画
+//=====================================================
+void CBlur::DrawBuckBuffer(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    // 頂点情報のポインタ
     VERTEX_2D *pVtx;
 
     //頂点バッファをロックし、頂点情報へのポインタを取得
@@ -137,24 +389,44 @@ void CBlur::CreatePolygon(void)
     pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
     pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 
-    //法線ベクトルの設定
-    pVtx[0].rhw = 1.0f;
-    pVtx[1].rhw = 1.0f;
-    pVtx[2].rhw = 1.0f;
-    pVtx[3].rhw = 1.0f;
-
     //頂点カラーの設定
-    pVtx[0].col = m_colPolygon;
-    pVtx[1].col = m_colPolygon;
-    pVtx[2].col = m_colPolygon;
-    pVtx[3].col = m_colPolygon;
-
-    //テクスチャ座標
-    pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-    pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-    pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-    pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+    pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
     //頂点バッファをアンロック
     m_pVtxBuffMT->Unlock();
+
+    // 頂点バッファをデータストリームに設定
+    pDevice->SetStreamSource(0, m_pVtxBuffMT, 0, sizeof(VERTEX_2D));
+
+    // 頂点フォーマットの設定
+    pDevice->SetFVF(FVF_VERTEX_2D);
+
+    LPDIRECT3DTEXTURE9 pTexture = m_apTextureMT[0];
+
+    // テクスチャ設定
+    pDevice->SetTexture(0, pTexture);
+
+    // 描画
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+//=====================================================
+// バッファの入れ替え
+//=====================================================
+void CBlur::SwapBuffer(void)
+{
+    // 入れ替え用のバッファ
+    LPDIRECT3DSURFACE9 pRednerWk;
+    LPDIRECT3DTEXTURE9 pTextureWk;
+
+    pRednerWk = m_apRenderMT[0];
+    m_apRenderMT[0] = m_apRenderMT[1];
+    m_apRenderMT[1] = pRednerWk;
+
+    pTextureWk = m_apTextureMT[0];
+    m_apTextureMT[0] = m_apTextureMT[1];
+    m_apTextureMT[1] = pTextureWk;
 }

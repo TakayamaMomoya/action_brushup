@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include "collision.h"
 #include "fade.h"
+#include "blur.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -150,8 +151,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 		D3DTSS_ALPHAARG2,
 		D3DTA_CURRENT);
 
-	// オブジェクトのリリース処理
-	CObject::ReleaseAll();
+	// ブラーの生成
+	CBlur::Create();
 
 	return S_OK;
 }
@@ -161,6 +162,15 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 //=====================================================
 void CRenderer::Uninit(void)
 {
+	// ブラーの破棄
+	CBlur * pBlur = CBlur::GetInstance();
+
+	if (pBlur != nullptr)
+	{
+		pBlur->Uninit();
+		delete pBlur;
+	}
+
 	// オブジェクトのリリース
 	CObject::ReleaseAll();
 
@@ -228,6 +238,15 @@ void CRenderer::Draw(void)
 	{// 描画処理
 		// FPS表示
 		DrawFPS();
+
+		// ブラーの取得
+		CBlur * pBlur = CBlur::GetInstance();
+
+		if (pBlur != nullptr)
+		{
+			pBlur->SaveRenderInfo();	// 描画の情報を保存
+			pBlur->ChangeTarget();	// レンダーターゲットの変更
+		}
 		
 		// オブジェクトの描画
 		CObject::DrawAll();
@@ -235,6 +254,14 @@ void CRenderer::Draw(void)
 		if (pFade != nullptr)
 		{// フェード描画
 			pFade->Draw();
+		}
+
+		if (pBlur != nullptr)
+		{
+			pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
+			pBlur->RestoreTarget();	// レンダーターゲットの復元
+			pBlur->DrawBuckBuffer();	// バックバッファへの描画
+			pBlur->SwapBuffer();	// バッファーの入れ替え
 		}
 
 		CDebugProc::GetInstance()->Draw();
