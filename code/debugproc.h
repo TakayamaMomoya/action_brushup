@@ -1,42 +1,44 @@
 //==========================================================
 //
-//デバッグ表示処理 [debugproc.h]
-//Author Ibuki Okusada
+// デバッグ表示処理 [debugproc.h]
+// Author:髙山桃也
 //
 //==========================================================
-#ifndef _DEBUGPROC_H_		//このマクロが定義されていない場合
+#ifndef _DEBUGPROC_H_	// 二重インクルード防止
 #define _DEBUGPROC_H_
 
-#include "main.h"
+//**********************************************************
+// マクロ定義定義
+//**********************************************************
+#define MAX_DEBUGSTRING (2048)	// デバッグの最大文字数
 
 //**********************************************************
-//マクロ定義
-//**********************************************************
-#define MAX_DEBUGSTRING	(2048)	//デバッグ表示の最大文字数
-
-//**********************************************************
-//クラスの定義
+// クラスの定義
 //**********************************************************
 class CDebugProc
 {
-public:	// 誰でもアクセス可能
-
+public:
 	CDebugProc();	// コンストラクタ
 	~CDebugProc();	// デストラクタ
 
+	// メンバ関数
+	void Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+	void Print(const char *fmt, ...);	// 文字の代入
+
+	// 静的メンバ関数
 	static CDebugProc *Create(void);
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void Print(const char *fmt, ...);
 	static CDebugProc *GetInstance(void) { return m_pDebugProc; }
 
-private:	// 自分だけがアクセス可能
-	static LPD3DXFONT m_pFont;	//フォントへのポインタ
-	char m_aStr[MAX_DEBUGSTRING];	//デバッグ表示用の文字列
-	bool m_bDisp;		//デバッグ表示のON/OFF
+private:
+	// メンバ変数
+	char m_aStr[MAX_DEBUGSTRING];	// デバッグ表示用の文字列
+	bool m_bDisp;		// デバッグ表示のON/OFF
 
+	// 静的メンバ変数
+	static LPD3DXFONT m_pFont;	// フォントへのポインタ
 	static CDebugProc *m_pDebugProc;	// 自身のポインタ
 };
 

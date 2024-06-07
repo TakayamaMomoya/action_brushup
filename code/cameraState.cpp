@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// カメラのビヘイビア[cameraBehavior.cpp]
+// カメラのステイト[cameraState.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -8,7 +8,7 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "cameraBehavior.h"
+#include "cameraState.h"
 #include "camera.h"
 #include "player.h"
 #include "motion.h"
@@ -32,7 +32,7 @@ const float DIST_MIN_BOSS = 85.0f;	// ボス戦のときの最小距離
 //====================================================
 // コンストラクタ
 //====================================================
-CCameraBehavior::CCameraBehavior()
+CCameraState::CCameraState()
 {
 
 }
@@ -40,7 +40,7 @@ CCameraBehavior::CCameraBehavior()
 //====================================================
 // デストラクタ
 //====================================================
-CCameraBehavior::~CCameraBehavior()
+CCameraState::~CCameraState()
 {
 
 }
@@ -52,7 +52,7 @@ CCameraBehavior::~CCameraBehavior()
 //====================================================
 // コンストラクタ
 //====================================================
-CCameraBehaviorFollowPlayer::CCameraBehaviorFollowPlayer()
+CCameraStateFollowPlayer::CCameraStateFollowPlayer()
 {
 
 }
@@ -60,7 +60,7 @@ CCameraBehaviorFollowPlayer::CCameraBehaviorFollowPlayer()
 //====================================================
 // デストラクタ
 //====================================================
-CCameraBehaviorFollowPlayer::~CCameraBehaviorFollowPlayer()
+CCameraStateFollowPlayer::~CCameraStateFollowPlayer()
 {
 
 }
@@ -68,7 +68,7 @@ CCameraBehaviorFollowPlayer::~CCameraBehaviorFollowPlayer()
 //====================================================
 // 初期化
 //====================================================
-void CCameraBehaviorFollowPlayer::Init(CCamera *pCamera)
+void CCameraStateFollowPlayer::Init(CCamera *pCamera)
 {
 	pCamera->SetDist(DIST_FOLLOW_DEFAULT);
 }
@@ -76,7 +76,7 @@ void CCameraBehaviorFollowPlayer::Init(CCamera *pCamera)
 //====================================================
 // 更新処理
 //====================================================
-void CCameraBehaviorFollowPlayer::Update(CCamera *pCamera)
+void CCameraStateFollowPlayer::Update(CCamera *pCamera)
 {
 	// カメラの振動
 	pCamera->Quake();
@@ -89,7 +89,7 @@ void CCameraBehaviorFollowPlayer::Update(CCamera *pCamera)
 		return;
 	}
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
 	D3DXVECTOR3 move = pPlayer->GetMove();
 
@@ -118,7 +118,7 @@ void CCameraBehaviorFollowPlayer::Update(CCamera *pCamera)
 //====================================================
 // コンストラクタ
 //====================================================
-CCameraBehaviorApperPlayer::CCameraBehaviorApperPlayer()
+CCameraStateApperPlayer::CCameraStateApperPlayer()
 {
 
 }
@@ -126,7 +126,7 @@ CCameraBehaviorApperPlayer::CCameraBehaviorApperPlayer()
 //====================================================
 // デストラクタ
 //====================================================
-CCameraBehaviorApperPlayer::~CCameraBehaviorApperPlayer()
+CCameraStateApperPlayer::~CCameraStateApperPlayer()
 {
 
 }
@@ -134,7 +134,7 @@ CCameraBehaviorApperPlayer::~CCameraBehaviorApperPlayer()
 //====================================================
 // 初期化
 //====================================================
-void CCameraBehaviorApperPlayer::Init(CCamera *pCamera)
+void CCameraStateApperPlayer::Init(CCamera *pCamera)
 {
 	pCamera->SetDist(DIST_APPER_PLAYER);
 }
@@ -142,7 +142,7 @@ void CCameraBehaviorApperPlayer::Init(CCamera *pCamera)
 //====================================================
 // 更新処理
 //====================================================
-void CCameraBehaviorApperPlayer::Update(CCamera *pCamera)
+void CCameraStateApperPlayer::Update(CCamera *pCamera)
 {
 	// プレイヤー取得
 	CPlayer *pPlayer = CPlayer::GetInstance();
@@ -152,7 +152,7 @@ void CCameraBehaviorApperPlayer::Update(CCamera *pCamera)
 		return;
 	}
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
 
 	pInfoCamera->posR = pos;
@@ -172,7 +172,7 @@ void CCameraBehaviorApperPlayer::Update(CCamera *pCamera)
 //====================================================
 // コンストラクタ
 //====================================================
-CCameraBehaviorBossBattle::CCameraBehaviorBossBattle()
+CCameraStateBossBattle::CCameraStateBossBattle()
 {
 
 }
@@ -180,7 +180,7 @@ CCameraBehaviorBossBattle::CCameraBehaviorBossBattle()
 //====================================================
 // デストラクタ
 //====================================================
-CCameraBehaviorBossBattle::~CCameraBehaviorBossBattle()
+CCameraStateBossBattle::~CCameraStateBossBattle()
 {
 
 }
@@ -188,7 +188,7 @@ CCameraBehaviorBossBattle::~CCameraBehaviorBossBattle()
 //====================================================
 // 初期化
 //====================================================
-void CCameraBehaviorBossBattle::Init(CCamera *pCamera)
+void CCameraStateBossBattle::Init(CCamera *pCamera)
 {
 
 }
@@ -196,7 +196,7 @@ void CCameraBehaviorBossBattle::Init(CCamera *pCamera)
 //====================================================
 // 更新処理
 //====================================================
-void CCameraBehaviorBossBattle::Update(CCamera *pCamera)
+void CCameraStateBossBattle::Update(CCamera *pCamera)
 {
 	CPlayer *pPlayer = CPlayer::GetInstance();
 	CEnemyBoss *pBoss = CEnemyBoss::GetInstance();
@@ -218,7 +218,7 @@ void CCameraBehaviorBossBattle::Update(CCamera *pCamera)
 	D3DXVECTOR3 posMid = posPlayer + vecDiff * 0.5f;
 
 	// 注視点を中間位置に設定
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 	
 	pInfoCamera->posRDest = posMid;
 

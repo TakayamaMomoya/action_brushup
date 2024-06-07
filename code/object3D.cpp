@@ -198,7 +198,7 @@ void CObject3D::SetVtxStretchBillboard(void)
 		return;
 	}
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 
 	//頂点情報のポインタ
 	VERTEX_3D *pVtx;

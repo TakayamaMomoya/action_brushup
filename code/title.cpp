@@ -106,7 +106,7 @@ HRESULT CTitle::Init(void)
 
 	if (pCamera != nullptr)
 	{
-		pCamera->SetTitle();
+
 	}
 
 	CSound *pSound = CSound::GetInstance();

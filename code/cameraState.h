@@ -1,12 +1,12 @@
 //*****************************************************
 //
-// カメラのビヘイビア[cameraBehavior.h]
+// カメラのステイト[cameraState.h]
 // Author:髙山桃也
 //
 //*****************************************************
 
-#ifndef _CAMERABEHAVIOR_H_
-#define _CAMERABEHAVIOR_H_
+#ifndef _CAMERASTATE_H_
+#define _CAMERASTATE_H_
 
 //****************************************************
 // 前方宣言
@@ -16,11 +16,11 @@ class CCamera;
 //****************************************************
 // クラスの定義
 //****************************************************
-class CCameraBehavior
+class CCameraState
 {// 基底クラス
 public:
-	CCameraBehavior();
-	virtual ~CCameraBehavior();
+	CCameraState();
+	virtual ~CCameraState();
 
 	virtual void Init(CCamera *pCamera) = 0;
 	virtual void Update(CCamera *pCamera) = 0;
@@ -28,31 +28,31 @@ public:
 private:
 };
 
-class CCameraBehaviorFollowPlayer : public CCameraBehavior
+class CCameraStateFollowPlayer : public CCameraState
 {// プレイヤーの追従
 public:
-	CCameraBehaviorFollowPlayer();
-	~CCameraBehaviorFollowPlayer();
+	CCameraStateFollowPlayer();
+	~CCameraStateFollowPlayer();
 
 	void Init(CCamera *pCamera) override;
 	void Update(CCamera *pCamera) override;
 };
 
-class CCameraBehaviorApperPlayer : public CCameraBehavior
+class CCameraStateApperPlayer : public CCameraState
 {// プレイヤーの登場
 public:
-	CCameraBehaviorApperPlayer();
-	~CCameraBehaviorApperPlayer();
+	CCameraStateApperPlayer();
+	~CCameraStateApperPlayer();
 
 	void Init(CCamera *pCamera) override;
 	void Update(CCamera *pCamera) override;
 };
 
-class CCameraBehaviorBossBattle : public CCameraBehavior
+class CCameraStateBossBattle : public CCameraState
 {// ボス戦での動き
 public:
-	CCameraBehaviorBossBattle();
-	~CCameraBehaviorBossBattle();
+	CCameraStateBossBattle();
+	~CCameraStateBossBattle();
 
 	void Init(CCamera *pCamera) override;
 	void Update(CCamera *pCamera) override;

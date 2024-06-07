@@ -191,7 +191,7 @@ void CMotion::Update(void)
 		m_apParts[nCntParts]->m_pParts->SetRot(rot);
 	}
 
-	float fScale = Slow::GetScale();
+	float fScale = Slow::GetTimeScale();
 
 	m_fCounterMotion += fScale;
 

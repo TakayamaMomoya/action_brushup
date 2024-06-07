@@ -301,7 +301,7 @@ void CBlur::ChangeTarget(void)
     //ビューマトリックス初期化
     D3DXMatrixIdentity(&mtxView);
 
-    CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+    CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 
     //ビューマトリックス作成
     D3DXMatrixLookAtLH(&mtxView,

@@ -4,29 +4,19 @@
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _MANAGER_H_
+#ifndef _MANAGER_H_	// 二重インクルード防止
 #define _MANAGER_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
 #include "scene.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CRenderer;
-class CInputKeyboard;
-class CInputMouse;
-class CDebugProc;
-class CSound;
 class CCamera;
 class CLight;
-class CTexture;
-class Cuniversal;
-class CFade;
-class CObjectManager;
 
 //*****************************************************
 // クラスの定義
@@ -37,20 +27,24 @@ public:
 	CManager();	// コンストラクタ
 	~CManager();	// デストラクタ
 
+	// メンバ変数
 	HRESULT Init(HINSTANCE hInstance,HWND hWnd,BOOL bWindow);
 	void Uninit(void);
 	void Update();
 	void Draw();
-	static CCamera *GetCamera(void) { return m_pCamera; }
-	static CLight *GetLight(void) { return m_pLight; }
-	static void SetMode(CScene::MODE mode);
-	static CScene::MODE GetMode(void) { return m_mode; }
-	static void SetScore(int nScore) { m_nScore = nScore; }
-	static int GetScore(void) { return m_nScore; }
-	static void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }
-	static float GetDeltaTime(void) { return m_fDeltaTime; }
+
+	// 静的メンバ関数
+	static CCamera *GetCamera(void) { return m_pCamera; }	// カメラ取得
+	static CLight *GetLight(void) { return m_pLight; }	// ライト取得
+	static void SetMode(CScene::MODE mode);	// モードの設定
+	static CScene::MODE GetMode(void) { return m_mode; }	// モードの取得
+	static void SetScore(int nScore) { m_nScore = nScore; }	// スコアの設定
+	static int GetScore(void) { return m_nScore; }	// スコアの取得
+	static void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }	// デルタタイムの設定
+	static float GetDeltaTime(void) { return m_fDeltaTime; }	// デルタタイムの取得
 
 private:
+	// 静的メンバ変数
 	static CCamera *m_pCamera;	// カメラのポインタ
 	static CLight *m_pLight;	// ライトのポインタ
 	static CScene *m_pScene;	// 現在のシーン

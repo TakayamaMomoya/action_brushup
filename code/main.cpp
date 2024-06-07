@@ -17,8 +17,8 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define CLASS_NAME				"WindowClass"					// ウィンドウクラスの名前
-#define WINDOW_NAME				"RAYLEIGH"				// ウィンドウの名前(キャプション)
+#define CLASS_NAME	"WindowClass"	// ウィンドウクラスの名前
+#define WINDOW_NAME	"RAYLEIGH"	// ウィンドウの名前(キャプション)
 
 //*****************************************************
 // プロトタイプ宣言
@@ -35,21 +35,21 @@ int g_nCountFPS;	// FPSカウンター
 //=====================================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine, int nCmdShow)
 {
-	//乱数シード値の設定
+	// 乱数シード値の設定
 	srand((unsigned int)time(0));
 
 	// マネージャーの宣言
 	CManager *pManager = nullptr;
 	
 	// 変数宣言
-	DWORD dwCurrentTime;				//現在時刻
-	DWORD dwExecLastTime;				//最後に処理した時刻
-	DWORD dwFrameCount;					//フレームカウント
-	DWORD dwFPSLastTime;				//最後にFPSを計測した時間
+	DWORD dwCurrentTime;				// 現在時刻
+	DWORD dwExecLastTime;				// 最後に処理した時刻
+	DWORD dwFrameCount;					// フレームカウント
+	DWORD dwFPSLastTime;				// 最後にFPSを計測した時間
 
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	//フォントポインタ・FPSカウンタの初期化
+	// フォントポインタ・FPSカウンタの初期化
 	dwFrameCount = 0;
 	dwFPSLastTime = timeGetTime();
 
@@ -101,7 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		pManager->Init(hInstance, hWnd, TRUE);
 	}
 
-	//分解能を設定
+	// 分解能を設定
 	timeBeginPeriod(1);
 	dwCurrentTime = 0;
 	dwExecLastTime = timeGetTime();
@@ -130,25 +130,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		{// DeirectXの処理
 			
 			if ((dwCurrentTime - dwFPSLastTime) >= 500)
-			{//0.5秒経過
-				//FPS計測
+			{// 0.5秒経過
+				// FPS計測
 				g_nCountFPS = (dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime);
 
-				//FPSを測定した時間を保存する
+				// FPSを測定した時間を保存する
 				dwFPSLastTime = dwCurrentTime;
 
-				//フレームカウントのクリア
+				// フレームカウントのクリア
 				dwFrameCount = 0;
 			}
 
-			//現在時刻の取得
+			// 現在時刻の取得
 			dwCurrentTime = timeGetTime();
 
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
-			{//60分の1秒経過
+			{// 60分の1秒経過
 				float fDeltaTime = ((float)dwCurrentTime - (float)dwExecLastTime) * 0.001f;
 
-				//処理開始の時刻を計算
+				// 処理開始の時刻を計算
 				dwExecLastTime = dwCurrentTime;
 
 				if (pManager != nullptr)
@@ -163,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 					pManager->Draw();
 				}
 
-				//FPSカウンタ経過
+				// FPSカウンタ経過
 				dwFrameCount++;
 			}
 		}

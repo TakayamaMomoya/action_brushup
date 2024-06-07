@@ -282,7 +282,7 @@ void CEnemy::ManageState(void)
 {
 	D3DXCOLOR col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
-	float fAddTime = CManager::GetDeltaTime() * Slow::GetScale();
+	float fAddTime = CManager::GetDeltaTime() * Slow::GetTimeScale();
 
 	switch (m_state)
 	{

@@ -297,7 +297,7 @@ void CSound::Update(void)
 //=============================================================================
 // セグメント再生(再生中なら停止)
 //=============================================================================
-HRESULT CSound::Play(LABEL label)
+HRESULT CSound::Play(E_LABEL label)
 {
 	XAUDIO2_VOICE_STATE xa2state;
 	XAUDIO2_BUFFER buffer;
@@ -335,7 +335,7 @@ HRESULT CSound::Play(LABEL label)
 //=============================================================================
 // セグメント停止(ラベル指定)
 //=============================================================================
-void CSound::Stop(LABEL label)
+void CSound::Stop(E_LABEL label)
 {
 	XAUDIO2_VOICE_STATE xa2state;
 
@@ -458,7 +458,7 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, D
 //=============================================================================
 // 音量の調整
 //=============================================================================
-void CSound::SetVolume(LABEL label, float fVolume)
+void CSound::SetVolume(E_LABEL label, float fVolume)
 {
 	//音量設定
 	m_apSourceVoice[label]->SetVolume(fVolume, 0);
@@ -467,7 +467,7 @@ void CSound::SetVolume(LABEL label, float fVolume)
 //=============================================================================
 // サウンドのフェード
 //=============================================================================
-void CSound::SetFade(LABEL LabelNow, LABEL LabelNext, float fSpeed)
+void CSound::SetFade(E_LABEL LabelNow, E_LABEL LabelNext, float fSpeed)
 {
 	m_fadeSound = FADESTATE_OUT;
 

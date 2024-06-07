@@ -121,16 +121,9 @@
       <Filter>VFX</Filter>
     </ClCompile>
     <ClCompile Include="code\bullet.cpp" />
-    <ClCompile Include="code\cameraBehavior.cpp" />
+    <ClCompile Include="code\cameraState.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\edit.cpp" />
-    <ClCompile Include="code\enemy.cpp" />
-    <ClCompile Include="code\enemyboss.cpp" />
-    <ClCompile Include="code\enemydrone.cpp" />
-    <ClCompile Include="code\enemyManager.cpp" />
-    <ClCompile Include="code\enemyNormal.cpp" />
-    <ClCompile Include="code\enemyshot.cpp" />
-    <ClCompile Include="code\enemyTurret.cpp" />
     <ClCompile Include="code\frame.cpp" />
     <ClCompile Include="code\life.cpp" />
     <ClCompile Include="code\missile.cpp" />
@@ -140,6 +133,27 @@
     <ClCompile Include="code\shockwave.cpp" />
     <ClCompile Include="code\precompile.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemydrone.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemyManager.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemyNormal.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemyshot.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemyTurret.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\enemyboss.cpp">
+      <Filter>enemy\boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,16 +277,9 @@
       <Filter>VFX</Filter>
     </ClInclude>
     <ClInclude Include="code\bullet.h" />
-    <ClInclude Include="code\cameraBehavior.h" />
+    <ClInclude Include="code\cameraState.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\edit.h" />
-    <ClInclude Include="code\enemy.h" />
-    <ClInclude Include="code\enemyboss.h" />
-    <ClInclude Include="code\enemydrone.h" />
-    <ClInclude Include="code\enemyManager.h" />
-    <ClInclude Include="code\enemyNormal.h" />
-    <ClInclude Include="code\enemyshot.h" />
-    <ClInclude Include="code\enemyTurret.h" />
     <ClInclude Include="code\frame.h" />
     <ClInclude Include="code\life.h" />
     <ClInclude Include="code\missile.h" />
@@ -282,6 +289,27 @@
     <ClInclude Include="code\shockwave.h" />
     <ClInclude Include="code\precompile.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemydrone.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyManager.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyNormal.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyshot.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyTurret.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyboss.h">
+      <Filter>enemy\boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

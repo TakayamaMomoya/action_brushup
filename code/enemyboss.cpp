@@ -26,7 +26,7 @@
 #include "particle.h"
 #include "slow.h"
 #include "camera.h"
-#include "cameraBehavior.h"
+#include "cameraState.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -188,7 +188,7 @@ void CEnemyBoss::ManageState(void)
 	CEnemy::STATE state = CEnemy::GetState();
 
 	float fTimer = GetCntState();
-	float fAddTime = CManager::GetDeltaTime() * Slow::GetScale();
+	float fAddTime = CManager::GetDeltaTime() * Slow::GetTimeScale();
 
 	switch (state)
 	{
@@ -265,7 +265,7 @@ void CEnemyBoss::UpdateApper(void)
 
 		if (pCamera != nullptr)
 		{
-			pCamera->ChangeBehavior(new CCameraBehaviorBossBattle);
+			pCamera->ChangeBehavior(new CCameraStateBossBattle);
 		}
 	}
 }

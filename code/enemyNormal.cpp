@@ -138,7 +138,7 @@ void CEnemyNormal::Update(void)
 
 	if (state != STATE_DEATH)
 	{
-		float fScale = Slow::GetScale();
+		float fScale = Slow::GetTimeScale();
 		float DeltaTime = CManager::GetDeltaTime();
 
 		m_fCntAttack += DeltaTime * fScale;

@@ -18,7 +18,7 @@
 //*****************************************************
 namespace
 {
-
+const float DEFAULT_TIMESCALE = 1.0f;	// タイムスケールのデフォルト値
 }
 
 //*****************************************************
@@ -29,12 +29,9 @@ CSlow *CSlow::m_pSlow = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSlow::CSlow()
+CSlow::CSlow() : m_fTimeScale(0.0f), m_fTimeSlow(0.0f)
 {
-	m_pSlow = this;
 
-	m_fScale = 0.0f;
-	m_fTimeSlow = 0.0f;
 }
 
 //=====================================================
@@ -68,7 +65,7 @@ CSlow *CSlow::Create(void)
 //=====================================================
 HRESULT CSlow::Init(void)
 {
-	m_fScale = 1.0f;
+	m_fTimeScale = DEFAULT_TIMESCALE;
 
 	return S_OK;
 }
@@ -96,7 +93,7 @@ void CSlow::Update(void)
 
 		if (m_fTimeSlow <= 0.0f)
 		{
-			SetScale(1.0f);
+			SetScale(DEFAULT_TIMESCALE);
 		}
 	}
 }
@@ -106,12 +103,12 @@ void CSlow::Update(void)
 //=====================================================
 void CSlow::Draw(void)
 {
-#ifdef _DEBUG
+#ifdef _DEBUG	// デバッグ表示
 	CDebugProc *pDebugProc = CDebugProc::GetInstance();
 
 	if (pDebugProc != nullptr)
 	{
-		pDebugProc->Print("\nスロー倍率[%f]",m_fScale);
+		pDebugProc->Print("\nタイムスケール[%f]",m_fTimeScale);
 	}
 #endif
 }
@@ -123,7 +120,7 @@ void CSlow::SetScale(float fScale)
 {
 	if (fScale >= 0.0f)
 	{
-		m_fScale = fScale;
+		m_fTimeScale = fScale;
 	}
 }
 
@@ -141,9 +138,12 @@ void CSlow::SetSlowTime(float fTime, float fScale)
 
 namespace Slow
 {
-float GetScale(void)
+//=====================================================
+// タイムスケール取得（ショートカット関数）
+//=====================================================
+float GetTimeScale(void)
 {
-	float fScale = 1.0f;
+	float fScale = DEFAULT_TIMESCALE;
 
 	CSlow *pSlow = CSlow::GetInstance();
 

@@ -38,7 +38,7 @@
 #include "orbit.h"
 #include "frame.h"
 #include "timer.h"
-#include "cameraBehavior.h"
+#include "cameraState.h"
 #include "slow.h"
 #include "blur.h"
 
@@ -165,17 +165,17 @@ HRESULT CPlayer::Init(void)
 	//	{
 	//		pCamera->SetDist(100.0f);
 
-	//		pCamera->ChangeBehavior(new CCameraBehaviorApperPlayer);
+	//		pCamera->ChangeBehavior(new CCameraStateApperPlayer);
 	//	}
 	//}
 	//else
 	{
-		// カメラに追従ビヘイビアを設定
+		// カメラに追従ステイトを設定
 		CCamera *pCamera = CManager::GetCamera();
 
 		if (pCamera != nullptr)
 		{
-			pCamera->ChangeBehavior(new CCameraBehaviorFollowPlayer);
+			pCamera->ChangeBehavior(new CCameraStateFollowPlayer);
 		}
 	}
 
@@ -249,7 +249,7 @@ void CPlayer::Update(void)
 		// 目標方向を向く処理
 		RotDest();
 
-		float fScale = Slow::GetScale();
+		float fScale = Slow::GetTimeScale();
 
 		// 位置に移動量を反映
 		m_info.pos += m_info.move * fScale;
@@ -289,7 +289,7 @@ void CPlayer::Update(void)
 
 				if (pCamera != nullptr)
 				{
-					pCamera->ChangeBehavior(new CCameraBehaviorFollowPlayer);
+					pCamera->ChangeBehavior(new CCameraStateFollowPlayer);
 				}
 			}
 		}
@@ -375,7 +375,7 @@ void CPlayer::InputMove(void)
 	D3DXVECTOR3 move = { 0.0f,0.0f,0.0f }, rot = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 vecStick;
 	int nMotion = m_info.pBody->GetMotion();
-	float fScale = Slow::GetScale();
+	float fScale = Slow::GetTimeScale();
 
 	{// 攻撃中でなければ
 		if (nMotion != MOTION_PARRY ||
@@ -1015,7 +1015,7 @@ void CPlayer::Hit(float fDamage)
 		{
 			m_info.state = STATE_DAMAGE;
 
-			CManager::GetCamera()->SetQuake(0.03f, 0.03f, 10);
+			CManager::GetCamera()->SetQuake(0.03f, 10);
 
 			if (m_info.pBody != nullptr)
 			{

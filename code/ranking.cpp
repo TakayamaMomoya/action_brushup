@@ -129,7 +129,7 @@ HRESULT CRanking::Init(void)
 	if (pCamera == nullptr)
 		return E_FAIL;
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
 
 	pInfoCamera->posV = { 0.0f,HEIGHT_CYLINDER * 0.5f,0.0f };
 	pInfoCamera->posR = { 0.0f,HEIGHT_CYLINDER * 0.5f,1.0f };

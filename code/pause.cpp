@@ -307,7 +307,7 @@ void CPause::Input(void)
 	}
 	else
 	{
-		if (pFade->GetState() != CFade::FADE_NONE)
+		if (pFade->GetState() != CFade::STATE_NONE)
 		{
 			return;
 		}

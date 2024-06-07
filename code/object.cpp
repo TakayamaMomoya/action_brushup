@@ -24,24 +24,12 @@ int CObject::m_nNumAll = 0;	// 総数
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CObject::CObject(int nPriority)
+CObject::CObject(int nPriority) : m_pPrev(nullptr),m_pNext(nullptr),m_bDeath(false),m_bWire(false),m_bZtest(false),
+									m_bLighting(true),m_bAdd(false),m_bFog(true),m_bCull(true),m_type(E_TYPE::TYPE_NONE),m_nID(-1), m_dwAlpha(0)
 {
 	m_nNumAll++;
 
-	// 値のクリア
-	m_pPrev = nullptr;
-	m_pNext = nullptr;
-	m_bDeath = false;
-	m_bWire = false;
-	m_bZtest = false;
-	m_bLighting = true;
-	m_bAdd = false;
-	m_bFog = true;
-	m_bCull = true;
-	m_type = TYPE::TYPE_NONE;
-	m_nID = -1;
-	m_dAlpha = 0;
-
+	// プライオリティ設定
 	m_nPriority = nPriority;
 
 	if (m_apTop[nPriority] == nullptr)
@@ -306,7 +294,7 @@ void CObject::DrawAll(void)
 			//アルファテストの有効化
 			pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 			pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-			pDevice->SetRenderState(D3DRS_ALPHAREF, pObject->m_dAlpha);
+			pDevice->SetRenderState(D3DRS_ALPHAREF, pObject->m_dwAlpha);
 
 			pDevice->SetRenderState(D3DRS_FOGENABLE, pObject->m_bFog && CRenderer::GetInstance()->IsFog());
 
@@ -378,7 +366,7 @@ void CObject::DrawAll(void)
 //=====================================================
 //タイプ設定処理
 //=====================================================
-void CObject::SetType(TYPE type)
+void CObject::SetType(E_TYPE type)
 {
 	m_type = type;
 }

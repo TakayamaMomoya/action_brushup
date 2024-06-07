@@ -221,7 +221,7 @@ void CMissile::Update(void)
 	}
 
 	// 死亡タイマー
-	float fScale = Slow::GetScale();
+	float fScale = Slow::GetTimeScale();
 	float fDeltaTime = CManager::GetDeltaTime() * fScale;
 
 	m_fDeathTimer += fDeltaTime;
