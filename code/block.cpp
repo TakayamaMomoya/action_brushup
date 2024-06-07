@@ -14,7 +14,6 @@
 #include "manager.h"
 #include "object.h"
 #include "collision.h"
-#include <stdio.h>
 
 //*****************************************************
 // É}ÉNÉçíËã`

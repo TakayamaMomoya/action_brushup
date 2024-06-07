@@ -15,7 +15,6 @@
 #include "enemydrone.h"
 #include "enemyboss.h"
 #include "enemyTurret.h"
-#include <stdio.h>
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`

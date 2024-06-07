@@ -12,7 +12,6 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "object.h"
-#include <stdio.h>
 #include "collision.h"
 #include "fade.h"
 #include "blur.h"
@@ -208,30 +207,8 @@ void CRenderer::Draw(void)
 
 	// 画面クリア
 	m_pD3DDevice->Clear(0, nullptr,
-		(D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
 		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
-
-	//アルファテストの有効化
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, 0);
-
-	float fStart = 500;
-	float fEnd = 15000;
-
-	// フォグを有効化
-	m_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, m_bFog);
-
-	// フォグの色を設定
-	m_pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, D3DXCOLOR(0.53f, 0.26f, 0.10f, 1.00f));
-
-	// フォグの状態を設定
-	m_pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE);
-	m_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
-
-	// フォグの発生範囲を設定
-	m_pD3DDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&fStart));
-	m_pD3DDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&fEnd));
 
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -270,28 +247,23 @@ void CRenderer::Draw(void)
 		m_pD3DDevice->EndScene();
 	}
 
-	// アルファテストの無効化
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, 0);
-
 	// バック・フロントバッファを入れ替える
 	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 }
 
-//==================================================================================================
-//デバッグ表示処理
-//==================================================================================================
+//=====================================================
+// FPSの表示
+//=====================================================
 void CRenderer::DrawFPS(void)
 {
-	//文字列に代入
 	CDebugProc::GetInstance()->Print("FPS:%d\n", GetFPS());
-	CDebugProc::GetInstance()->Print("オブジェクト総数:[%d]\n", CObject::GetNumAll());
-	CDebugProc::GetInstance()->Print("保存スコア:[%d]\n", CManager::GetScore());
 }
 
 namespace Renderer
 {
+//=====================================================
+// デバイスの取得（ショートカット関数）
+//=====================================================
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	CRenderer *pRenderer = CRenderer::GetInstance();

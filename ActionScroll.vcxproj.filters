@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="code\block.cpp" />
-    <ClCompile Include="code\bullet.cpp" />
-    <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\light.cpp" />
     <ClCompile Include="code\model.cpp" />
     <ClCompile Include="code\motion.cpp" />
@@ -13,27 +11,6 @@
     <ClCompile Include="code\skybox.cpp" />
     <ClCompile Include="code\camera.cpp">
       <Filter>base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemy.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemydrone.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemyManager.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemyNormal.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemyshot.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemyTurret.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemyboss.cpp">
-      <Filter>enemy\boss</Filter>
     </ClCompile>
     <ClCompile Include="code\input.cpp">
       <Filter>input</Filter>
@@ -53,17 +30,11 @@
     <ClCompile Include="code\universal.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="code\edit.cpp">
-      <Filter>base</Filter>
-    </ClCompile>
     <ClCompile Include="code\fade.cpp">
       <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="code\game.cpp">
       <Filter>scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\life.cpp">
-      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="code\timer.cpp">
       <Filter>UI</Filter>
@@ -74,13 +45,7 @@
     <ClCompile Include="code\UIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="code\score.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\scene.cpp">
-      <Filter>scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\ranking.cpp">
       <Filter>scene</Filter>
     </ClCompile>
     <ClCompile Include="code\pause.cpp">
@@ -88,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="code\title.cpp">
       <Filter>scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\missile.cpp">
-      <Filter>enemy</Filter>
     </ClCompile>
     <ClCompile Include="code\manager.cpp">
       <Filter>base</Filter>
@@ -112,9 +74,6 @@
     </ClCompile>
     <ClCompile Include="code\debugproc.cpp">
       <Filter>base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\frame.cpp">
-      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="code\anim3D.cpp">
       <Filter>mesh</Filter>
@@ -143,12 +102,6 @@
     <ClCompile Include="code\object3D.cpp">
       <Filter>mesh</Filter>
     </ClCompile>
-    <ClCompile Include="code\shockwave.cpp">
-      <Filter>VFX</Filter>
-    </ClCompile>
-    <ClCompile Include="code\shadow.cpp">
-      <Filter>VFX</Filter>
-    </ClCompile>
     <ClCompile Include="code\number.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -157,9 +110,6 @@
     </ClCompile>
     <ClCompile Include="code\particle.cpp">
       <Filter>VFX</Filter>
-    </ClCompile>
-    <ClCompile Include="code\cameraBehavior.cpp">
-      <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="code\slow.cpp">
       <Filter>base</Filter>
@@ -170,11 +120,30 @@
     <ClCompile Include="code\blur.cpp">
       <Filter>VFX</Filter>
     </ClCompile>
+    <ClCompile Include="code\bullet.cpp" />
+    <ClCompile Include="code\cameraBehavior.cpp" />
+    <ClCompile Include="code\collision.cpp" />
+    <ClCompile Include="code\edit.cpp" />
+    <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\enemyboss.cpp" />
+    <ClCompile Include="code\enemydrone.cpp" />
+    <ClCompile Include="code\enemyManager.cpp" />
+    <ClCompile Include="code\enemyNormal.cpp" />
+    <ClCompile Include="code\enemyshot.cpp" />
+    <ClCompile Include="code\enemyTurret.cpp" />
+    <ClCompile Include="code\frame.cpp" />
+    <ClCompile Include="code\life.cpp" />
+    <ClCompile Include="code\missile.cpp" />
+    <ClCompile Include="code\ranking.cpp" />
+    <ClCompile Include="code\score.cpp" />
+    <ClCompile Include="code\shadow.cpp" />
+    <ClCompile Include="code\shockwave.cpp" />
+    <ClCompile Include="code\precompile.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
-    <ClInclude Include="code\bullet.h" />
-    <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\light.h" />
     <ClInclude Include="code\model.h" />
     <ClInclude Include="code\motion.h" />
@@ -184,27 +153,6 @@
     <ClInclude Include="code\skybox.h" />
     <ClInclude Include="code\camera.h">
       <Filter>base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemy.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemydrone.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyManager.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyNormal.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyshot.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyTurret.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyboss.h">
-      <Filter>enemy\boss</Filter>
     </ClInclude>
     <ClInclude Include="code\input.h">
       <Filter>input</Filter>
@@ -224,17 +172,11 @@
     <ClInclude Include="code\universal.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="code\edit.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="code\fade.h">
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="code\game.h">
       <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\life.h">
-      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="code\timer.h">
       <Filter>UI</Filter>
@@ -245,13 +187,7 @@
     <ClInclude Include="code\UIManager.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="code\score.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\scene.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\ranking.h">
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="code\pause.h">
@@ -259,9 +195,6 @@
     </ClInclude>
     <ClInclude Include="code\title.h">
       <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\missile.h">
-      <Filter>enemy</Filter>
     </ClInclude>
     <ClInclude Include="code\manager.h">
       <Filter>base</Filter>
@@ -283,9 +216,6 @@
     </ClInclude>
     <ClInclude Include="code\debugproc.h">
       <Filter>base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\frame.h">
-      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="code\anim3D.h">
       <Filter>mesh</Filter>
@@ -314,12 +244,6 @@
     <ClInclude Include="code\object3D.h">
       <Filter>mesh</Filter>
     </ClInclude>
-    <ClInclude Include="code\shockwave.h">
-      <Filter>VFX</Filter>
-    </ClInclude>
-    <ClInclude Include="code\shadow.h">
-      <Filter>VFX</Filter>
-    </ClInclude>
     <ClInclude Include="code\number.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -329,9 +253,6 @@
     <ClInclude Include="code\particle.h">
       <Filter>VFX</Filter>
     </ClInclude>
-    <ClInclude Include="code\cameraBehavior.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="code\slow.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -340,6 +261,27 @@
     </ClInclude>
     <ClInclude Include="code\blur.h">
       <Filter>VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="code\bullet.h" />
+    <ClInclude Include="code\cameraBehavior.h" />
+    <ClInclude Include="code\collision.h" />
+    <ClInclude Include="code\edit.h" />
+    <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\enemyboss.h" />
+    <ClInclude Include="code\enemydrone.h" />
+    <ClInclude Include="code\enemyManager.h" />
+    <ClInclude Include="code\enemyNormal.h" />
+    <ClInclude Include="code\enemyshot.h" />
+    <ClInclude Include="code\enemyTurret.h" />
+    <ClInclude Include="code\frame.h" />
+    <ClInclude Include="code\life.h" />
+    <ClInclude Include="code\missile.h" />
+    <ClInclude Include="code\ranking.h" />
+    <ClInclude Include="code\score.h" />
+    <ClInclude Include="code\shadow.h" />
+    <ClInclude Include="code\shockwave.h" />
+    <ClInclude Include="code\precompile.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,6 @@
 #include "main.h"
 #include "ranking.h"
 #include "fade.h"
-#include <stdio.h>
 #include "object.h"
 #include "manager.h"
 #include "texture.h"

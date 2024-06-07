@@ -29,7 +29,6 @@
 #include "enemyManager.h"
 #include "animEffect3D.h"
 #include "debugproc.h"
-#include <stdio.h>
 #include "UIManager.h"
 #include "anim3D.h"
 #include "texture.h"

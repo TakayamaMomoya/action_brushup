@@ -15,7 +15,6 @@
 #include "collision.h"
 #include "debugproc.h"
 #include "particle.h"
-#include <stdio.h>
 #include "player.h"
 #include "game.h"
 #include "enemyshot.h"

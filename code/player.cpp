@@ -26,7 +26,6 @@
 #include "collision.h"
 #include "universal.h"
 #include "game.h"
-#include <stdio.h>
 #include "motion.h"
 #include "afterimage.h"
 #include "effect3D.h"
