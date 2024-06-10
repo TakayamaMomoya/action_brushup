@@ -134,7 +134,7 @@ HRESULT CPlayer::Init(void)
 	m_info.rotDest = rot;
 	SetRot(rot);
 
-	// 出現モーションの設定
+	// 進行度の取得
 	CGame *pGame = CGame::GetInstance();
 	int nProgress = 0;
 
@@ -143,32 +143,34 @@ HRESULT CPlayer::Init(void)
 		nProgress = pGame->GetProgress();
 	}
 
-	//if (nProgress == 0)
-	//{
-	//	SetMotion(MOTION_APPER);
+#ifndef _DEBUG
+	if (nProgress == 0)
+	{// 出現演出の開始
+		SetMotion(MOTION_APPER);
 
-	//	// タイマーを止める
-	//	CTimer *pTimer = CTimer::GetInstance();
+		// タイマーを止める
+		CTimer *pTimer = CTimer::GetInstance();
 
-	//	if (pTimer != nullptr)
-	//	{
-	//		pTimer->EnableStop(true);
-	//	}
+		if (pTimer != nullptr)
+		{
+			pTimer->EnableStop(true);
+		}
 
-	//	// フレーム演出の生成
-	//	CFrame::Create(20, 120, 70);
+		// フレーム演出の生成
+		CFrame::Create(20, 120, 70);
 
-	//	// カメラ距離の設定
-	//	CCamera *pCamera = CManager::GetCamera();
+		// カメラ距離の設定
+		CCamera *pCamera = CManager::GetCamera();
 
-	//	if (pCamera != nullptr)
-	//	{
-	//		pCamera->SetDist(100.0f);
+		if (pCamera != nullptr)
+		{
+			pCamera->SetDist(100.0f);
 
-	//		pCamera->ChangeBehavior(new CCameraStateApperPlayer);
-	//	}
-	//}
-	//else
+			pCamera->ChangeBehavior(new CCameraStateApperPlayer);
+		}
+	}
+	else 
+#endif
 	{
 		// カメラに追従ステイトを設定
 		CCamera *pCamera = CManager::GetCamera();

@@ -160,6 +160,9 @@
     <ClCompile Include="code\enemybossState.cpp">
       <Filter>enemy\boss</Filter>
     </ClCompile>
+    <ClCompile Include="code\blurEvent.cpp">
+      <Filter>VFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
@@ -320,6 +323,9 @@
     </ClInclude>
     <ClInclude Include="code\enemybossState.h">
       <Filter>enemy\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="code\blurEvent.h">
+      <Filter>VFX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
