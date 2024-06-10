@@ -32,6 +32,22 @@ class CShadow;
 class CPlayer : public CObject
 {
 public:
+	enum MOTION
+	{// モーションの種類
+		MOTION_NEUTRAL = 0,	// 待機状態
+		MOTION_MOVE,	// 移動モーション
+		MOTION_JUMP,	// ジャンプモーション
+		MOTION_FALL,	// 落下モーション
+		MOTION_ATTACK,	// 攻撃モーション
+		MOTION_ATTACKTURN,	// 反転攻撃モーション
+		MOTION_AIRATTACK,	// 空中攻撃モーション
+		MOTION_PARRY,	// パリィモーション
+		MOTION_DASH,	// ダッシュモーション
+		MOTION_TITLE_NEUTRAL,	// タイトル待機
+		MOTION_TITLE_STANDUP,	// タイトル立ち上がり
+		MOTION_APPER,	// 出現モーション
+		MOTION_MAX
+	};
 	struct SParam
 	{// パラメーター
 		int nInitialLife;	// 初期体力
@@ -75,22 +91,6 @@ private:
 		STATE_NORMAL,	// 通常状態
 		STATE_DAMAGE,	// ダメージ状態
 		STATE_MAX
-	};
-	enum MOTION
-	{
-		MOTION_NEUTRAL = 0,	// 待機状態
-		MOTION_MOVE,	// 移動モーション
-		MOTION_JUMP,	// ジャンプモーション
-		MOTION_FALL,	// 落下モーション
-		MOTION_ATTACK,	// 攻撃モーション
-		MOTION_ATTACKTURN,	// 反転攻撃モーション
-		MOTION_AIRATTACK,	// 空中攻撃モーション
-		MOTION_PARRY,	// パリィモーション
-		MOTION_DASH,	// ダッシュモーション
-		MOTION_TITLE_NEUTRAL,	// タイトル待機
-		MOTION_TITLE_STANDUP,	// タイトル立ち上がり
-		MOTION_APPER,	// 出現モーション
-		MOTION_MAX
 	};
 	struct AttackInfo
 	{// 攻撃の情報

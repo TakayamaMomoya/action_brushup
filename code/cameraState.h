@@ -28,6 +28,16 @@ public:
 private:
 };
 
+class CCameraStateTitle : public CCameraState
+{// タイトル
+public:
+	CCameraStateTitle();
+	~CCameraStateTitle();
+
+	void Init(CCamera *pCamera) override;
+	void Update(CCamera *pCamera) override;
+};
+
 class CCameraStateFollowPlayer : public CCameraState
 {// プレイヤーの追従
 public:

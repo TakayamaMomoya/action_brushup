@@ -175,7 +175,7 @@ HRESULT CPlayer::Init(void)
 
 		if (pCamera != nullptr)
 		{
-			pCamera->ChangeBehavior(new CCameraStateFollowPlayer);
+			pCamera->ChangeState(new CCameraStateFollowPlayer);
 		}
 	}
 
@@ -289,7 +289,7 @@ void CPlayer::Update(void)
 
 				if (pCamera != nullptr)
 				{
-					pCamera->ChangeBehavior(new CCameraStateFollowPlayer);
+					pCamera->ChangeState(new CCameraStateFollowPlayer);
 				}
 			}
 		}

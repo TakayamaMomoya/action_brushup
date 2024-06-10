@@ -16,11 +16,13 @@
 #include "fade.h"
 #include "texture.h"
 #include "camera.h"
+#include "cameraState.h"
 #include "renderer.h"
 #include "sound.h"
 #include "game.h"
 #include "skybox.h"
 #include "edit.h"
+#include "player.h"
 
 //*****************************************************
 // マクロ定義
@@ -89,6 +91,7 @@ HRESULT CTitle::Init(void)
 	// ブロック配置読込
 	CBlock::Load("data\\MAP\\map00.bin");
 
+	// プレイヤーのモデルを表示
 	m_pMotion = CMotion::Create("data\\MOTION\\rayleigh.txt");
 
 	if (m_pMotion != nullptr)
@@ -97,18 +100,20 @@ HRESULT CTitle::Init(void)
 		m_pMotion->SetPosShadow(m_pMotion->GetPosition());
 		m_pMotion->SetRot(D3DXVECTOR3(0.0f, 0.7f, 0.0f));
 		m_pMotion->EnableShadow(true);
-		m_pMotion->SetMotion(9);
-		m_pMotion->InitPose(9);
+		m_pMotion->SetMotion(CPlayer::MOTION_TITLE_NEUTRAL);
+		m_pMotion->InitPose(CPlayer::MOTION_TITLE_NEUTRAL);
 		m_pMotion->SetMatrix();
 	}
 
+	// カメラのステイト変更
 	CCamera *pCamera = CManager::GetCamera();
 
 	if (pCamera != nullptr)
 	{
-
+		pCamera->ChangeState(new CCameraStateTitle);
 	}
 
+	// タイトルBGＭを流す
 	CSound *pSound = CSound::GetInstance();
 
 	if (pSound != nullptr)
@@ -156,6 +161,9 @@ void CTitle::Update(void)
 {
 	CInputManager *pInputManager = CInputManager::GetInstance();
 
+	if (pInputManager == nullptr)
+		return;
+
 	// シーンの更新
 	CScene::Update();
 	
@@ -163,24 +171,21 @@ void CTitle::Update(void)
 
 	if (m_state == STATE_NONE)
 	{
-		if (pInputManager != nullptr)
-		{
-			if (pInputManager->GetTrigger(CInputManager::BUTTON_ENTER))
-			{// フェード
-				if (m_pMotion != nullptr)
+		if (pInputManager->GetTrigger(CInputManager::BUTTON_ENTER))
+		{// フェード
+			if (m_pMotion != nullptr)
+			{
+				if (m_pMotion->GetMotion() != CPlayer::MOTION_TITLE_STANDUP)
 				{
-					if (m_pMotion->GetMotion() != 10)
+					m_pMotion->SetMotion(CPlayer::MOTION_TITLE_STANDUP);
+
+					m_state = STATE_MOTION;
+
+					CSound *pSound = CSound::GetInstance();
+
+					if (pSound != nullptr)
 					{
-						m_pMotion->SetMotion(10);
-
-						m_state = STATE_MOTION;
-
-						CSound *pSound = CSound::GetInstance();
-
-						if (pSound != nullptr)
-						{
-							pSound->Play(CSound::LABEL_SE_ENTER);
-						}
+						pSound->Play(CSound::LABEL_SE_ENTER);
 					}
 				}
 			}

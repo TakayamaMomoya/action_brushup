@@ -193,7 +193,7 @@ void CCamera::SetCamera(void)
 //====================================================
 // ステイトの変更
 //====================================================
-void CCamera::ChangeBehavior(CCameraState *pBehavior)
+void CCamera::ChangeState(CCameraState *pBehavior)
 {
 	if (m_pState != nullptr)
 	{

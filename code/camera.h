@@ -68,7 +68,7 @@ public:
 	void SetDist(float fDist) { m_camera.fLength = fDist; }	// カメラ距離
 	float GetDist(void) { return m_camera.fLength; }
 	S_InfoCamera *GetInfo(void);	// 情報構造体
-	void ChangeBehavior(CCameraState *pBehavior);	// ステイト変更
+	void ChangeState(CCameraState *pBehavior);	// ステイト変更
 
 private:
 	// メンバ関数

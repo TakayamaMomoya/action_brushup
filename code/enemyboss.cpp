@@ -265,7 +265,7 @@ void CEnemyBoss::UpdateApper(void)
 
 		if (pCamera != nullptr)
 		{
-			pCamera->ChangeBehavior(new CCameraStateBossBattle);
+			pCamera->ChangeState(new CCameraStateBossBattle);
 		}
 	}
 }
