@@ -10,11 +10,17 @@
 //*****************************************************
 #include "blurEvent.h"
 #include "blur.h"
+#include "manager.h"
+
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+CBlurEvent *CBlurEvent::m_pBlurEvent = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CBlurEvent::CBlurEvent()
+CBlurEvent::CBlurEvent() : m_fDensityBlur(0.0f), m_fSizeBlur(0.0f), m_fTimerBlur(0.0f), m_fTimerInitial(0.0f)
 {
 
 }
@@ -25,6 +31,24 @@ CBlurEvent::CBlurEvent()
 CBlurEvent::~CBlurEvent()
 {
 
+}
+
+//=====================================================
+// 生成処理
+//=====================================================
+CBlurEvent *CBlurEvent::Create(void)
+{
+	if (m_pBlurEvent == nullptr)
+	{
+		m_pBlurEvent = new CBlurEvent;
+
+		if (m_pBlurEvent != nullptr)
+		{
+			m_pBlurEvent->Init();
+		}
+	}
+
+	return m_pBlurEvent;
 }
 
 //=====================================================
@@ -40,6 +64,8 @@ HRESULT CBlurEvent::Init(void)
 //=====================================================
 void CBlurEvent::Uninit(void)
 {
+	m_pBlurEvent = nullptr;
+
 	Release();
 }
 
@@ -48,7 +74,18 @@ void CBlurEvent::Uninit(void)
 //=====================================================
 void CBlurEvent::Update(void)
 {
+	m_fTimerBlur -= CManager::GetDeltaTime();
 
+	if (m_fTimerBlur < 0.0f)
+	{// イベントの終了とともに自身を破棄
+		// イベントの終了
+		Blur::ResetBlur();
+
+		// 自身の終了
+		Uninit();
+
+		return;
+	}
 }
 
 //=====================================================

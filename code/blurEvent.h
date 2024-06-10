@@ -27,7 +27,19 @@ public:
     void Update(void);  // 更新
     void Draw(void);  // 描画
 
+    // 静的メンバ関数
+    static CBlurEvent *Create(void);    // 生成処理
+    static CBlurEvent *GetInstance(void) { return m_pBlurEvent; }    // インスタンスの取得
+
 private:
+    // メンバ変数
+    float m_fTimerBlur; // ブラーをかけるタイマー
+    float m_fTimerInitial; // 初期タイマー
+    float m_fDensityBlur; // ブラーの濃さ
+    float m_fSizeBlur; // ブラーのサイズ
+
+    // 静的メンバ変数
+    static CBlurEvent *m_pBlurEvent;   // 自身のポインタ
 };
 
 #endif
