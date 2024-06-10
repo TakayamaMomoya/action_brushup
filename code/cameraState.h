@@ -58,6 +58,16 @@ public:
 	void Update(CCamera *pCamera) override;
 };
 
+class CCameraStateApperBoss : public CCameraState
+{// ボス出現
+public:
+	CCameraStateApperBoss();
+	~CCameraStateApperBoss();
+
+	void Init(CCamera *pCamera) override;
+	void Update(CCamera *pCamera) override;
+};
+
 class CCameraStateBossBattle : public CCameraState
 {// ボス戦での動き
 public:

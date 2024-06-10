@@ -133,6 +133,14 @@ HRESULT CEnemyBoss::Init(void)
 		pShadow->SetSize(SIZE_SHADOW, SIZE_SHADOW);
 	}
 
+	// カメラをボス出現のものに変更
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera != nullptr)
+	{
+		pCamera->ChangeState(new CCameraStateApperBoss);
+	}
+
 	return S_OK;
 }
 

@@ -27,7 +27,8 @@ const float RATE_ADVANCE_FOLLOW = 10.0f;	// 追従時、移動量に対する先を見る割合
 const float DIST_FOLLOW_DEFAULT = 100.0f;	// 追従時のデフォルトカメラ距離
 const float DIST_APPER_PLAYER = 100.0f;	// プレイヤー出現時のカメラ距離
 const float DIST_MIN_BOSS = 85.0f;	// ボス戦のときの最小距離
-const D3DXVECTOR3 INITIAL_ROT_FOLLOWPLAYER = { 1.0f,0.0f,0.0f };	// プレイヤー追従の初期角度
+const D3DXVECTOR3 POSR_APPERBOSS = { 2742.27f,240.53f,-81.36f };	// ボス出現の注視点位置
+const D3DXVECTOR3 POSV_APPERBOSS = { 2741.14f,280.15f,-261.20f };	// ボス出現の視点位置
 }
 
 //====================================================
@@ -112,7 +113,6 @@ CCameraStateFollowPlayer::~CCameraStateFollowPlayer()
 //====================================================
 void CCameraStateFollowPlayer::Init(CCamera *pCamera)
 {
-	pCamera->GetInfo()->rot = INITIAL_ROT_FOLLOWPLAYER;
 	pCamera->SetDist(DIST_FOLLOW_DEFAULT);
 }
 
@@ -208,9 +208,49 @@ void CCameraStateApperPlayer::Update(CCamera *pCamera)
 }
 
 //************************************************************
+// ボス出現
+//************************************************************
+//====================================================
+// コンストラクタ
+//====================================================
+CCameraStateApperBoss::CCameraStateApperBoss()
+{
+
+}
+
+//====================================================
+// デストラクタ
+//====================================================
+CCameraStateApperBoss::~CCameraStateApperBoss()
+{
+
+}
+
+//====================================================
+// 初期化
+//====================================================
+void CCameraStateApperBoss::Init(CCamera *pCamera)
+{
+
+}
+
+//====================================================
+// 更新処理
+//====================================================
+void CCameraStateApperBoss::Update(CCamera *pCamera)
+{
+	CCamera::S_InfoCamera *pInfoCamera = pCamera->GetInfo();
+
+	pInfoCamera->posRDest = POSR_APPERBOSS;
+	pInfoCamera->posVDest = POSV_APPERBOSS;
+
+	pInfoCamera->posR += (pInfoCamera->posRDest - pInfoCamera->posR) * 0.1f;
+	pInfoCamera->posV += (pInfoCamera->posVDest - pInfoCamera->posV) * 0.1f;
+}
+
+//************************************************************
 // ボス戦時の動き
 //************************************************************
-
 //====================================================
 // コンストラクタ
 //====================================================
