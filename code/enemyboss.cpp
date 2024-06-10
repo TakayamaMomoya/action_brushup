@@ -125,9 +125,8 @@ HRESULT CEnemyBoss::Init(void)
 		pCamera->ChangeState(new CCameraStateApperBoss);
 	}
 
+	// ステイトの切り替え
 	ChangeState(new CEnemyBossStateApper);
-
-	FollowCollision();
 
 	return S_OK;
 }
@@ -224,30 +223,6 @@ void CEnemyBoss::ManageState(void)
 }
 
 //=====================================================
-// 出現状態の更新
-//=====================================================
-void CEnemyBoss::UpdateApper(void)
-{
-	bool bFinish = IsFinish();
-
-	if (bFinish)
-	{// 状態切り替え
-		SwitchState();
-
-		m_info.state = STATE_BATTLE;
-		SwitchState();
-
-		// カメラをボス戦のものに変更
-		CCamera *pCamera = CManager::GetCamera();
-
-		if (pCamera != nullptr)
-		{
-			pCamera->ChangeState(new CCameraStateBossBattle);
-		}
-	}
-}
-
-//=====================================================
 // 当たり判定管理
 //=====================================================
 void CEnemyBoss::ManageCollision(void)
@@ -325,8 +300,6 @@ bool CEnemyBoss::FollowDest(void)
 //=====================================================
 void CEnemyBoss::SwitchState(void)
 {
-	m_info.nNumAttack = 0;
-
 	ATTACKSTATE state;
 
 	// 状態を振る
@@ -383,14 +356,18 @@ void CEnemyBoss::Hit(float fDamage)
 
 		if (fLife <= 0.0f)
 		{// 死亡状態
-			SetMotion(MOTION_DEATH);
-
-			CParticle::Create(GetMtxPos(0), CParticle::TYPE_FIRE);
-
 			fLife = 0.0f;
 
+			// モーションの設定
+			SetMotion(MOTION_DEATH);
+
+			// パーティクルの発生
+			CParticle::Create(GetMtxPos(IDX_WAIST), CParticle::TYPE_FIRE);
+
+			// ゲームを終了状態にする
 			CGame::SetState(CGame::STATE_END);
 
+			// 死亡状態に変更
 			m_info.state = STATE_NONE;
 			state = CEnemy::STATE_DEATH;
 
@@ -407,6 +384,12 @@ void CEnemyBoss::Hit(float fDamage)
 
 			// 当たり判定削除
 			DeleteCollision();
+
+			if (m_pState != nullptr)
+			{// ステイトの破棄
+				delete m_pState;
+				m_pState = nullptr;
+			}
 		}
 		else
 		{

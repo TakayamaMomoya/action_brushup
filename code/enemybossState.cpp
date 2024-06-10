@@ -15,6 +15,8 @@
 #include "missile.h"
 #include "universal.h"
 #include "bullet.h"
+#include "camera.h"
+#include "cameraState.h"
 
 //*****************************************************
 // 定数定義
@@ -59,10 +61,10 @@ void CEnemyBossStateApper::Init(CEnemyBoss *pBoss)
 {
 	// モーション設定
 	pBoss->SetMotion(CEnemyBoss::MOTION_APPER);
+	pBoss->InitPose(CEnemyBoss::MOTION_APPER);
 
 	// 出現地点合わせ
 	pBoss->SetMatrix();
-	pBoss->CMotion::Update();
 
 	pBoss->FollowCollision();
 }
@@ -77,6 +79,14 @@ void CEnemyBossStateApper::Update(CEnemyBoss *pBoss)
 	if (bFinish)
 	{
 		pBoss->SwitchState();
+
+		// カメラをボス戦に切り替え
+		CCamera *pCamera = CManager::GetCamera();
+
+		if (pCamera != nullptr)
+		{
+			pCamera->ChangeState(new CCameraStateBossBattle);
+		}
 	}
 }
 

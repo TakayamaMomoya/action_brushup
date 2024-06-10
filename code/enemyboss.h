@@ -95,17 +95,14 @@ private:
 		STATE state;	// 状態
 		ATTACKSTATE attackState;	// 攻撃状態
 		D3DXVECTOR3 posDest;	// 目標位置
-		float fTimerAttack;	// 攻撃タイマー
-		int nNumAttack;	// 攻撃した回数
 		float fTimerState;	// 状態遷移タイマー
 		// コンストラクタ
 		S_Info() : state(CEnemyBoss::STATE::STATE_NONE), attackState(ATTACKSTATE::ATTACK_MISSILE),
-			posDest{}, fTimerAttack(0.0f), nNumAttack(0), fTimerState(0.0f) {}
+			posDest{}, fTimerState(0.0f) {}
 	};
 	
 	// メンバ関数
 	void ManageState(void);	// 状態の管理
-	void UpdateApper(void);	// 出現時の更新
 	void ManageCollision(void);	// 当たり判定管理
 	void ChangeState(CEnemyBossState *pState);	// ステイトの切り替え
 
