@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "collision.h"
 #include "renderer.h"
+#include "blur.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -243,6 +244,20 @@ void CObject::DrawAll(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
+	// ブラーの取得
+	CBlur * pBlur = CBlur::GetInstance();
+
+	if (pBlur != nullptr)
+	{
+		pBlur->SaveRenderInfo();	// 描画の情報を保存
+		pBlur->ChangeTarget();	// レンダーターゲットの変更
+
+		// クリアする
+		pDevice->Clear(0, nullptr,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DCOLOR_RGBA(255, 255, 0, 255), 1.0f, 0);
+	}
+
 	// カメラの取得
 	CCamera *pCamera = CManager::GetCamera();
 
@@ -341,26 +356,15 @@ void CObject::DrawAll(void)
 		}
 	}
 
-	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+	if (pBlur != nullptr)
 	{
-		// 先頭オブジェクトを代入
-		CObject* pObject = m_apTop[nCntPri];
-
-		while (pObject != nullptr)
-		{
-			// 次のアドレスを保存
-			CObject* pObjectNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath)
-			{
-				// 削除
-				pObject->Delete();
-			}
-
-			// 次のアドレスを代入
-			pObject = pObjectNext;
-		}
+		pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
+		pBlur->RestoreTarget();	// レンダーターゲットの復元
+		pBlur->DrawBuckBuffer();	// バックバッファへの描画
+		pBlur->SwapBuffer();	// バッファーの入れ替え
 	}
+
+	DeleteAll();
 }
 
 //=====================================================

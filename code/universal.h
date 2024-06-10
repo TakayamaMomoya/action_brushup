@@ -4,8 +4,8 @@
 // Author:˚¸éRìçñÁ
 //
 //*****************************************
-#ifndef _universal_H_
-#define _universal_H_
+#ifndef _UNIVERSAL_H_
+#define _UNIVERSAL_H_
 
 #include "main.h"
 
@@ -35,6 +35,7 @@ void FactingRotTarget(D3DXVECTOR3 *pRot, D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarg
 void MoveToDest(D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget, float fFact);
 void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR3 posOffset, D3DXVECTOR3 rot = { 0.0f,0.0f,0.0f });
 D3DXVECTOR3 VecToOffset(D3DXMATRIX mtx, D3DXVECTOR3 posOffset);
+D3DXVECTOR3 PolarCoordinates(D3DXVECTOR3 rot);
 
 //======================================
 // ïœä∑ån
@@ -43,7 +44,6 @@ D3DXCOLOR ConvertRGB(BYTE r, BYTE g, BYTE b, BYTE a);
 D3DXVECTOR3 VecToRot(D3DXVECTOR3 vec);
 int RandRange(int nMax, int nMin);
 void VecConvertLength(D3DXVECTOR3 *pVec, float fLength);
-float DegreeToRadian(float fDegree);
 
 //======================================
 // îªíËån

@@ -216,15 +216,6 @@ void CRenderer::Draw(void)
 		// FPS表示
 		DrawFPS();
 
-		// ブラーの取得
-		CBlur * pBlur = CBlur::GetInstance();
-
-		if (pBlur != nullptr)
-		{
-			pBlur->SaveRenderInfo();	// 描画の情報を保存
-			pBlur->ChangeTarget();	// レンダーターゲットの変更
-		}
-		
 		// オブジェクトの描画
 		CObject::DrawAll();
 
@@ -233,18 +224,17 @@ void CRenderer::Draw(void)
 			pFade->Draw();
 		}
 
-		if (pBlur != nullptr)
-		{
-			pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
-			pBlur->RestoreTarget();	// レンダーターゲットの復元
-			pBlur->DrawBuckBuffer();	// バックバッファへの描画
-			pBlur->SwapBuffer();	// バッファーの入れ替え
-		}
-
 		CDebugProc::GetInstance()->Draw();
 
 		// 描画終了
 		m_pD3DDevice->EndScene();
+	}
+
+	CBlur *pBlur = CBlur::GetInstance();
+
+	if (pBlur != nullptr)
+	{
+		pBlur->ClearNotBlur();
 	}
 
 	// バック・フロントバッファを入れ替える

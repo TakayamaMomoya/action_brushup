@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "camera.h"
+#include "universal.h"
 
 //*****************************************************
 // 定数定義
@@ -71,7 +72,7 @@ void CBlur::Init(void)
     // デバイスの取得
     LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
 
-    for (int i = 0; i < Blur::NUM_RENDER; i++)
+    for (int i = 0; i < Blur::NUM_RENDER - 1; i++)
     {
         // レンダーターゲット用のテクスチャ生成
         if (SUCCEEDED(pDevice->CreateTexture(SCREEN_WIDTH,
@@ -93,6 +94,27 @@ void CBlur::Init(void)
         {
             assert(("レンダーターゲット用のテクスチャ生成に失敗", false));
         }
+    }
+
+    // レンダーターゲット用のテクスチャ生成
+    if (SUCCEEDED(pDevice->CreateTexture(SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        1,
+        D3DUSAGE_RENDERTARGET,
+        D3DFMT_A8R8G8B8,
+        D3DPOOL_DEFAULT,
+        &m_apTextureMT[Blur::NUM_RENDER - 1],
+        nullptr)))
+    {
+        // ターゲットレンダリング用インターフェイス生成
+        if (FAILED(m_apTextureMT[Blur::NUM_RENDER - 1]->GetSurfaceLevel(0, &m_apRenderMT[Blur::NUM_RENDER - 1])))
+        {
+            assert(("ターゲットレンダリング用インターフェース生成に失敗", false));
+        }
+    }
+    else
+    {
+        assert(("レンダーターゲット用のテクスチャ生成に失敗", false));
     }
 
     // ターゲットレンダリング用Zバッファ生成
@@ -125,7 +147,7 @@ void CBlur::Init(void)
         // クリアする
         pDevice->Clear(0, nullptr,
             (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-            D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+            D3DCOLOR_RGBA(255, 0, 255, 255), 1.0f, 0);
     }
 
     // レンダリングターゲットとZバッファを元に戻す
@@ -310,12 +332,7 @@ void CBlur::ChangeTarget(void)
         &pInfoCamera->vecU);
 
     //ビューマトリックス設定
-    pDevice->SetTransform(D3DTS_VIEW, &mtxView);
-
-    // クリアする
-    pDevice->Clear(0, nullptr,
-        (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-        D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+    pDevice->SetTransform(D3DTS_VIEW, &pInfoCamera->mtxView);
 }
 
 //=====================================================
@@ -419,6 +436,12 @@ void CBlur::DrawBuckBuffer(void)
 
     // 描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+    // テクスチャ設定
+    pDevice->SetTexture(0, m_apTextureMT[2]);
+
+    // 描画
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
 //=====================================================
@@ -437,4 +460,91 @@ void CBlur::SwapBuffer(void)
     pTextureWk = m_apTextureMT[0];
     m_apTextureMT[0] = m_apTextureMT[1];
     m_apTextureMT[1] = pTextureWk;
+}
+
+//=====================================================
+// ブラーしないレンダーへの変更
+//=====================================================
+void CBlur::SetRenderToNotBlur(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    pDevice->SetRenderTarget(0, m_apRenderMT[2]);
+}
+
+//=====================================================
+// ブラーしないレンダーへの変更
+//=====================================================
+void CBlur::ClearNotBlur(void)
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+    LPDIRECT3DSURFACE9 m_pRenderDef;
+
+    pDevice->GetRenderTarget(0, &m_pRenderDef);
+
+    pDevice->SetRenderTarget(0, m_apRenderMT[2]);
+
+    // 画面クリア
+    pDevice->Clear(0, nullptr,
+        (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+        D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+    pDevice->SetRenderTarget(0, m_pRenderDef);
+}
+
+namespace Blur
+{
+//=====================================================
+// パラメーターの設定
+//=====================================================
+void SetBlur(float fSize, float fDensity)
+{
+    CBlur *pBlur = CBlur::GetInstance();
+
+    if (pBlur != nullptr)
+    {
+        pBlur->SetAddSizePolygon(fSize);
+        pBlur->SetPolygonColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, fDensity));
+    }
+}
+
+//=====================================================
+// パラメーターのリセット
+//=====================================================
+void ResetBlur(void)
+{
+    CBlur *pBlur = CBlur::GetInstance();
+
+    if (pBlur != nullptr)
+    {
+        pBlur->SetAddSizePolygon(0.0f);
+        pBlur->SetPolygonColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+    }
+}
+
+//=====================================================
+// パラメーターの加算
+//=====================================================
+void AddParameter(float fAddSize, float fAddDensity, float fMaxSize, float fMinSize, float fMaxDesity, float fMinDensity)
+{
+    CBlur *pBlur = CBlur::GetInstance();
+
+    if (pBlur != nullptr)
+    {
+        float fSize = pBlur->GetAddSizePolygon();
+        D3DXCOLOR col = pBlur->GetPolygonColor();
+
+        fSize += fAddSize;
+        col.a += fAddDensity;
+
+        universal::LimitValue(&fSize, fMaxSize, fMinSize);
+        universal::LimitValue(&col.a, fMaxDesity, fMinDensity);
+
+        pBlur->SetAddSizePolygon(fSize);
+        pBlur->SetPolygonColor(col);
+    }
+}
 }

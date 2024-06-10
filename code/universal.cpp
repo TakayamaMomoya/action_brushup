@@ -163,14 +163,6 @@ void VecConvertLength(D3DXVECTOR3 *pVec, float fLength)
 }
 
 //========================================
-// ディグリーからラジアンへの変換
-//========================================
-float DegreeToRadian(float fDegree)
-{ 
-	return (fDegree) * (D3DX_PI / 180.0f);
-}
-
-//========================================
 // 反対の相対座標を出す処理
 //========================================
 D3DXVECTOR3 RelativeInversPos(D3DXVECTOR3 pos, D3DXVECTOR3 posCenter, float fRate)
@@ -225,6 +217,23 @@ D3DXVECTOR3 VecToOffset(D3DXMATRIX mtx, D3DXVECTOR3 posOffset)
 	D3DXVECTOR3 vecDiff = offset - pos;
 
 	return vecDiff;
+}
+
+//========================================
+// 極座標の計算
+//========================================
+D3DXVECTOR3 PolarCoordinates(D3DXVECTOR3 rot)
+{
+	D3DXVECTOR3 vec;
+
+	vec =
+	{
+		sinf(rot.x) * sinf(rot.y),
+		cosf(rot.x),
+		sinf(rot.x) * cosf(rot.y),
+	};
+
+	return vec;
 }
 
 //========================================
