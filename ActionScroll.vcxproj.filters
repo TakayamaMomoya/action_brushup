@@ -121,7 +121,6 @@
       <Filter>VFX</Filter>
     </ClCompile>
     <ClCompile Include="code\bullet.cpp" />
-    <ClCompile Include="code\cameraState.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\edit.cpp" />
     <ClCompile Include="code\frame.cpp" />
@@ -154,6 +153,9 @@
     </ClCompile>
     <ClCompile Include="code\enemyboss.cpp">
       <Filter>enemy\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="code\cameraState.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,7 +279,6 @@
       <Filter>VFX</Filter>
     </ClInclude>
     <ClInclude Include="code\bullet.h" />
-    <ClInclude Include="code\cameraState.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\edit.h" />
     <ClInclude Include="code\frame.h" />
@@ -310,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="code\enemyboss.h">
       <Filter>enemy\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="code\cameraState.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

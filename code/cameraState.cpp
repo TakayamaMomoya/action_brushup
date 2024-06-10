@@ -27,6 +27,7 @@ const float RATE_ADVANCE_FOLLOW = 10.0f;	// 追従時、移動量に対する先を見る割合
 const float DIST_FOLLOW_DEFAULT = 100.0f;	// 追従時のデフォルトカメラ距離
 const float DIST_APPER_PLAYER = 100.0f;	// プレイヤー出現時のカメラ距離
 const float DIST_MIN_BOSS = 85.0f;	// ボス戦のときの最小距離
+const D3DXVECTOR3 INITIAL_ROT_FOLLOWPLAYER = { 1.0f,0.0f,0.0f };	// プレイヤー追従の初期角度
 }
 
 //====================================================
@@ -48,7 +49,6 @@ CCameraState::~CCameraState()
 //************************************************************
 // プレイヤー追従
 //************************************************************
-
 //====================================================
 // コンストラクタ
 //====================================================
@@ -70,6 +70,7 @@ CCameraStateFollowPlayer::~CCameraStateFollowPlayer()
 //====================================================
 void CCameraStateFollowPlayer::Init(CCamera *pCamera)
 {
+	pCamera->GetInfo()->rot = INITIAL_ROT_FOLLOWPLAYER;
 	pCamera->SetDist(DIST_FOLLOW_DEFAULT);
 }
 
@@ -114,7 +115,6 @@ void CCameraStateFollowPlayer::Update(CCamera *pCamera)
 //************************************************************
 // プレイヤー登場
 //************************************************************
-
 //====================================================
 // コンストラクタ
 //====================================================

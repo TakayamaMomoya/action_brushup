@@ -51,6 +51,9 @@ CCamera::~CCamera()
 //====================================================
 HRESULT CCamera::Init(void)
 {
+	m_camera.fViewAngle = INITIAL_FOV;
+	m_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
 	return S_OK;
 }
 
