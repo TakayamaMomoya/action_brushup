@@ -153,6 +153,14 @@ void Horming(D3DXVECTOR3 pos, D3DXVECTOR3 posTarget, float fSpeedChase, D3DXVECT
 }
 
 //========================================
+// ディグリーからラジアンへの変換
+//========================================
+float DegreeToRadian(float fDegree)
+{
+	return (fDegree) * (D3DX_PI / 180.0f);
+}
+
+//========================================
 // ベクトルを長さで補正する処理
 //========================================
 void VecConvertLength(D3DXVECTOR3 *pVec, float fLength)

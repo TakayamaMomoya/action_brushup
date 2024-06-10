@@ -43,6 +43,7 @@ D3DXVECTOR3 PolarCoordinates(D3DXVECTOR3 rot);
 D3DXCOLOR ConvertRGB(BYTE r, BYTE g, BYTE b, BYTE a);
 D3DXVECTOR3 VecToRot(D3DXVECTOR3 vec);
 int RandRange(int nMax, int nMin);
+float DegreeToRadian(float fDegree);
 void VecConvertLength(D3DXVECTOR3 *pVec, float fLength);
 
 //======================================

@@ -16,6 +16,7 @@
 class CEnemyBoss : public CEnemy
 {// 撃ってくる敵
 public:
+	// 列挙型定義
 	enum IDXPARTS
 	{// パーツの番号
 		IDX_WAIST = 0,	// 腰
@@ -40,15 +41,19 @@ public:
 	CEnemyBoss();	// コンストラクタ
 	~CEnemyBoss();	// デストラクタ
 
-	static CEnemyBoss *Create(void);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	static CEnemyBoss *GetInstance(void) { return m_pEnemyBoss; }
-	void Hit(float fDamage);
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+	void Hit(float fDamage);	// ヒット処理
+
+	// 静的メンバ関数
+	static CEnemyBoss *Create(void);	// 生成処理
+	static CEnemyBoss *GetInstance(void) { return m_pEnemyBoss; }	// インスタンスの取得
 
 private:
+	// 列挙型定義
 	enum STATE
 	{// 状態
 		STATE_NONE = 0,	// 何もしていない状態
@@ -57,7 +62,7 @@ private:
 		STATE_MAX
 	};
 	enum ATTACKSTATE
-	{
+	{// 攻撃状態
 		ATTACK_MISSILE = 0,	// ミサイル攻撃
 		ATTACK_DASH,	// 突進攻撃
 		ATTACK_SHOT_UNDER,	// 下から射撃攻撃
@@ -73,6 +78,8 @@ private:
 		MOTION_DEATH,	// 死亡モーション
 		MOTION_MAX
 	};
+
+	// 構造体定義
 	struct Sinfo
 	{// 自身の情報
 		STATE state;	// 状態
@@ -82,11 +89,12 @@ private:
 		int nNumAttack;	// 攻撃した回数
 		float fTimerState;	// 状態遷移タイマー
 	};
-
-	void ManageState(void);
-	void UpdateState(void);
+	
+	// メンバ関数
+	void ManageState(void);	// 状態の管理
+	void UpdateState(void);	// 状態ごとの更新
 	// 状態ごとの更新======
-	void UpdateApper(void);
+	void UpdateApper(void);	// 出現時の更新
 	void UpdateAttackState(void);
 	//=====================
 	// 攻撃状態ごとの更新==
@@ -100,8 +108,11 @@ private:
 	bool FollowDest(void);
 	void SwitchState(void);
 
-	static CEnemyBoss *m_pEnemyBoss;	// 自身のポインタ
+	// メンバ変数
 	Sinfo m_info;	// 自身の情報
+
+	// 静的メンバ変数
+	static CEnemyBoss *m_pEnemyBoss;	// 自身のポインタ
 };
 
 #endif

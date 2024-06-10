@@ -157,6 +157,9 @@
     <ClCompile Include="code\cameraState.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="code\enemybossState.cpp">
+      <Filter>enemy\boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\block.h" />
@@ -314,6 +317,9 @@
     </ClInclude>
     <ClInclude Include="code\cameraState.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemybossState.h">
+      <Filter>enemy\boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
