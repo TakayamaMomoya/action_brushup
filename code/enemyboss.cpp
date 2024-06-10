@@ -36,18 +36,12 @@ namespace
 const float INITIAL_LIFE = 60.0f;	// 初期体力
 const int INITIAL_SCORE = 3000;	// 初期スコア
 const float ROLL_FACT = 0.1f;	// 回転係数
-const float BULLET_SPEED = 2.0f;	// 弾の速度
-const float BULLET_SIZE = 2.5f;	// 弾の大きさ
-const float DELAY_MISSILE = 0.2f;	// ミサイル発射のディレイ
-const float INITIALSPEED_MISSILE = 3.0f;	// ミサイルの初速
-const int NUM_MISSILE = 3;	// ミサイルの発射数
 const float MOVE_FACT = 0.04f;	// 移動量減衰係数
 const float LINE_END_MOVE = 5.0f;	// 移動終了のしきい値
 const float MID_POINT = 2740.0f;	// ボス戦ステージの中央X座標
 const float WIDTH_STAGE = 160.0f;	// ステージの幅
 const float TIME_DAMAGE = 0.2f;	// 無敵時間
 const float FLOAT_HEIGHT = 180.0f;	// 浮かんでいる高さ
-const float DELAY_SHOT = 0.5f; // 射撃のディレイ
 const float SHOT_HEIGHT = 30.0f;	// 射撃時の高さ
 const float RADIUS_COLLISION = 35.0f;	// 当たり判定の半径
 const float SIZE_SHADOW = 40.0f;	// 影のサイズ
@@ -61,10 +55,9 @@ CEnemyBoss *CEnemyBoss::m_pEnemyBoss = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEnemyBoss::CEnemyBoss()
+CEnemyBoss::CEnemyBoss() : m_pState(nullptr)
 {
-	// 自身の情報をクリア
-	ZeroMemory(&m_info,sizeof(Sinfo));
+
 }
 
 //=====================================================
@@ -93,6 +86,8 @@ CEnemyBoss *CEnemyBoss::Create(void)
 //=====================================================
 HRESULT CEnemyBoss::Init(void)
 {
+	typeid(CEnemyBossStateDash);
+
 	CSound *pSound = CSound::GetInstance();
 
 	if (pSound != nullptr)
@@ -114,17 +109,6 @@ HRESULT CEnemyBoss::Init(void)
 	// スコア設定
 	SetScore(INITIAL_SCORE);
 
-	// モーション設定
-	SetMotion(MOTION_APPER);
-	m_info.state = STATE_APPER;
-
-	// 出現地点合わせ
-	SetMatrix();
-	CMotion::Update();
-	CMotion::Update();
-
-	FollowCollision();
-
 	// 影の設定
 	CShadow *pShadow = GetShadow();
 
@@ -140,6 +124,10 @@ HRESULT CEnemyBoss::Init(void)
 	{
 		pCamera->ChangeState(new CCameraStateApperBoss);
 	}
+
+	ChangeState(new CEnemyBossStateApper);
+
+	FollowCollision();
 
 	return S_OK;
 }
@@ -178,14 +166,13 @@ void CEnemyBoss::Update(void)
 	// 状態管理
 	ManageState();
 
-	// 条件ごとの更新
-	UpdateState();
+	if (m_pState != nullptr)
+	{// ステイトの更新
+		m_pState->Update(this);
+	}
 	
 	// 当たり判定管理
 	ManageCollision();
-
-	// 攻撃の管理
-	ManageAttack();
 }
 
 //=====================================================
@@ -237,24 +224,6 @@ void CEnemyBoss::ManageState(void)
 }
 
 //=====================================================
-// 状態ごとの更新分岐
-//=====================================================
-void CEnemyBoss::UpdateState(void)
-{
-	switch (m_info.state)
-	{
-	case STATE_APPER:
-		UpdateApper();
-		break;
-	case STATE_BATTLE:
-		UpdateAttackState();
-		break;
-	default:
-		break;
-	}
-}
-
-//=====================================================
 // 出現状態の更新
 //=====================================================
 void CEnemyBoss::UpdateApper(void)
@@ -275,175 +244,6 @@ void CEnemyBoss::UpdateApper(void)
 		{
 			pCamera->ChangeState(new CCameraStateBossBattle);
 		}
-	}
-}
-
-//=====================================================
-// 戦闘状態の更新
-//=====================================================
-void CEnemyBoss::UpdateAttackState(void)
-{
-	switch (m_info.attackState)
-	{
-	case ATTACK_MISSILE:
-		UpdateMissile();
-		break;
-	case ATTACK_DASH:
-		UpdateDash();
-		break;
-	case ATTACK_SHOT_UNDER:
-		UpdateShotUnder();
-		break;
-	default:
-		break;
-	}
-}
-
-//=====================================================
-// ミサイル攻撃の更新
-//=====================================================
-void CEnemyBoss::UpdateMissile(void)
-{
-	D3DXVECTOR3 pos = GetPosition();
-
-	// プレイヤーの方を向く処理
-	RotDest();
-
-	if (pos.x < MID_POINT)
-	{// 左にいた場合
-		m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
-	}
-	else
-	{
-		m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
-	}
-
-
-	// 目標位置追従
-	bool bEnd = FollowDest();
-
-	if (bEnd)
-	{
-		// ミサイル攻撃
-		m_info.fTimerAttack++;
-
-		if (DELAY_MISSILE <= m_info.fTimerAttack)
-		{// ミサイル発射
-			D3DXVECTOR3 posMissile = GetMtxPos(IDX_SHOULDER_L);
-
-			CMissile *pMissile = CMissile::Create(posMissile);
-
-			if (pMissile != nullptr)
-			{
-				pMissile->SetMove(D3DXVECTOR3(0.0f, INITIALSPEED_MISSILE, 0.0f));
-			}
-
-			CSound *pSound = CSound::GetInstance();
-
-			if (pSound != nullptr)
-			{
-				pSound->Play(CSound::LABEL_SE_MISSILE);
-			}
-
-			m_info.fTimerAttack = 0;
-
-			// 攻撃回数加算
-			m_info.nNumAttack++;
-
-			if (m_info.nNumAttack >= NUM_MISSILE)
-			{
-				SwitchState();
-			}
-		}
-	}
-}
-
-//=====================================================
-// 突進攻撃の更新
-//=====================================================
-void CEnemyBoss::UpdateDash(void)
-{
-	bool bFinish = IsFinish();
-
-	if (bFinish)
-	{// 状態切り替え
-		// 目標位置追従
-		bool bEnd = FollowDest();
-
-		if (bEnd)
-		{
-			SwitchState();
-		}
-	}
-	else
-	{
-		RotDest();
-	}
-}
-
-//=====================================================
-// 下から射撃攻撃の更新
-//=====================================================
-void CEnemyBoss::UpdateShotUnder(void)
-{
-	RotDest();
-
-	FollowDest();
-
-	bool bFinish = IsFinish();
-	int nKey = GetKey();
-
-	if (nKey == 3)
-	{
-		m_info.fTimerAttack++;
-
-		if (m_info.fTimerAttack >= DELAY_SHOT)
-		{
-			D3DXMATRIX mtxWeapon = *GetParts(IDX_WEAPON)->m_pParts->GetMatrix();
-			D3DXMATRIX mtxMazzle;
-			D3DXMATRIX mtxMazzleVec;
-
-			// オフセットの位置設定
-			universal::SetOffSet(&mtxMazzle, mtxWeapon, D3DXVECTOR3(5.0f, -30.0f, 0.0f));
-			universal::SetOffSet(&mtxMazzleVec, mtxMazzle,D3DXVECTOR3(0.0f,-1.0f,0.0f));
-
-			// 差分のベクトルを取得
-			D3DXVECTOR3 posMazzle =
-			{
-				mtxMazzle._41,
-				mtxMazzle._42,
-				mtxMazzle._43,
-			};
-			D3DXVECTOR3 posBullet =
-			{
-				mtxMazzleVec._41,
-				mtxMazzleVec._42,
-				mtxMazzleVec._43,
-			};
-
-			D3DXVECTOR3 vecBullet = posBullet - posMazzle;
-
-			D3DXVec3Normalize(&vecBullet, &vecBullet);
-
-			vecBullet *= BULLET_SPEED;
-
-			CBullet::Create(posMazzle, vecBullet, 400, CBullet::TYPE_ENEMY, false, 10.0f, 5.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-
-			m_info.fTimerAttack = 0;
-
-			CSound *pSound = CSound::GetInstance();
-
-			if (pSound != nullptr)
-			{
-				pSound->Play(CSound::LABEL_SE_BULLET);
-			}
-		}
-	}
-
-	if (bFinish)
-	{// 状態切り替え
-		// 目標位置追従
-		SwitchState();
 	}
 }
 
@@ -470,6 +270,25 @@ void CEnemyBoss::FollowCollision(void)
 		pCollision->SetPositionOld(pCollision->GetPosition());
 		pCollision->SetPosition(pos);
 		pCollision->SetRadius(RADIUS_COLLISION);
+	}
+}
+
+//=====================================================
+// ステイトの切り替え
+//=====================================================
+void CEnemyBoss::ChangeState(CEnemyBossState *pState)
+{
+	if (m_pState != nullptr)
+	{
+		delete m_pState;
+		m_pState = nullptr;
+	}
+
+	m_pState = pState;
+
+	if (m_pState != nullptr)
+	{
+		m_pState->Init(this);
 	}
 }
 
@@ -520,65 +339,26 @@ void CEnemyBoss::SwitchState(void)
 
 	m_info.attackState = state;
 
+	// ステイトの生成
+	CEnemyBossState *pState = nullptr;
+
 	switch (m_info.attackState)
 	{
 	case ATTACK_MISSILE:
-
-		SetMotion(MOTION_MISSILE);
-
+		pState = new CEnemyBossStateMissile;
 		break;
 	case ATTACK_DASH:
-	{
-		SetMotion(MOTION_DASH);
-
-		D3DXVECTOR3 pos = GetPosition();
-
-		if (pos.x < MID_POINT)
-		{// 左にいた場合
-			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
-		}
-		else
-		{
-			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT, 0.0f };
-		}
-	}
+		pState = new CEnemyBossStateDash;
 		break;
-	case ATTACK_SHOT_UNDER:
-	{
-		int nRand = rand() % 2;
-
-		if (nRand == 1)
-		{
-			SetMotion(MOTION_SHOT_UPPER);
-		}
-		else
-		{
-			SetMotion(MOTION_SHOT_UNDER);
-		}
-
-		D3DXVECTOR3 pos = GetPosition();
-
-		if (pos.x < MID_POINT)
-		{// 左にいた場合
-			m_info.posDest = { MID_POINT - WIDTH_STAGE, FLOAT_HEIGHT + SHOT_HEIGHT, 0.0f };
-		}
-		else
-		{
-			m_info.posDest = { MID_POINT + WIDTH_STAGE, FLOAT_HEIGHT + SHOT_HEIGHT, 0.0f };
-		}
-	}
+	case ATTACK_SHOT:
+		pState = new CEnemyBossStateShot;
 		break;
 	default:
 		break;
 	}
-}
 
-//=====================================================
-// 攻撃管理
-//=====================================================
-void CEnemyBoss::ManageAttack(void)
-{
-
+	// 状態の切り替え
+	ChangeState(pState);
 }
 
 //=====================================================

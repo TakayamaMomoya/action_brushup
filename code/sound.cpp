@@ -475,3 +475,19 @@ void CSound::SetFade(E_LABEL LabelNow, E_LABEL LabelNext, float fSpeed)
 	m_SoundLabelNow = LabelNow;
 	m_fSpeedFadeSound = fSpeed;
 }
+
+namespace Sound
+{
+//=====================================================
+// サウンドの再生（ショートカット関数）
+//=====================================================
+void Play(CSound::E_LABEL label)
+{
+	CSound *pSound = CSound::GetInstance();
+
+	if (pSound != nullptr)
+	{
+		pSound->Play(label);
+	}
+}
+}

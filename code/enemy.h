@@ -71,9 +71,9 @@ public:
 	float GetCntState(void) { return m_fTimerState; }
 	void SetCntState(float fCnt) { m_fTimerState = fCnt; }
 	void DeleteCollision(void);
+	void RotDest(void);
 
 protected:
-	void RotDest(void);
 	CShadow *GetShadow(void) { return m_pShadow; }
 	void ManageScore(void);
 

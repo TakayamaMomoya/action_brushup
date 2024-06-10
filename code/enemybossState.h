@@ -29,28 +29,44 @@ public:
 private:
 };
 
+class CEnemyBossStateApper : public CEnemyBossState
+{// 出現状態
+public:
+	CEnemyBossStateApper();	// コンストラクタ
+	~CEnemyBossStateApper();	// デストラクタ
+
+	// メンバ関数
+	void Init(CEnemyBoss *pBoss) override;	// 初期化処理
+	void Update(CEnemyBoss *pBoss) override;	// 更新処理
+
+private:
+};
+
 class CEnemyBossStateMissile : public CEnemyBossState
 {// ミサイル攻撃
 public:
-	CEnemyBossStateMissile() {}	// コンストラクタ
-	~CEnemyBossStateMissile() {}	// デストラクタ
+	CEnemyBossStateMissile();	// コンストラクタ
+	~CEnemyBossStateMissile();	// デストラクタ
 
 	// メンバ関数
-	void Init(CEnemyBoss *pBoss) override {};	// 初期化処理
-	void Update(CEnemyBoss *pBoss) override {};	// 更新処理
+	void Init(CEnemyBoss *pBoss) override;	// 初期化処理
+	void Update(CEnemyBoss *pBoss) override;	// 更新処理
 
 private:
+	// メンバ変数
+	float m_fTimerAttack;	// 攻撃タイマー
+	int m_nCntAttack;	// 攻撃カウンター
 };
 
 class CEnemyBossStateDash : public CEnemyBossState
 {// 突進攻撃
 public:
-	CEnemyBossStateDash() {}	// コンストラクタ
-	~CEnemyBossStateDash() {}	// デストラクタ
+	CEnemyBossStateDash();	// コンストラクタ
+	~CEnemyBossStateDash();	// デストラクタ
 
 	// メンバ関数
-	void Init(CEnemyBoss *pBoss) override {};	// 初期化処理
-	void Update(CEnemyBoss *pBoss) override {};	// 更新処理
+	void Init(CEnemyBoss *pBoss) override;	// 初期化処理
+	void Update(CEnemyBoss *pBoss) override;	// 更新処理
 
 private:
 };
@@ -58,14 +74,16 @@ private:
 class CEnemyBossStateShot : public CEnemyBossState
 {// 射撃攻撃
 public:
-	CEnemyBossStateShot() {}	// コンストラクタ
-	~CEnemyBossStateShot() {}	// デストラクタ
+	CEnemyBossStateShot();	// コンストラクタ
+	~CEnemyBossStateShot();	// デストラクタ
 
 	// メンバ関数
-	void Init(CEnemyBoss *pBoss) override {};	// 初期化処理
-	void Update(CEnemyBoss *pBoss) override {};	// 更新処理
+	void Init(CEnemyBoss *pBoss) override;	// 初期化処理
+	void Update(CEnemyBoss *pBoss) override;	// 更新処理
 
 private:
+	// メンバ変数
+	float m_fTimerAttack;	// 攻撃タイマー
 };
 
 #endif

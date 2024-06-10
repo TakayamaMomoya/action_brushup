@@ -4,17 +4,20 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _ENEMYBOSS_H_
+#ifndef _ENEMYBOSS_H_	// 二重インクルード防止
 #define _ENEMYBOSS_H_
 
+//*****************************************************
+// インクルード
+//*****************************************************
 #include "enemy.h"
+#include "enemybossState.h"
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
 class CEnemyBoss : public CEnemy
-{// 撃ってくる敵
+{
 public:
 	// 列挙型定義
 	enum IDXPARTS
@@ -37,6 +40,16 @@ public:
 		IDX_WEAPON,	// 武器
 		IDX_MAX
 	};
+	enum MOTION
+	{// モーション
+		MOTION_APPER = 0,	// 出現モーション
+		MOTION_MISSILE,	// ミサイルモーション
+		MOTION_DASH,	// 突進モーション
+		MOTION_SHOT_UNDER,	// 射撃モーション
+		MOTION_SHOT_UPPER,	// 反転射撃モーション
+		MOTION_DEATH,	// 死亡モーション
+		MOTION_MAX
+	};
 
 	CEnemyBoss();	// コンストラクタ
 	~CEnemyBoss();	// デストラクタ
@@ -47,6 +60,13 @@ public:
 	void Update(void);	// 更新処理
 	void Draw(void);	// 描画処理
 	void Hit(float fDamage);	// ヒット処理
+	bool FollowDest(void);	// 目標に向かう処理
+	void SwitchState(void);	// 状態の変更
+	void FollowCollision(void);	// 当たり判定の追従
+
+	// 変数取得・設定関数
+	void SetPosDest(D3DXVECTOR3 posDest) { m_info.posDest = posDest; }	// 目標位置
+	D3DXVECTOR3 GetPosDest(void) { return m_info.posDest; }
 
 	// 静的メンバ関数
 	static CEnemyBoss *Create(void);	// 生成処理
@@ -65,22 +85,12 @@ private:
 	{// 攻撃状態
 		ATTACK_MISSILE = 0,	// ミサイル攻撃
 		ATTACK_DASH,	// 突進攻撃
-		ATTACK_SHOT_UNDER,	// 下から射撃攻撃
+		ATTACK_SHOT,	// 射撃攻撃
 		ATTACK_MAX
-	};
-	enum MOTION
-	{// モーション
-		MOTION_APPER = 0,	// 出現モーション
-		MOTION_MISSILE,	// ミサイルモーション
-		MOTION_DASH,	// 突進モーション
-		MOTION_SHOT_UNDER,	// 射撃モーション
-		MOTION_SHOT_UPPER,	// 反転射撃モーション
-		MOTION_DEATH,	// 死亡モーション
-		MOTION_MAX
 	};
 
 	// 構造体定義
-	struct Sinfo
+	struct S_Info
 	{// 自身の情報
 		STATE state;	// 状態
 		ATTACKSTATE attackState;	// 攻撃状態
@@ -88,28 +98,20 @@ private:
 		float fTimerAttack;	// 攻撃タイマー
 		int nNumAttack;	// 攻撃した回数
 		float fTimerState;	// 状態遷移タイマー
+		// コンストラクタ
+		S_Info() : state(CEnemyBoss::STATE::STATE_NONE), attackState(ATTACKSTATE::ATTACK_MISSILE),
+			posDest{}, fTimerAttack(0.0f), nNumAttack(0), fTimerState(0.0f) {}
 	};
 	
 	// メンバ関数
 	void ManageState(void);	// 状態の管理
-	void UpdateState(void);	// 状態ごとの更新
-	// 状態ごとの更新======
 	void UpdateApper(void);	// 出現時の更新
-	void UpdateAttackState(void);
-	//=====================
-	// 攻撃状態ごとの更新==
-	void UpdateMissile(void);
-	void UpdateDash(void);
-	void UpdateShotUnder(void);
-	//=====================
-	void ManageAttack(void);
-	void ManageCollision(void);
-	void FollowCollision(void);
-	bool FollowDest(void);
-	void SwitchState(void);
+	void ManageCollision(void);	// 当たり判定管理
+	void ChangeState(CEnemyBossState *pState);	// ステイトの切り替え
 
 	// メンバ変数
-	Sinfo m_info;	// 自身の情報
+	S_Info m_info;	// 自身の情報
+	CEnemyBossState *m_pState;	// ステイトのポインタ
 
 	// 静的メンバ変数
 	static CEnemyBoss *m_pEnemyBoss;	// 自身のポインタ
