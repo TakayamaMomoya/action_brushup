@@ -21,14 +21,17 @@
 #include "slow.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define SPEED_MOVE	(1.0f)	// 移動速度
-#define RATE_RADIUS	(1.5f)	// 当たり判定の大きさの倍率
-#define INITIAL_LIFE	(5.0f)	// 初期体力
-#define DAMAGE_FRAME	(10)	// ダメージ状態の継続フレーム数
-#define INITIAL_SCORE	(1000)	// 初期スコア
-#define TIME_DEATH	(30)	// 死亡までのタイム
+namespace
+{
+const float SPEED_MOVE = 1.0f;	// 移動速度
+const float RATE_RADIUS = 1.5f;	// 当たり判定の大きさの倍率
+const float INITIAL_LIFE = 5.0f;	// 初期体力
+const int DAMAGE_FRAME = 10;	// ダメージ状態の継続フレーム
+const int INITIAL_SCORE = 1000;	// 初期スコア
+const int TIME_DEATH = 30;	// 死亡までのタイム
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -38,18 +41,10 @@ int CEnemyNormal::m_nNumAll = 0;	// 総数
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEnemyNormal::CEnemyNormal()
+CEnemyNormal::CEnemyNormal() : m_fLife(0.0f),m_nScore(0),m_fCntAttack(0.0f),m_nTimerState(0),m_pCollisionSphere(nullptr),
+								m_pCollisionCube(nullptr),m_pNext(nullptr),m_pPrev(nullptr)
 {
 	m_nNumAll++;
-
-	m_fLife = 0;
-	m_nScore = 0;
-	m_fCntAttack = 0.0f;
-	m_nTimerState = 0;
-	m_pCollisionSphere = nullptr;
-	m_pCollisionCube = nullptr;
-	m_pNext = nullptr;
-	m_pPrev = nullptr;
 }
 
 //=====================================================

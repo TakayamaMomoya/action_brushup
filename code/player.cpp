@@ -887,61 +887,69 @@ void CPlayer::ManageAttack(void)
 
 			if (fFrame == m_info.pAttackInfo[i].nFrame && nKey == m_info.pAttackInfo[i].nKey)
 			{// 当たり判定の設定
-				bool bHit = false;
-				D3DXMATRIX mtx;
+				SetAttackCollision(m_info.pAttackInfo[i]);
+			}
+		}
+	}
+}
 
-				universal::SetOffSet(&mtx, *m_info.pBody->GetMatrix(), m_info.pAttackInfo[i].pos);
+//=====================================================
+// 攻撃判定の設定
+//=====================================================
+void CPlayer::SetAttackCollision(AttackInfo attackInfo)
+{
+	bool bHit = false;
+	D3DXMATRIX mtx;
 
-				pos =
-				{
-					mtx._41,
-					mtx._42,
-					mtx._43
-				};
+	universal::SetOffSet(&mtx, *m_info.pBody->GetMatrix(), attackInfo.pos);
+
+	D3DXVECTOR3 pos =
+	{
+		mtx._41,
+		mtx._42,
+		mtx._43
+	};
 
 #ifdef _DEBUG
-				CEffect3D::Create(pos, m_info.pAttackInfo[i].fRadius, 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 攻撃判定の可視化
+	CEffect3D::Create(pos, attackInfo.fRadius, 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 攻撃判定の可視化
 #endif
 
 				// 位置設定
-				m_info.pClsnAttack->SetPosition(pos);
-				
-				// 半径の設定
-				m_info.pClsnAttack->SetRadius(m_info.pAttackInfo[i].fRadius);
+	m_info.pClsnAttack->SetPosition(pos);
 
-				bHit = m_info.pClsnAttack->SphereCollision(CCollision::TAG_ENEMY);
-				CObject *pObj = m_info.pClsnAttack->GetOther();
+	// 半径の設定
+	m_info.pClsnAttack->SetRadius(attackInfo.fRadius);
 
-				if (bHit == true && pObj != nullptr)
-				{// 命中時のヒット処理
-					// アニメーションエフェクトの再生
-					CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+	bHit = m_info.pClsnAttack->SphereCollision(CCollision::TAG_ENEMY);
+	CObject *pObj = m_info.pClsnAttack->GetOther();
 
-					if (pAnim3D != nullptr)
-					{
-						pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
-					}
+	if (bHit == true && pObj != nullptr)
+	{// 命中時のヒット処理
+		// アニメーションエフェクトの再生
+		CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
 
-					// ヒットストップの発生
-					CSlow *pSlow = CSlow::GetInstance();
+		if (pAnim3D != nullptr)
+		{
+			pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
+		}
 
-					if (pSlow != nullptr)
-					{
-						pSlow->SetSlowTime(m_info.pAttackInfo[i].fTimeHitStop, m_info.pAttackInfo[i].fScaleHitStop);
-					}
+		// ヒットストップの発生
+		CSlow *pSlow = CSlow::GetInstance();
 
-					// 当たったオブジェクトのヒット処理
-					pObj->Hit(5.0f);
+		if (pSlow != nullptr)
+		{
+			pSlow->SetSlowTime(attackInfo.fTimeHitStop, attackInfo.fScaleHitStop);
+		}
 
-					// 音の再生
-					CSound *pSound = CSound::GetInstance();
+		// 当たったオブジェクトのヒット処理
+		pObj->Hit(5.0f);
 
-					if (pSound != nullptr)
-					{
-						pSound->Play(CSound::LABEL_SE_HIT_NORMAL);
-					}
-				}
-			}
+		// 音の再生
+		CSound *pSound = CSound::GetInstance();
+
+		if (pSound != nullptr)
+		{
+			pSound->Play(CSound::LABEL_SE_HIT_NORMAL);
 		}
 	}
 }

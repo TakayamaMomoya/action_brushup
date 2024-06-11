@@ -18,9 +18,9 @@ LPDIRECTINPUT8 CInput::m_pInput = nullptr;	// DirectInputƒIƒuƒWƒFƒNƒg‚Ö‚Ìƒ|ƒCƒ“ƒ
 //=====================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
-CInput::CInput()
+CInput::CInput() : m_pDevice(nullptr)
 {
-	m_pDevice = nullptr;
+
 }
 
 //=====================================================
@@ -38,7 +38,7 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	if (m_pInput == nullptr)
 	{
-		//DirectInputƒIƒuƒWƒFƒNƒg‚Ì¶¬
+		// DirectInputƒIƒuƒWƒFƒNƒg‚Ì¶¬
 		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, nullptr)))
 		{
 			return E_FAIL;
@@ -54,14 +54,14 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 void CInput::Uninit(void)
 {
 	if (m_pDevice != nullptr)
-	{//“ü—ÍƒfƒoƒCƒX”jŠü
+	{// “ü—ÍƒfƒoƒCƒX”jŠü
 		m_pDevice->Unacquire();
 		m_pDevice->Release();
 		m_pDevice = nullptr;
 	}
 
 	if (m_pInput != nullptr)
-	{//DirectInputƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+	{// DirectInputƒIƒuƒWƒFƒNƒg‚Ì”jŠü
 		m_pInput->Release();
 		m_pInput = nullptr;
 	}

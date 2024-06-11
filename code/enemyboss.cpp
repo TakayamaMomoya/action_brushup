@@ -55,7 +55,7 @@ CEnemyBoss *CEnemyBoss::m_pEnemyBoss = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEnemyBoss::CEnemyBoss() : m_pState(nullptr)
+CEnemyBoss::CEnemyBoss() : m_pState(nullptr), m_info()
 {
 
 }

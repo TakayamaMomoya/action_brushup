@@ -67,12 +67,12 @@ HRESULT CInputJoypad::Init(void)
 	XInputEnable(true);
 
 	//メモリのクリア
-	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	for (int nCount = 0; nCount < Joypad::MAX_PLAYER; nCount++)
 	{
 		memset(&m_aState[nCount], 0, sizeof(XINPUT_STATE));
 		memset(&m_aVibration[nCount], 0, sizeof(XINPUT_VIBRATION));
 		memset(&m_aStateTrigger[nCount], 0, sizeof(XINPUT_STATE));
-		memset(&m_aVibState[nCount], 0, sizeof(PADVIB));
+		memset(&m_aVibState[nCount], 0, sizeof(E_STATE_PADVIB));
 	}
 
 	return S_OK;
@@ -95,9 +95,9 @@ void CInputJoypad::Uninit(void)
 void CInputJoypad::Update(void)
 {
 	//変数宣言
-	XINPUT_STATE aState[MAX_PLAYER];
+	XINPUT_STATE aState[Joypad::MAX_PLAYER];
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < Joypad::MAX_PLAYER; nCntPlayer++)
 	{
 		for (int nCntKey = 0; nCntKey < CInputJoypad::PADBUTTONS_MAX; nCntKey++)
 		{
@@ -112,7 +112,7 @@ void CInputJoypad::Update(void)
 		}
 	}
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < Joypad::MAX_PLAYER; nCntPlayer++)
 	{
 		if (m_nVibTimer > 0)
 		{
@@ -120,7 +120,7 @@ void CInputJoypad::Update(void)
 		}
 		else if (m_nVibTimer <= 0)
 		{
-			memset(&m_aVibState[nCntPlayer], 0, sizeof(PADVIB));
+			memset(&m_aVibState[nCntPlayer], 0, sizeof(E_STATE_PADVIB));
 			m_aVibration[nCntPlayer].wLeftMotorSpeed = 0;
 			m_aVibration[nCntPlayer].wRightMotorSpeed = 0;
 			//振動状態を伝達
@@ -196,7 +196,7 @@ void CInputJoypad::CheckStickTrigger(XINPUT_STATE state, int nPlayer)
 //====================================================
 // ジョイスティックトリガー情報
 //====================================================
-bool CInputJoypad::GetLStickTrigger(DIRECTION direction, int nPlayer)
+bool CInputJoypad::GetLStickTrigger(E_DIRECTION direction, int nPlayer)
 {
 	return m_abTrigggerLStick[nPlayer][direction];
 }
@@ -258,7 +258,7 @@ D3DXVECTOR3 CInputJoypad::GetVecStickL(void)
 //====================================================
 // プレス情報取得
 //====================================================
-bool CInputJoypad::GetPress(PADBUTTOS nKey, int nPlayer)
+bool CInputJoypad::GetPress(E_PADBUTTONS nKey, int nPlayer)
 {
 	//三項演算子
 	return(m_aState[nPlayer].Gamepad.wButtons & (0x01 << nKey)) ? true : false;
@@ -267,7 +267,7 @@ bool CInputJoypad::GetPress(PADBUTTOS nKey, int nPlayer)
 //====================================================
 //トリガー情報取得
 //====================================================
-bool CInputJoypad::GetTrigger(PADBUTTOS nKey, int nPlayer)
+bool CInputJoypad::GetTrigger(E_PADBUTTONS nKey, int nPlayer)
 {
 	//三項演算子
 	return(m_aStateTrigger[nPlayer].Gamepad.wButtons & (0x01 << nKey)) ? true : false;
@@ -276,7 +276,7 @@ bool CInputJoypad::GetTrigger(PADBUTTOS nKey, int nPlayer)
 //====================================================
 //リリース情報取得
 //====================================================
-bool CInputJoypad::GetRelease(PADBUTTOS nKey, int nPlayer)
+bool CInputJoypad::GetRelease(E_PADBUTTONS nKey, int nPlayer)
 {
 	//三項演算子
 	return(m_aStateRelease[nPlayer].Gamepad.wButtons & (0x01 << nKey)) ? true : false;
@@ -285,7 +285,7 @@ bool CInputJoypad::GetRelease(PADBUTTOS nKey, int nPlayer)
 //====================================================
 //リピート情報取得
 //====================================================
-int CInputJoypad::GetRepeat(PADBUTTOS nKey, int nPlayer)
+int CInputJoypad::GetRepeat(E_PADBUTTONS nKey, int nPlayer)
 {
 	//三項演算子
 	return m_aCntRepeat[nPlayer][nKey];
@@ -294,7 +294,7 @@ int CInputJoypad::GetRepeat(PADBUTTOS nKey, int nPlayer)
 //====================================================
 // バイブ情報設定
 //====================================================
-void CInputJoypad::Vibration(int nPlayer, PADVIB state, short sVib,int nTime)
+void CInputJoypad::Vibration(int nPlayer, E_STATE_PADVIB state, short sVib,int nTime)
 {
 	switch (state)
 	{

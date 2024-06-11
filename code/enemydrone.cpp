@@ -28,6 +28,7 @@ const int INITIAL_SCORE = 500;	// 初期スコア
 const float DELAY_SHOT = 2.0f;	// 射撃カウンター
 const float BULLET_SPEED = 2.0f;	// 弾の速度
 const float BULLET_SIZE = 1.0f;	// 弾の大きさ
+const float DIST_ATTACK = 200.0f;	// 攻撃する範囲
 }
 
 //=====================================================
@@ -68,7 +69,6 @@ HRESULT CEnemyDrone::Init(void)
 //=====================================================
 void CEnemyDrone::Uninit(void)
 {
-	// 継承クラスの終了
 	CEnemyNormal::Uninit();
 }
 
@@ -96,27 +96,27 @@ void CEnemyDrone::Update(void)
 void CEnemyDrone::ManageAttack(void)
 {
 	if (GetAttackCounter() >= DELAY_SHOT)
-	{// 攻撃
+	{// 一定時間経過したら攻撃
 		D3DXVECTOR3 pos = GetPosition();
 		D3DXVECTOR3 posTarget = { 0.0f,0.0f,0.0f };
 		float fRot = GetRot().y;
 		D3DXVECTOR3 move;
 
-		// 目標位置取得
 		CPlayer *pPlayer = CPlayer::GetInstance();
 
 		if (pPlayer != nullptr)
 		{
+			// プレイヤーの腰パーツを目標にする
 			CMotion *pMotion = pPlayer->GetBody();
-
 			posTarget = pMotion->GetMtxPos(0);
 
+			// 差分ベクトルの正規化したものを弾の移動量にする
 			move = posTarget - pos;
 
 			float fLength = D3DXVec3Length(&move);
 
-			if (fLength > 200.0f)
-			{
+			if (fLength > DIST_ATTACK)
+			{// 一定距離以内でないと攻撃しない
 				return;
 			}
 
@@ -125,6 +125,7 @@ void CEnemyDrone::ManageAttack(void)
 			move *= BULLET_SPEED;
 		}
 
+		// 弾の生成
 		CBullet::Create(pos, move, 500, CBullet::TYPE_ENEMY, false, BULLET_SIZE, 2.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 		SetAttackCounter(0);
@@ -136,6 +137,5 @@ void CEnemyDrone::ManageAttack(void)
 //=====================================================
 void CEnemyDrone::Draw(void)
 {
-	// 継承クラスの描画
 	CEnemyNormal::Draw();
 }

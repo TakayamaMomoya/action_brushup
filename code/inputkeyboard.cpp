@@ -20,13 +20,9 @@ CInputKeyboard *CInputKeyboard::m_pKeyboard = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CInputKeyboard::CInputKeyboard()
+CInputKeyboard::CInputKeyboard() : m_aKeyState{}, m_aKeyStateTrigger{}, m_aKeyStateRelease{}, m_aKeyStateRepeat{}, m_aCntRepeat{}
 {
-	ZeroMemory(&m_aKeyState[0], sizeof(m_aKeyState));
-	ZeroMemory(&m_aKeyStateTrigger[0], sizeof(m_aKeyStateTrigger));
-	ZeroMemory(&m_aKeyStateRelease[0], sizeof(m_aKeyStateRelease));
-	ZeroMemory(&m_aKeyStateRepeat[0], sizeof(m_aKeyStateRepeat));
-	ZeroMemory(&m_aCntRepeat[0],sizeof(m_aCntRepeat));
+
 }
 
 //=====================================================
@@ -60,7 +56,6 @@ CInputKeyboard *CInputKeyboard::Create(HINSTANCE hInstance, HWND hWnd)
 //=====================================================
 HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	// 基本クラスの初期化
 	CInput::Init(hInstance, hWnd);
 
 	//入力デバイスの生成
@@ -103,8 +98,7 @@ void CInputKeyboard::Uninit(void)
 //=====================================================
 void CInputKeyboard::Update(void)
 {
-	//変数宣言
-	BYTE aKeyState[NUM_KEY_MAX];						//キーボード入力情報
+	BYTE aKeyState[NUM_KEY_MAX];
 	int nCntKey;
 
 	//入力デバイスからデータを取得

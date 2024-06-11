@@ -29,6 +29,7 @@ class CShadow;
 class CEnemy : public CMotion
 {
 public:
+	// —ñ‹“Œ^’è‹`
 	typedef enum
 	{// “G‚ÌŽí—Þ
 		TYPE_NONE = 0,	// ‰½‚Å‚à‚È‚¢

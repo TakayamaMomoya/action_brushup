@@ -42,7 +42,6 @@
     <ClCompile Include="code\enemyManager.cpp" />
     <ClCompile Include="code\enemyNormal.cpp" />
     <ClCompile Include="code\enemyshot.cpp" />
-    <ClCompile Include="code\enemyTurret.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\frame.cpp" />
     <ClCompile Include="code\game.cpp" />
@@ -113,7 +112,6 @@
     <ClInclude Include="code\enemyManager.h" />
     <ClInclude Include="code\enemyNormal.h" />
     <ClInclude Include="code\enemyshot.h" />
-    <ClInclude Include="code\enemyTurret.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\frame.h" />
     <ClInclude Include="code\game.h" />

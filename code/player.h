@@ -149,6 +149,7 @@ private:
 	void ManageCollision(void);
 	void RotDest(void);
 	void ManageAttack(void);
+	void SetAttackCollision(AttackInfo attackInfo);
 	void Death(void);
 	void SetMotion(MOTION motion);
 

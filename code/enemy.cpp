@@ -45,7 +45,8 @@ int CEnemy::m_nNumAll = 0;	// 総数
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEnemy::CEnemy()
+CEnemy::CEnemy() : m_fLife(0.0f),m_nScore(0),m_fTimerState(0.0f),m_pCollisionCube(nullptr),m_pCollisionSphere(nullptr),m_pShadow(nullptr),
+					m_state(STATE_NORMAL),m_pNext(nullptr),m_pPrev(nullptr)
 {
 	// 総数カウントアップ
 	m_nNumAll++;
@@ -60,18 +61,6 @@ CEnemy::CEnemy()
 		pHead = pManager->GetHead();
 		pTail = pManager->GetTail();
 	}
-
-	m_fLife = 0;
-	m_nScore = 0;
-	m_fTimerState = 0;
-	m_pCollisionSphere = nullptr;
-	m_pCollisionCube = nullptr;
-	m_pShadow = nullptr;
-	m_state = STATE_NORMAL;
-
-	// 値のクリア
-	m_pPrev = nullptr;
-	m_pNext = nullptr;
 
 	if (pHead == nullptr)
 	{// 先頭と最後尾アドレスの代入
@@ -490,11 +479,6 @@ void CEnemy::Draw(void)
 
 	// 継承クラスの描画
 	CMotion::Draw();
-
-#ifdef _DEBUG
-	//CDebugProc::GetInstance()->Print("\n敵の位置：[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
-	//CDebugProc::GetInstance()->Print("\n敵の半径：[%f]", m_pCollisionSphere->GetRadius());
-#endif
 }
 
 //=====================================================

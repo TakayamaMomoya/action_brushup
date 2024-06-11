@@ -21,15 +21,10 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEffect3D::CEffect3D(int nPriority) : CBillboard(nPriority)
+CEffect3D::CEffect3D(int nPriority) : CBillboard(nPriority), m_nLife(0), m_fDecreaseRadius(0.0f), m_fDecreaseAlpha(0.0f), m_move{}, m_relPos{},
+										m_bAdd(true),m_fGravity(0.0f)
 {
-	m_nLife = 0;
-	m_fDecreaseRadius = 0.0f;
-	m_fDecreaseAlpha = 0.0f;
-	m_move = { 0.0f,0.0f,0.0f };
-	m_relPos = { 0.0f,0.0f,0.0f };
-	m_bAdd = true;
-	m_fGravity = 0.0f;
+
 }
 
 //=====================================================

@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _ENEMYNORMAL_H_
+#ifndef _ENEMYNORMAL_H_	// 二重インクルード防止
 #define _ENEMYNORMAL_H_
 
 //*****************************************************
@@ -22,35 +21,44 @@ public:
 	CEnemyNormal();	// コンストラクタ
 	~CEnemyNormal();	// デストラクタ
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	static int GetNumAll(void) { return m_nNumAll; }
-	float GetLife(void) { return m_fLife; }
-	void SetSpherePosition(D3DXVECTOR3 pos);
-	void Death(void);
-	CCollisionSphere *GetClsnSphere(void) { return m_pCollisionSphere; }
-	CEnemyNormal *GetNext(void) { return m_pNext; }
-	int GetScore(void) { return m_nScore; }
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+	void Death(void);	// 死亡処理
+
+	// 変数取得・設定関数
+	float GetLife(void) { return m_fLife; }	// 体力
+	void SetLife(float fLife) { m_fLife = fLife; }
+	int GetScore(void) { return m_nScore; }	// 倒したときに得られるスコア
 	void SetScore(int nScore) { m_nScore = nScore; }
-	float GetAttackCounter(void) { return m_fCntAttack; }
+	float GetAttackCounter(void) { return m_fCntAttack; }	// 攻撃カウンター
 	void SetAttackCounter(float fCounter) { m_fCntAttack = fCounter; }
+	void SetSpherePosition(D3DXVECTOR3 pos);	// 球判定の位置
+	CCollisionSphere *GetClsnSphere(void) { return m_pCollisionSphere; }	// 球判定の取得
+	CEnemyNormal *GetNext(void) { return m_pNext; }	// リストの次のポインタ
+
+	// 静的メンバ関数
+	static int GetNumAll(void) { return m_nNumAll; }	// 総数取得
 
 private:
-	void ManageState(void);
-	void ManageCollision(void);
+	// メンバ関数
+	void ManageState(void);	// 状態の管理
+	void ManageCollision(void);	// 当たり判定の管理
 
-	static int m_nNumAll;	// 総数
+	// メンバ変数
 	float m_fLife;	// 体力
 	int m_nTimerState;	// 状態遷移カウンター
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
 	CCollisionCube *m_pCollisionCube;	// 立方体の当たり判定
 	int m_nScore;	// スコア値
 	float m_fCntAttack;	// 攻撃カウンタ
-
 	CEnemyNormal *m_pPrev;	// 前のアドレス
 	CEnemyNormal *m_pNext;	// 次のアドレス
+
+	// 静的メンバ変数
+	static int m_nNumAll;	// 総数
 };
 
 #endif

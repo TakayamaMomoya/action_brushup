@@ -14,15 +14,17 @@
 #include "main.h"
 #include "object.h"
 
-//*****************************************************
-// マクロ定義
-//*****************************************************
-#define MAX_TEX	(128)
-#define MAX_STRING	(256)
-
 namespace Texture
 {
-int GetIdx(const char *pFileName);
+//*****************************************************
+// 定数定義
+//*****************************************************
+const int MAX_TEX = 128;	// テクスチャの最大数
+
+//*****************************************************
+// ショートカット関数
+//*****************************************************
+int GetIdx(const char *pFileName);	// テクスチャ番号の取得
 }
 
 //*****************************************************
@@ -34,19 +36,24 @@ public:
 	CTexture();	// コンストラクタ
 	~CTexture();	// デストラクタ
 	
-	static CTexture *Create(void);
+	// メンバ関数
 	HRESULT Load(void);
 	void Unload(void);
 	int Regist(const char *pFileName);
 	LPDIRECT3DTEXTURE9 GetAddress(int nIdx);
+
+	// 静的メンバ関数
+	static CTexture *Create(void);
 	static int GetNumAll(void) { return m_nNumAll; }
 	static CTexture *GetInstance(void) { return m_pTexture; }
 
 private:
-	LPDIRECT3DTEXTURE9 m_apTexture[MAX_TEX];	// テクスチャの配列
+	// メンバ変数
+	LPDIRECT3DTEXTURE9 m_apTexture[Texture::MAX_TEX];	// テクスチャの配列
+	char *m_apFilename[Texture::MAX_TEX];	// ファイル名の配列
+
+	// 静的メンバ変数
 	static int m_nNumAll;	// 総数
-	char *m_apFilename[MAX_TEX];	// ファイル名の配列
 	static CTexture *m_pTexture;	// 自身のポインタ
 };
-
 #endif

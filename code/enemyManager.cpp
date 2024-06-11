@@ -14,12 +14,14 @@
 #include "enemyshot.h"
 #include "enemydrone.h"
 #include "enemyboss.h"
-#include "enemyTurret.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define FILE_PATH	"data\\MAP\\enemies.txt"	// 配置データのパス
+namespace
+{
+const char* FILE_PATH = "data\\MAP\\enemies.txt";	// 配置データのパス
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -29,10 +31,9 @@ CEnemyManager *CEnemyManager::m_pEnemyManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEnemyManager::CEnemyManager()
+CEnemyManager::CEnemyManager() : m_pHead(nullptr),m_pTail(nullptr)
 {
-	m_pHead = nullptr;
-	m_pTail = nullptr;
+
 }
 
 //=====================================================
@@ -49,11 +50,11 @@ CEnemyManager::~CEnemyManager()
 CEnemyManager *CEnemyManager::Create(void)
 {
 	if (m_pEnemyManager == nullptr)
-	{// インスタンス生成
+	{
 		m_pEnemyManager = new CEnemyManager;
 
-		// 初期化処理
-		m_pEnemyManager->Init();
+		if (m_pEnemyManager != nullptr)
+			m_pEnemyManager->Init();
 	}
 
 	return m_pEnemyManager;
@@ -94,11 +95,6 @@ CEnemy *CEnemyManager::CreateEnemy(D3DXVECTOR3 pos, CEnemy::TYPE type)
 			pEnemy = CEnemyBoss::Create();
 
 			break;
-		case CEnemy::TYPE_TURRET:
-
-			pEnemy = new CEnemyTurret;
-
-			break;
 		default:
 			break;
 		}
@@ -136,7 +132,6 @@ HRESULT CEnemyManager::Init(void)
 //=====================================================
 void CEnemyManager::Load(void)
 {
-	// 変数宣言
 	char cTemp[256];
 	int nCntAttack = 0;
 
@@ -220,7 +215,5 @@ void CEnemyManager::Update(void)
 //=====================================================
 void CEnemyManager::Draw(void)
 {
-#ifdef _DEBUG
-	//CDebugProc::GetInstance()->Print("\n敵の位置：[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
-#endif
+
 }

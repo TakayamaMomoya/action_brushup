@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _INPUT_H_
+#ifndef _INPUT_H_	// 二重インクルード防止
 #define _INPUT_H_
 
 //*****************************************************
@@ -28,13 +27,17 @@ public:
 	CInput();	// コンストラクタ
 	virtual ~CInput();	// デストラクタ
 
+	// メンバ関数
 	virtual HRESULT Init(HINSTANCE hInstance, HWND hWnd);
 	virtual void Uninit(void);
 	virtual void Update(void) = 0;
 
 protected:
-	static LPDIRECTINPUT8 m_pInput;	// DirectInputオブジェクトへのポインタ
+	// メンバ変数
 	LPDIRECTINPUTDEVICE8 m_pDevice;	// 各デバイスへのポインタ
+
+	// 静的メンバ変数
+	static LPDIRECTINPUT8 m_pInput;	// DirectInputオブジェクトへのポインタ
 };
 
 #endif

@@ -148,9 +148,6 @@
     <ClCompile Include="code\enemyshot.cpp">
       <Filter>enemy</Filter>
     </ClCompile>
-    <ClCompile Include="code\enemyTurret.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
     <ClCompile Include="code\enemyboss.cpp">
       <Filter>enemy\boss</Filter>
     </ClCompile>
@@ -310,9 +307,6 @@
       <Filter>enemy</Filter>
     </ClInclude>
     <ClInclude Include="code\enemyshot.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemyTurret.h">
       <Filter>enemy</Filter>
     </ClInclude>
     <ClInclude Include="code\enemyboss.h">

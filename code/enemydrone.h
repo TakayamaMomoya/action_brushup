@@ -19,12 +19,14 @@ public:
 	CEnemyDrone();	// コンストラクタ
 	~CEnemyDrone();	// デストラクタ
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
 
 private:
+	// 列挙型定義
 	enum MOTION
 	{// モーション
 		MOTION_NEUTRAL = 0,	// 待機モーション
@@ -32,7 +34,8 @@ private:
 		MOTION_MAX
 	};
 
-	void ManageAttack(void);
+	// メンバ関数
+	void ManageAttack(void);	// 攻撃の管理
 };
 
 #endif

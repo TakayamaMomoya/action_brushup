@@ -23,9 +23,9 @@ CInputManager *CInputManager::m_pInputManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CInputManager::CInputManager()
+CInputManager::CInputManager() : m_info()
 {
-	ZeroMemory(&m_info, sizeof(SInfo));
+
 }
 
 //=====================================================

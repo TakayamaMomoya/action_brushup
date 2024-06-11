@@ -123,7 +123,7 @@ void CInputMouse::Update(void)
 	//入力デバイスからデータを取得
 	if (SUCCEEDED(m_pDevice->GetDeviceState(sizeof(DIMOUSESTATE2), &aMouseState)))
 	{
-		for (nCntKey = 0; nCntKey < NUM_BUTTON_MAX; nCntKey++)
+		for (nCntKey = 0; nCntKey < Mouse::NUM_BUTTON_MAX; nCntKey++)
 		{
 			if (m_mouseState.rgbButtons[nCntKey] == 0x80)
 			{// リピートのカウンター

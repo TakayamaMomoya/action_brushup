@@ -13,6 +13,11 @@
 #include "renderer.h"
 
 //*****************************************************
+// 定数定義
+//*****************************************************
+#define MAX_STRING (256)	// 最大の文字数
+
+//*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
 int CTexture::m_nNumAll = 0;	// 総数
@@ -104,7 +109,7 @@ HRESULT CTexture::Load(void)
 //=====================================================
 void CTexture::Unload(void)
 {
-	for (int nCntTex = 0; nCntTex < MAX_TEX; nCntTex++)
+	for (int nCntTex = 0; nCntTex < Texture::MAX_TEX; nCntTex++)
 	{
 		if (m_apTexture[nCntTex] != nullptr)
 		{
@@ -128,7 +133,7 @@ int CTexture::Regist(const char *pFileName)
 		return -1;
 	}
 
-	for (int nCntTex = 0; nCntTex < MAX_TEX; nCntTex++)
+	for (int nCntTex = 0; nCntTex < Texture::MAX_TEX; nCntTex++)
 	{
 		if (m_apFilename[nCntTex] != nullptr)
 		{
@@ -179,6 +184,9 @@ LPDIRECT3DTEXTURE9 CTexture::GetAddress(int nIdx)
 
 namespace Texture
 {
+//=====================================================
+// テクスチャ番号の取得（ショートカット関数）
+//=====================================================
 int GetIdx(const char *pFileName)
 {
 	CTexture *pTexture = CTexture::GetInstance();

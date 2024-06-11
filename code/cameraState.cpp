@@ -21,6 +21,7 @@
 //*****************************************************
 namespace
 {
+const float FOLLOW_HEIGHT = 10.0f;	// 追従時にどれだけプレイヤーより高い位置を見るかの値
 const float ANGLE_FOLLOW = D3DX_PI * 0.4f;	// 追従時の角度
 const float SPEED_FOLLOW = 0.3f;	// 追従時の速度
 const float RATE_ADVANCE_FOLLOW = 10.0f;	// 追従時、移動量に対する先を見る割合
@@ -136,6 +137,9 @@ void CCameraStateFollowPlayer::Update(CCamera *pCamera)
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
 	D3DXVECTOR3 move = pPlayer->GetMove();
 
+	// 注視点をプレイヤーの少し上に設定
+	pos.y += FOLLOW_HEIGHT;
+
 	// 注視点は横のみ移動方向を先読みして動く
 	pInfoCamera->posRDest.x = pos.x + move.x * RATE_ADVANCE_FOLLOW;
 	pInfoCamera->posRDest.z = pos.z + move.z * RATE_ADVANCE_FOLLOW;
@@ -199,6 +203,7 @@ void CCameraStateApperPlayer::Update(CCamera *pCamera)
 
 	pInfoCamera->posR = pos;
 
+	// 極座標で視点位置を決定
 	pInfoCamera->posV =
 	{
 		pInfoCamera->posRDest.x + sinf(ANGLE_FOLLOW) * sinf(D3DX_PI) * pInfoCamera->fLength,
