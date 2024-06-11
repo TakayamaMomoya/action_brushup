@@ -28,7 +28,7 @@ public:
     void Draw(void);  // 描画
 
     // 静的メンバ関数
-    static CBlurEvent *Create(void);    // 生成処理
+    static CBlurEvent *Create(float fTime,float fDensity,float fSize);    // 生成処理
     static CBlurEvent *GetInstance(void) { return m_pBlurEvent; }    // インスタンスの取得
 
 private:

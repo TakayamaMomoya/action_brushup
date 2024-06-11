@@ -33,6 +33,8 @@ const int INITIAL_SCORE = 1000;	// 初期スコア
 const float TIME_DEATH = 0.5f;	// 死亡後の消える時間
 const float ROLL_FACT = 0.1f;	// 回転係数
 const float INITIAL_SIZE_SHADOW = 10.0f;	// 影の初期サイズ
+const float SLOW_TIME_DEATH = 0.4f;	// 死亡時にかけるスローの継続時間
+const float SLOW_SCALE_DEATH = 0.3f;	// 死亡時にかけるスローのタイムスケール
 }
 
 //*****************************************************
@@ -418,9 +420,17 @@ void CEnemy::Hit(float fDamage)
 
 			// 当たり判定削除
 			DeleteCollision();
+
+			// ヒットストップをかける
+			CSlow *pSlow = CSlow::GetInstance();
+
+			if (pSlow != nullptr)
+			{
+				pSlow->SetSlowTime(SLOW_TIME_DEATH, SLOW_SCALE_DEATH);
+			}
 		}
 		else
-		{
+		{// ダメージ状態になる
 			m_state = STATE_DAMAGE;
 		}
 	}

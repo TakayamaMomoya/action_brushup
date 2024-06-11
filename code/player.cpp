@@ -41,6 +41,7 @@
 #include "cameraState.h"
 #include "slow.h"
 #include "blur.h"
+#include "blurEvent.h"
 
 //*****************************************************
 // 定数定義
@@ -921,6 +922,14 @@ void CPlayer::ManageAttack(void)
 						pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
 					}
 
+					// ヒットストップの発生
+					CSlow *pSlow = CSlow::GetInstance();
+
+					if (pSlow != nullptr)
+					{
+						pSlow->SetSlowTime(m_info.pAttackInfo[i].fTimeHitStop, m_info.pAttackInfo[i].fScaleHitStop);
+					}
+
 					// 当たったオブジェクトのヒット処理
 					pObj->Hit(5.0f);
 
@@ -930,14 +939,6 @@ void CPlayer::ManageAttack(void)
 					if (pSound != nullptr)
 					{
 						pSound->Play(CSound::LABEL_SE_HIT_NORMAL);
-					}
-
-					// ヒットストップの発生
-					CSlow *pSlow = CSlow::GetInstance();
-
-					if (pSlow != nullptr)
-					{
-						pSlow->SetSlowTime(m_info.pAttackInfo[i].fTimeHitStop, m_info.pAttackInfo[i].fScaleHitStop);
 					}
 				}
 			}
@@ -989,7 +990,7 @@ void CPlayer::RotDest(void)
 void CPlayer::Hit(float fDamage)
 {
 	if (m_info.pBody != nullptr)
-	{
+	{// ダッシュ時はダメージを受けない
 		if (m_info.pBody->GetMotion() == MOTION_DASH)
 		{
 			return;
@@ -997,14 +998,11 @@ void CPlayer::Hit(float fDamage)
 	}
 
 	if (m_info.state == STATE_NORMAL)
-	{
-		CSound *pSound = CSound::GetInstance();
+	{// 通常状態ならダメージを受ける
+		// ダメージサウンド
+		Sound::Play(CSound::LABEL_SE_DAMAGE);
 
-		if (pSound != nullptr)
-		{
-			pSound->Play(CSound::LABEL_SE_DAMAGE);
-		}
-
+		// 体力を減らす
 		m_info.nLife -= (int)fDamage;
 
 		if (m_info.nLife <= 0)
@@ -1014,15 +1012,19 @@ void CPlayer::Hit(float fDamage)
 			Death();
 		}
 		else
-		{
+		{// ダメージ状態にする
 			m_info.state = STATE_DAMAGE;
 
+			// ダメージの画面揺れ
 			CManager::GetCamera()->SetQuake(0.03f, 10);
 
 			if (m_info.pBody != nullptr)
-			{
+			{// 体を赤くする
 				m_info.pBody->SetAllCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 			}
+
+			// ブラーイベントの生成
+			CBlurEvent::Create(0.2f, 0.5f, 10.0f);
 		}
 	}
 }

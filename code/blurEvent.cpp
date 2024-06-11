@@ -36,7 +36,7 @@ CBlurEvent::~CBlurEvent()
 //=====================================================
 // 生成処理
 //=====================================================
-CBlurEvent *CBlurEvent::Create(void)
+CBlurEvent *CBlurEvent::Create(float fTime, float fDensity, float fSize)
 {
 	if (m_pBlurEvent == nullptr)
 	{
@@ -44,6 +44,9 @@ CBlurEvent *CBlurEvent::Create(void)
 
 		if (m_pBlurEvent != nullptr)
 		{
+			m_pBlurEvent->m_fTimerBlur = fTime;
+			m_pBlurEvent->m_fDensityBlur = fDensity;
+			m_pBlurEvent->m_fSizeBlur = fSize;
 			m_pBlurEvent->Init();
 		}
 	}
@@ -56,6 +59,8 @@ CBlurEvent *CBlurEvent::Create(void)
 //=====================================================
 HRESULT CBlurEvent::Init(void)
 {
+	m_fTimerInitial = m_fTimerBlur;
+
 	return S_OK;
 }
 
@@ -85,6 +90,19 @@ void CBlurEvent::Update(void)
 		Uninit();
 
 		return;
+	}
+	else
+	{
+		// 時間の割合を計算
+		float fRate = 1.0f - m_fTimerBlur / m_fTimerInitial;
+
+		// sinカーブでの計算
+		fRate = sinf(D3DX_PI * fRate);
+
+		// ブラーの設定
+		float fSize = m_fSizeBlur * fRate;
+		float fDesnity = m_fDensityBlur * fRate;
+		Blur::SetBlur(fSize, fDesnity);
 	}
 }
 
