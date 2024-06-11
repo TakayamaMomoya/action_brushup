@@ -78,10 +78,7 @@
     <ClCompile Include="code\anim3D.cpp">
       <Filter>mesh</Filter>
     </ClCompile>
-    <ClCompile Include="code\animation2D.cpp">
-      <Filter>mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="code\animEffect3D.cpp">
+    <ClCompile Include="code\animManager.cpp">
       <Filter>mesh</Filter>
     </ClCompile>
     <ClCompile Include="code\billboard.cpp">
@@ -239,10 +236,7 @@
     <ClInclude Include="code\anim3D.h">
       <Filter>mesh</Filter>
     </ClInclude>
-    <ClInclude Include="code\animation2D.h">
-      <Filter>mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="code\animEffect3D.h">
+    <ClInclude Include="code\animManager.h">
       <Filter>mesh</Filter>
     </ClInclude>
     <ClInclude Include="code\billboard.h">

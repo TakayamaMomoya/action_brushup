@@ -17,7 +17,7 @@
 #include "particle.h"
 #include "collision.h"
 #include "orbit.h"
-#include "animEffect3D.h"
+#include "animManager.h"
 #include "slow.h"
 
 //*****************************************************
@@ -118,13 +118,13 @@ void CMissile::Death(void)
 	}
 
 	// 爆発エフェクト
-	CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+	CAnimManager *pAnim3D = CAnimManager::GetInstance();
 
 	if (pAnim3D != nullptr)
 	{
 		D3DXVECTOR3 posEffect = GetPosition();
 
-		pAnim3D->CreateEffect(posEffect, CAnimEffect3D::TYPE_EXPLOSION);
+		pAnim3D->CreateEffect(posEffect, CAnimManager::TYPE_EXPLOSION);
 	}
 
 	// 自身の終了

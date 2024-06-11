@@ -27,7 +27,7 @@
 #include "enemy.h"
 #include "skybox.h"
 #include "enemyManager.h"
-#include "animEffect3D.h"
+#include "animManager.h"
 #include "debugproc.h"
 #include "UIManager.h"
 #include "anim3D.h"
@@ -113,7 +113,7 @@ HRESULT CGame::Init(void)
 	CEnemyManager::Create();
 
 	// ３Dエフェクト管理生成
-	CAnimEffect3D::Create();
+	CAnimManager::Create();
 
 	// チュートリアルの生成
 	CreateTutorial();

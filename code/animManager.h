@@ -1,12 +1,12 @@
 //*****************************************************
 //
-// ３Dアニメーションエフェクト処理[animEffect3D.h]
+// アニメーションマネージャー[animManager.h]
 // Author:髙山桃也
 //
 //*****************************************************
 
-#ifndef _ANIMEFFECT3D_H_
-#define _ANIMEFFECT3D_H_
+#ifndef _ANIMMANAGER_H_
+#define _ANIMMANAGER_H_
 
 //*****************************************************
 // インクルード
@@ -26,11 +26,12 @@ class CAnim3D;
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CAnimEffect3D : public CObject
+class CAnimManager : public CObject
 {
 public:
-	enum TYPE
-	{
+	// 列挙型定義
+	enum E_TYPE
+	{// 種類
 		TYPE_EXPLOSION = 0,	// 爆発
 		TYPE_FLASH,	// 火花
 		TYPE_JUMP,	// 血しぶき
@@ -39,19 +40,23 @@ public:
 		TYPE_MAX
 	};
 
-	CAnimEffect3D(int nPriority = 4);	// コンストラクタ
-	~CAnimEffect3D();	// デストラクタ
+	CAnimManager(int nPriority = 4);	// コンストラクタ
+	~CAnimManager();	// デストラクタ
 
-	static CAnimEffect3D *Create(void);
-	CAnim3D *CreateEffect(D3DXVECTOR3 pos, TYPE type);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	static CAnimEffect3D *GetInstance(void) { return m_pAnimEffect3D; }
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+	CAnim3D *CreateEffect(D3DXVECTOR3 pos, E_TYPE type);	// エフェクトの生成
+
+	// 静的メンバ関数
+	static CAnimManager *Create(void);	// 生成処理
+	static CAnimManager *GetInstance(void) { return m_pAnimEffect3D; }	//	インスタンスの取得
 
 private:
-	struct SInfoAnimEffect
+	// 構造体定義
+	struct S_InfoAnimEffect
 	{// アニメーションエフェクト情報
 		char acPath[MAX_STRING];	// パス
 		int nNumAnim;	// アニメーション数
@@ -63,15 +68,22 @@ private:
 		bool bBillboard;	// ビルボードにするかどうか
 	};
 	
+	// メンバ関数
 	void Load(void);
 	
-	static CAnimEffect3D *m_pAnimEffect3D;	// 自身のポインタ
-	SInfoAnimEffect *m_apAnimEffect[TYPE_MAX];	// 情報のポインタ
+	// メンバ変数
+	S_InfoAnimEffect *m_apAnimEffect[TYPE_MAX];	// 情報のポインタ
+
+	// 静的メンバ変数
+	static CAnimManager *m_pAnimEffect3D;	// 自身のポインタ
 };
 
 namespace Anim3D
 {
-CAnim3D *CreateAnim(D3DXVECTOR3 pos, CAnimEffect3D::TYPE type);
+//*****************************************************
+// ショートカット関数
+//*****************************************************
+CAnim3D *CreateAnim(D3DXVECTOR3 pos, CAnimManager::E_TYPE type);	// アニメーションの生成
 }
 
 #endif

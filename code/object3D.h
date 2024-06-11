@@ -54,6 +54,7 @@ public:
 	void SetMode(MODE mode);
 	MODE GetMode(void) { return m_mode; }
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
+	D3DXMATRIX *GetMatrix(void) { return &m_mtxWorld; }
 
 private:
 	void SetVtxNormal(void);

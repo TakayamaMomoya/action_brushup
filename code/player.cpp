@@ -32,7 +32,7 @@
 #include "fade.h"
 #include "enemyManager.h"
 #include "bullet.h"
-#include "animEffect3D.h"
+#include "animManager.h"
 #include "shadow.h"
 #include "block.h"
 #include "orbit.h"
@@ -406,7 +406,7 @@ void CPlayer::InputMove(void)
 
 					SetMotion(MOTION_JUMP);
 
-					CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+					CAnimManager *pAnim3D = CAnimManager::GetInstance();
 
 					if (pAnim3D != nullptr)
 					{
@@ -415,7 +415,7 @@ void CPlayer::InputMove(void)
 						posEffect.x += move.x;
 						posEffect.z -= 5.0f;
 
-						pAnim3D->CreateEffect(posEffect, CAnimEffect3D::TYPE_JUMP);
+						pAnim3D->CreateEffect(posEffect, CAnimManager::TYPE_JUMP);
 					}
 
 					CSound *pSound = CSound::GetInstance();
@@ -436,7 +436,7 @@ void CPlayer::InputMove(void)
 
 					m_info.jump = JUMPSTATE_ATTACK;
 
-					CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+					CAnimManager *pAnim3D = CAnimManager::GetInstance();
 
 					if (pAnim3D != nullptr)
 					{
@@ -444,7 +444,7 @@ void CPlayer::InputMove(void)
 
 						posEffect.y += 10.0f;
 
-						pAnim3D->CreateEffect(posEffect, CAnimEffect3D::TYPE_AIRSLASH);
+						pAnim3D->CreateEffect(posEffect, CAnimManager::TYPE_AIRSLASH);
 					}
 
 					CSound *pSound = CSound::GetInstance();
@@ -695,12 +695,12 @@ void CPlayer::Parry(void)
 		// 弾いた弾の射出
 		CBullet::Create(pos, move, 200, CBullet::TYPE_PLAYER,false, BULLET_SIZE);
 
-		CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+		CAnimManager *pAnim3D = CAnimManager::GetInstance();
 
 		if (pAnim3D != nullptr)
 		{
-			pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_SLASH);
-			pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
+			pAnim3D->CreateEffect(pos, CAnimManager::TYPE_SLASH);
+			pAnim3D->CreateEffect(pos, CAnimManager::TYPE_FLASH);
 		}
 
 		CParticle::Create(pos,CParticle::TYPE_FLASH);
@@ -926,11 +926,11 @@ void CPlayer::SetAttackCollision(AttackInfo attackInfo)
 	if (bHit == true && pObj != nullptr)
 	{// 命中時のヒット処理
 		// アニメーションエフェクトの再生
-		CAnimEffect3D *pAnim3D = CAnimEffect3D::GetInstance();
+		CAnimManager *pAnim3D = CAnimManager::GetInstance();
 
 		if (pAnim3D != nullptr)
 		{
-			pAnim3D->CreateEffect(pos, CAnimEffect3D::TYPE_FLASH);
+			pAnim3D->CreateEffect(pos, CAnimManager::TYPE_FLASH);
 		}
 
 		// ヒットストップの発生
