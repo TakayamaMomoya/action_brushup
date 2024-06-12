@@ -56,6 +56,9 @@ const float BULLET_SIZE = 3.0f;	// 弾いた弾サイズ
 const CScene::MODE MODE_DEATH = CScene::MODE_GAME;	// 死んだ後に遷移するモード
 const float TIME_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップ時間
 const float SCALE_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップタイムスケール
+const float TIME_BLUR_DASH = 0.4f;	// ダッシュのブラー時間
+const float DESITY_BLUR_DASH = 0.4f;	// ダッシュのブラーの濃さ
+const float SIZE_BLUR_DASH = 0.4f;	// ダッシュのブラーサイズ
 }
 
 //*****************************************************
@@ -477,16 +480,13 @@ void CPlayer::InputMove(void)
 //=====================================================
 void CPlayer::InputAttack(void)
 {
-	// 情報入手
 	CInputManager *pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr || m_info.pBody == nullptr)
-	{
 		return;
-	}
 
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_ATTACK))
-	{// 攻撃
+	{// 近接攻撃
 		if (m_info.pBody->GetMotion() == MOTION_ATTACK || m_info.pBody->GetMotion() == MOTION_ATTACKTURN)
 		{
 			m_info.bAttack = true;
@@ -507,28 +507,27 @@ void CPlayer::InputAttack(void)
 	}
 
 	if (m_info.nCntDash >= m_param.nTimeDash)
-	{
+	{// ダッシュ
 		if (pInputManager->GetTrigger(CInputManager::BUTTON_DASH))
-		{// ダッシュ
+		{
 			if (m_info.pBody->GetMotion() != MOTION_DASH)
 			{
+				m_info.nCntDash = 0;	// ダッシュカウンターをリセット
+
+				// ダッシュの移動量を加算
 				D3DXVECTOR3 move = GetMove();
-
 				move.x -= sinf(m_info.rotDest.y) * m_param.fSpeedDash;
-				move.y = 0;
-
+				move.y = 0;	// 重力を消す
 				SetMove(move);
 
+				// モーションの設定
 				SetMotion(MOTION_DASH);
 
-				m_info.nCntDash = 0;
+				// サウンド再生
+				Sound::Play(CSound::LABEL_SE_DASH);
 
-				CSound *pSound = CSound::GetInstance();
-
-				if (pSound != nullptr)
-				{
-					pSound->Play(CSound::LABEL_SE_DASH);
-				}
+				// ブラーをかける
+				CBlurEvent::Create(TIME_BLUR_DASH, DESITY_BLUR_DASH, SIZE_BLUR_DASH);
 			}
 		}
 	}
@@ -565,6 +564,7 @@ void CPlayer::InputAttack(void)
 			}
 		}
 
+		// パリィ
 		Parry();
 	}
 }

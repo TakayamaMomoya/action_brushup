@@ -26,6 +26,7 @@ public:
 	void Uninit(void);	// 終了処理
 	void Update(void);	// 更新処理
 	void Draw(void);	// 描画処理
+	void SetVtx(void) override;	// 頂点設定
 
 	// 静的メンバ関数
 	static CBillboard *Create(D3DXVECTOR3 pos, float width, float height);

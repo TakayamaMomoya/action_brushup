@@ -69,6 +69,8 @@ void CEffect3D::Update(void)
 		SetSize(0.0f, 0.0f);
 	}
 
+	SetVtx();
+
 	// d—Í‰ÁZ
 	m_move.y -= m_fGravity;
 

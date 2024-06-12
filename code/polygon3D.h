@@ -35,7 +35,7 @@ public:
 	void Uninit(void);	// 終了処理
 	void Update(void);	// 更新処理
 	void Draw(void);	// 描画処理
-	void SetVtx(void);	// 頂点設定
+	virtual void SetVtx(void);	// 頂点設定
 
 	// 変数取得・設定関数
 	float GetWidth(void) { return m_width; }	// 幅

@@ -57,6 +57,8 @@ HRESULT CBillboard::Init(void)
 {
 	CPolygon3D::Init();
 
+	SetVtx();
+
 	return S_OK;
 }
 
@@ -123,4 +125,30 @@ void CBillboard::Draw(void)
 
 	// 描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+//=====================================================
+// 描画処理
+//=====================================================
+void CBillboard::SetVtx(void)
+{
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();
+
+	//頂点情報のポインタ
+	VERTEX_3D *pVtx;
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	float fHeight = GetHeight();
+	float fWidth = GetWidth();
+
+	//頂点座標の設定
+	pVtx[0].pos = D3DXVECTOR3(-fWidth, fHeight, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(fWidth, fHeight, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-fWidth, -fHeight, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(fWidth, -fHeight, 0.0f);
+
+	//頂点バッファをアンロック
+	pVtxBuff->Unlock();
 }

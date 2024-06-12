@@ -30,10 +30,35 @@ CObject2D::~CObject2D()
 }
 
 //=====================================================
+// 生成処理
+//=====================================================
+CObject2D *CObject2D::Create(int nPriority)
+{
+	CObject2D *pObject2D = nullptr;
+
+	if (pObject2D == nullptr)
+	{
+		// インスタンス生成
+		pObject2D = new CObject2D(nPriority);
+
+		if (pObject2D != nullptr)
+		{
+			// 初期化処理
+			pObject2D->Init();
+		}
+	}
+
+	return pObject2D;
+}
+
+//=====================================================
 // 初期化
 //=====================================================
 HRESULT CObject2D::Init(void)
 {
+	// 色の初期化
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
 
@@ -221,28 +246,6 @@ void CObject2D::Draw(void)
 void CObject2D::SetPosition(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
-}
-
-//=====================================================
-// 生成処理
-//=====================================================
-CObject2D *CObject2D::Create(int nPriority, float fCenterHeight)
-{
-	CObject2D *pObject2D = nullptr;
-
-	if (pObject2D == nullptr)
-	{
-		// インスタンス生成
-		pObject2D = new CObject2D(nPriority);
-
-		if (pObject2D != nullptr)
-		{
-			// 初期化処理
-			pObject2D->Init();
-		}
-	}
-
-	return pObject2D;
 }
 
 //=====================================================

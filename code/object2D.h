@@ -40,14 +40,13 @@ public:
 	void SetPosition(D3DXVECTOR3 pos);
 	void SetRot(float fRot);// 向き設定処理
 	float GetRot(void) { return m_fRot; }	// 向き取得処理
-	void LimitPos(void);	// 移動制限
 	D3DXCOLOR GetCol(void) { return m_col; }	// 色
 	void SetCol(D3DXCOLOR col);
 	void SetIdxTexture(int nIdx) { m_nIdxTexture = nIdx; }	// テクスチャ番号
 	int GetIdxTexture(void) { return m_nIdxTexture; }
 
 	// 静的メンバ関数
-	static CObject2D *Create(int nPriority = 3, float fCenterHeight = 0.5f);	// 生成処理
+	static CObject2D *Create(int nPriority = 3);	// 生成処理
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファ

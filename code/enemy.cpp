@@ -21,6 +21,7 @@
 #include "enemyManager.h"
 #include "shadow.h"
 #include "slow.h"
+#include "blurEvent.h"
 
 //*****************************************************
 // 定数定義
@@ -417,6 +418,9 @@ void CEnemy::Hit(float fDamage)
 			{
 				pSlow->SetSlowTime(SLOW_TIME_DEATH, SLOW_SCALE_DEATH);
 			}
+
+			// ブラーをかける
+			CBlurEvent::Create(SLOW_TIME_DEATH, 0.7f, 0.0f);
 		}
 		else
 		{// ダメージ状態になる
