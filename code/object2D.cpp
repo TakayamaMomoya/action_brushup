@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// 2Dオブジェクトの処理[object2D.h]
+// 2Dポリゴンの処理[object2D.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -16,18 +16,9 @@
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CObject2D::CObject2D(int nPriority) : CObject(nPriority)
+CObject2D::CObject2D(int nPriority) : CObject(nPriority), m_pVtxBuff(nullptr), m_pos{}, m_fRot(0.0f), m_fHeigth(0.0f), m_fWidth(0.0f), m_col{}, m_nIdxTexture(-1)
 {
-	// 変数のクリア
-	m_pVtxBuff = nullptr;
-	m_pos = { 0,0,0 };
-	m_move = { 0,0,0 };
-	m_fRot = 0;
-	m_heigth = 0;
-	m_width = 0;
-	m_col = { 1.0f,1.0f,1.0f,1.0f };
-	m_fCenterHeight = 0.5f;
-	m_nIdxTexture = -1;
+
 }
 
 //=====================================================
@@ -77,9 +68,9 @@ HRESULT CObject2D::Init(void)
 		}
 
 		// 対角線の角度取得
-		float fAngleUp = atan2f(m_width, m_heigth);
+		float fAngleUp = atan2f(m_fWidth, m_fHeigth);
 		// 長さの取得
-		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
+		float fLengthUp = sqrtf(m_fWidth * m_fWidth + m_fHeigth * m_fHeigth);
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
@@ -140,11 +131,7 @@ void CObject2D::Uninit(void)
 //=====================================================
 void CObject2D::Update(void)
 {
-	// 前回の位置を保存
-	m_posOld = m_pos;
 
-	// 位置を移動
-	m_pos += m_move;
 }
 
 //=====================================================
@@ -161,9 +148,9 @@ void CObject2D::SetVtx(void)
 		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 		// 対角線の角度取得
-		float fAngleUp = atan2f(m_width, m_heigth);
+		float fAngleUp = atan2f(m_fWidth, m_fHeigth);
 		// 長さの取得
-		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
+		float fLengthUp = sqrtf(m_fWidth * m_fWidth + m_fHeigth * m_fHeigth);
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
@@ -237,14 +224,6 @@ void CObject2D::SetPosition(D3DXVECTOR3 pos)
 }
 
 //=====================================================
-// 中心の高さ
-//=====================================================
-void CObject2D::SetCenterHeight(float fHeight)
-{
-	m_fCenterHeight = fHeight;
-}
-
-//=====================================================
 // 生成処理
 //=====================================================
 CObject2D *CObject2D::Create(int nPriority, float fCenterHeight)
@@ -258,8 +237,6 @@ CObject2D *CObject2D::Create(int nPriority, float fCenterHeight)
 
 		if (pObject2D != nullptr)
 		{
-			pObject2D->m_fCenterHeight = fCenterHeight;
-
 			// 初期化処理
 			pObject2D->Init();
 		}
@@ -273,8 +250,8 @@ CObject2D *CObject2D::Create(int nPriority, float fCenterHeight)
 //=====================================================
 void CObject2D::SetSize(float width, float height)
 {
-	m_width = width;
-	m_heigth = height;
+	m_fWidth = width;
+	m_fHeigth = height;
 }
 
 //=====================================================
@@ -344,32 +321,6 @@ void CObject2D::SetAnim(int nAnim,int nNumAnim,int nNumV)
 }
 
 //=====================================================
-// 移動量設定処理
-//=====================================================
-void CObject2D::SetMove(D3DXVECTOR3 move)
-{
-	m_move = move;
-}
-
-//=====================================================
-// 移動量加算処理
-//=====================================================
-void CObject2D::AddMove(D3DXVECTOR3 move)
-{
-	m_move += move;
-}
-
-//=====================================================
-// 移動量減衰処理
-//=====================================================
-void CObject2D::DicMove(float fDicrease)
-{
-	m_move.x *= fDicrease;
-	m_move.y *= fDicrease;
-	m_move.z *= fDicrease;
-}
-
-//=====================================================
 // 向き設定処理
 //=====================================================
 void CObject2D::SetRot(float fRot)
@@ -399,39 +350,5 @@ void CObject2D::SetCol(D3DXCOLOR col)
 
 		// 頂点バッファのアンロック
 		m_pVtxBuff->Unlock();
-	}
-}
-
-//=====================================================
-// 移動制限処理
-//=====================================================
-void CObject2D::LimitPos(void)
-{
-	if (m_pos.y < 0 + m_heigth)
-	{// 画面上の判定
-		m_pos.y = m_heigth;
-
-		m_move.y = 0.0f;
-	}
-
-	if (m_pos.y > SCREEN_HEIGHT - m_heigth)
-	{// 画面下の判定
-		m_pos.y = SCREEN_HEIGHT - m_heigth;
-
-		m_move.y = 0.0f;
-	}
-
-	if (m_pos.x < 0 + m_width)
-	{// 画面左の判定
-		m_pos.x = m_width;
-
-		m_move.x = 0.0f;
-	}
-
-	if (m_pos.x > SCREEN_WIDTH - m_width)
-	{// 画面右の判定
-		m_pos.x = SCREEN_WIDTH - m_width;
-
-		m_move.x = 0.0f;
 	}
 }

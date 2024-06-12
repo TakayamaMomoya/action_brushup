@@ -1,7 +1,7 @@
 //******************************************
 //
-// 軌跡の処理
-// Author : 髙山桃也
+// 軌跡の処理(orbit.cpp)
+// Author:髙山桃也
 //
 //******************************************
 
@@ -19,24 +19,16 @@
 //******************************************
 namespace
 {
-const float DELETE_LENGTH = 0.5f;	// 削除する長さ
+const float DELETE_LENGTH = 0.5f;	// 切り離されたときに、この長さ以下になったら破棄
 }
 
 //==========================================
 // コンストラクタ
 //==========================================
-COrbit::COrbit(int nPriority) : CObject(nPriority)
+COrbit::COrbit(int nPriority) : CObject(nPriority), m_aColPoint{}, m_aMtxOffset{}, m_aPosPoint{}, m_aPosOffset{}, m_col{}, m_nIdxTexture(-1), m_nNumEdge(0),
+									m_nID(-1), m_pVtxBuff(nullptr), m_bEnd(false)
 {
-	ZeroMemory(&m_aColPoint[0], sizeof(m_aColPoint));
-	ZeroMemory(&m_aMtxOffset[0], sizeof(m_aMtxOffset));
-	ZeroMemory(&m_aPosPoint[0], sizeof(m_aPosPoint));
-	ZeroMemory(&m_posOffset[0],sizeof(m_posOffset));
-	m_col = { 0.0f,0.0f,0.0f,0.0f };
-	m_nIdxTexture = 0;
-	m_nNumEdge = 0;
-	m_nID = -1;
-	m_pVtxBuff = nullptr;
-	m_bEnd = false;
+
 }
 
 //==========================================
@@ -63,7 +55,7 @@ HRESULT COrbit::Init(void)
 		//頂点バッファの生成
 		pDevice->CreateVertexBuffer
 		(
-			sizeof(VERTEX_3D) * MAX_EDGE * NUM_OFFSET,
+			sizeof(VERTEX_3D) * Orbit::MAX_EDGE * Orbit::NUM_OFFSET,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_3D,
 			D3DPOOL_MANAGED,
@@ -77,7 +69,7 @@ HRESULT COrbit::Init(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntVtx = 0;nCntVtx < MAX_EDGE * NUM_OFFSET;nCntVtx++)
+	for (int nCntVtx = 0;nCntVtx < Orbit::MAX_EDGE * Orbit::NUM_OFFSET;nCntVtx++)
 	{
 		//頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -89,7 +81,7 @@ HRESULT COrbit::Init(void)
 		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 		//テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 1.0f * (nCntVtx % NUM_OFFSET));
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 1.0f * (nCntVtx % Orbit::NUM_OFFSET));
 
 		pVtx += 1;
 	}
@@ -135,19 +127,19 @@ void COrbit::UpdatePolygon(void)
 	//変数宣言
 	int nCntOffset;
 	D3DXMATRIX mtxRot, mtxTrans;						//計算用マトリックス
-	D3DXVECTOR3 posTemp[NUM_OFFSET];
+	D3DXVECTOR3 posTemp[Orbit::NUM_OFFSET];
 
 	//保存した座標をずらす==========
 	for (int nCntVtx = 1; nCntVtx < m_nNumEdge; nCntVtx++)
 	{
-		for (nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
+		for (nCntOffset = 0; nCntOffset < Orbit::NUM_OFFSET; nCntOffset++)
 		{
 			//一つ前の座標にずれる
 			m_aPosPoint[nCntVtx - 1][nCntOffset] = m_aPosPoint[nCntVtx][nCntOffset];
 		}
 	}
 
-	for (nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
+	for (nCntOffset = 0; nCntOffset < Orbit::NUM_OFFSET; nCntOffset++)
 	{
 		//現在のフレームのオフセット位置を保存
 		m_aPosPoint[m_nNumEdge - 1][nCntOffset] =
@@ -168,7 +160,7 @@ void COrbit::UpdatePolygon(void)
 	{// 切り離しからの自動削除
 		D3DXVECTOR3 vecDiff;
 
-		vecDiff = pVtx[0].pos - pVtx[m_nNumEdge * NUM_OFFSET].pos;
+		vecDiff = pVtx[0].pos - pVtx[m_nNumEdge * Orbit::NUM_OFFSET].pos;
 
 		if (D3DXVec3Length(&vecDiff) < DELETE_LENGTH)
 		{
@@ -179,7 +171,7 @@ void COrbit::UpdatePolygon(void)
 	for (int nCntVtx = 0; nCntVtx < m_nNumEdge; nCntVtx++)
 	{//辺ごとの頂点座標設定
 
-		for (nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
+		for (nCntOffset = 0; nCntOffset < Orbit::NUM_OFFSET; nCntOffset++)
 		{//オフセットの数分設定
 
 			 //頂点座標の設定
@@ -190,7 +182,7 @@ void COrbit::UpdatePolygon(void)
 		}
 
 		//ポインタを進める
-		pVtx += NUM_OFFSET;
+		pVtx += Orbit::NUM_OFFSET;
 	}
 }
 
@@ -300,8 +292,8 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 m_posOffset1, D3DXVECTOR
 			pOrbit->m_col = col;
 
 			// オフセットの代入
-			pOrbit->m_posOffset[0] = m_posOffset1;
-			pOrbit->m_posOffset[1] = m_posOffset2;
+			pOrbit->m_aPosOffset[0] = m_posOffset1;
+			pOrbit->m_aPosOffset[1] = m_posOffset2;
 
 			// 辺の数の代入
 			pOrbit->m_nNumEdge = nNumEdge;
@@ -341,13 +333,13 @@ void COrbit::SetPositionOffset(D3DXMATRIX mtxWorld,int nIdxOrbit)
 	//計算用マトリックス
 	D3DXMATRIX mtxRot, mtxTrans;
 
-	for (int nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
+	for (int nCntOffset = 0; nCntOffset < Orbit::NUM_OFFSET; nCntOffset++)
 	{
 		//ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_aMtxOffset[nCntOffset]);
 
 		//位置を反映
-		D3DXMatrixTranslation(&mtxTrans, m_posOffset[nCntOffset].x, m_posOffset[nCntOffset].y, m_posOffset[nCntOffset].z);
+		D3DXMatrixTranslation(&mtxTrans, m_aPosOffset[nCntOffset].x, m_aPosOffset[nCntOffset].y, m_aPosOffset[nCntOffset].z);
 		D3DXMatrixMultiply(&m_aMtxOffset[nCntOffset], &m_aMtxOffset[nCntOffset], &mtxTrans);
 
 		//マトリックスをかけ合わせる

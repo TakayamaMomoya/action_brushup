@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// ３Dポリゴンの処理[object3D.cpp]
+// ３Dポリゴンの処理[polygon3D.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -8,7 +8,7 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "object3D.h"
+#include "polygon3D.h"
 #include "manager.h"
 #include "renderer.h"
 #include "texture.h"
@@ -18,7 +18,7 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CObject3D::CObject3D(int nPriority) : CObject(nPriority)
+CPolygon3D::CPolygon3D(int nPriority) : CObject(nPriority)
 {
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
 	m_pos = { 0.0f,0.0f,0.0f };
@@ -29,13 +29,13 @@ CObject3D::CObject3D(int nPriority) : CObject(nPriority)
 	m_fFactSB = 0.0f;
 	m_pVtxBuff = nullptr;
 	m_nIdxTexture = -1;
-	m_mode = MODE::MODE_NORMAL;
+	m_mode = E_MODE::MODE_NORMAL;
 }
 
 //=====================================================
 // デストラクタ
 //=====================================================
-CObject3D::~CObject3D()
+CPolygon3D::~CPolygon3D()
 {
 
 }
@@ -43,7 +43,7 @@ CObject3D::~CObject3D()
 //=====================================================
 // 初期化処理
 //=====================================================
-HRESULT CObject3D::Init(void)
+HRESULT CPolygon3D::Init(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
@@ -98,7 +98,7 @@ HRESULT CObject3D::Init(void)
 //=====================================================
 // 終了処理
 //=====================================================
-void CObject3D::Uninit(void)
+void CPolygon3D::Uninit(void)
 {
 	if (m_pVtxBuff != nullptr)
 	{//頂点バッファポインタの破棄
@@ -112,7 +112,7 @@ void CObject3D::Uninit(void)
 //=====================================================
 // 更新処理
 //=====================================================
-void CObject3D::Update(void)
+void CPolygon3D::Update(void)
 {
 	SetVtx();
 }
@@ -120,21 +120,21 @@ void CObject3D::Update(void)
 //=====================================================
 // 頂点設定
 //=====================================================
-void CObject3D::SetVtx(void)
+void CPolygon3D::SetVtx(void)
 {
 	switch (m_mode)
 	{
-	case CObject3D::MODE_NORMAL:
+	case CPolygon3D::MODE_NORMAL:
 
 		SetVtxNormal();
 
 		break;
-	case CObject3D::MODE_BILLBOARD:
+	case CPolygon3D::MODE_BILLBOARD:
 
 		SetVtxNormal();
 
 		break;
-	case CObject3D::MODE_STRETCHBILLBOARD:
+	case CPolygon3D::MODE_STRETCHBILLBOARD:
 
 		SetVtxStretchBillboard();
 
@@ -147,7 +147,7 @@ void CObject3D::SetVtx(void)
 //=====================================================
 // 通常頂点設定
 //=====================================================
-void CObject3D::SetVtxNormal(void)
+void CPolygon3D::SetVtxNormal(void)
 {
 	if (m_pVtxBuff == nullptr)
 	{
@@ -184,7 +184,7 @@ void CObject3D::SetVtxNormal(void)
 //=====================================================
 // ストレッチビルボード頂点設定
 //=====================================================
-void CObject3D::SetVtxStretchBillboard(void)
+void CPolygon3D::SetVtxStretchBillboard(void)
 {
 	if (m_pVtxBuff == nullptr)
 	{
@@ -259,7 +259,7 @@ void CObject3D::SetVtxStretchBillboard(void)
 //=====================================================
 // 描画処理
 //=====================================================
-void CObject3D::Draw(void)
+void CPolygon3D::Draw(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
@@ -308,7 +308,7 @@ void CObject3D::Draw(void)
 //=====================================================
 // マトリックスの設定
 //=====================================================
-void CObject3D::SetMtx(void)
+void CPolygon3D::SetMtx(void)
 {
 	D3DXMATRIX mtxRot, mtxTrans;
 	D3DXVECTOR3 pos = m_pos;
@@ -334,7 +334,7 @@ void CObject3D::SetMtx(void)
 //=====================================================
 // ビルボード版のマトリックスの設定
 //=====================================================
-void CObject3D::SetMtxBillboard(void)
+void CPolygon3D::SetMtxBillboard(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 	D3DXMATRIX mtxView, mtxTrans;
@@ -357,14 +357,14 @@ void CObject3D::SetMtxBillboard(void)
 //=====================================================
 // 生成処理
 //=====================================================
-CObject3D *CObject3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPolygon3D *CPolygon3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CObject3D *pObject3D = nullptr;
+	CPolygon3D *pObject3D = nullptr;
 
 	if (pObject3D == nullptr)
 	{
 		// インスタンス生成
-		pObject3D = new CObject3D;
+		pObject3D = new CPolygon3D;
 
 		// 初期化処理
 		pObject3D->Init();
@@ -379,7 +379,7 @@ CObject3D *CObject3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=====================================================
 // モードの設定
 //=====================================================
-void CObject3D::SetMode(MODE mode)
+void CPolygon3D::SetMode(E_MODE mode)
 {
 	if (mode < MODE_MAX &&
 		mode >= 0)
@@ -391,7 +391,7 @@ void CObject3D::SetMode(MODE mode)
 //=====================================================
 // サイズ設定処理
 //=====================================================
-void CObject3D::SetSize(float width, float height)
+void CPolygon3D::SetSize(float width, float height)
 {
 	if (m_pVtxBuff == nullptr)
 	{
@@ -431,7 +431,7 @@ void CObject3D::SetSize(float width, float height)
 //=====================================================
 // 色設定処理
 //=====================================================
-void CObject3D::SetColor(D3DXCOLOR col)
+void CPolygon3D::SetColor(D3DXCOLOR col)
 {
 	m_col = col;
 
@@ -454,7 +454,7 @@ void CObject3D::SetColor(D3DXCOLOR col)
 //=====================================================
 // テクスチャ座標設定
 //=====================================================
-void CObject3D::SetTex(D3DXVECTOR2 rd, D3DXVECTOR2 lu)
+void CPolygon3D::SetTex(D3DXVECTOR2 rd, D3DXVECTOR2 lu)
 {
 	if (m_pVtxBuff == nullptr)
 	{

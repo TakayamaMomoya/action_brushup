@@ -26,7 +26,7 @@ const float DEFAULT_SIZE = 20.0f;	// デフォルトのサイズ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CAnim3D::CAnim3D(int nPriority) : CObject3D(nPriority), m_nCounterAnim(0), m_nPatternAnim(0), m_nSpeedAnim(0), m_nNumAnim(0), m_bFinish(false), m_bLoop(false)
+CAnim3D::CAnim3D(int nPriority) : CPolygon3D(nPriority), m_nCounterAnim(0), m_nPatternAnim(0), m_nSpeedAnim(0), m_nNumAnim(0), m_bFinish(false), m_bLoop(false)
 {
 
 }
@@ -68,7 +68,7 @@ CAnim3D *CAnim3D::Create(D3DXVECTOR3 pos, int nNumAnim, int nTimeAnim, bool bLoo
 //=====================================================
 HRESULT CAnim3D::Init(void)
 {
-	CObject3D::Init();
+	CPolygon3D::Init();
 
 	// アニメーションの初期化
 	SetAnim(m_nPatternAnim, m_nNumAnim);
@@ -85,7 +85,7 @@ HRESULT CAnim3D::Init(void)
 void CAnim3D::Uninit(void)
 {
 	// 継承クラスの終了
-	CObject3D::Uninit();
+	CPolygon3D::Uninit();
 }
 
 //=====================================================
@@ -117,7 +117,7 @@ void CAnim3D::Update(void)
 	}
 
 	// 継承クラスの更新
-	CObject3D::Update();
+	CPolygon3D::Update();
 }
 
 //=====================================================
@@ -132,7 +132,7 @@ void CAnim3D::Draw(void)
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 継承クラスの描画
-	CObject3D::Draw();
+	CPolygon3D::Draw();
 
 	// ライティングを戻す
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);

@@ -14,7 +14,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CParticle::PARTICLE_INFO *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
+CParticle::S_PARTICLE_INFO *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -174,7 +174,7 @@ void CParticle::SetPosition(D3DXVECTOR3 pos)
 //=====================================================
 //	生成処理
 //=====================================================
-CParticle *CParticle::Create(D3DXVECTOR3 pos, TYPE type,D3DXVECTOR3 rot, D3DXVECTOR3 *pPosOwner,int nPriority)
+CParticle *CParticle::Create(D3DXVECTOR3 pos, E_TYPE type,D3DXVECTOR3 rot, D3DXVECTOR3 *pPosOwner,int nPriority)
 {
 	CParticle *pParticle = nullptr;
 
@@ -206,7 +206,7 @@ void CParticle::Load(void)
 	// 変数宣言
 	char cTemp[256];
 	int nCntParticle = 1;
-	PARTICLE_INFO *pInfo = nullptr;
+	S_PARTICLE_INFO *pInfo = nullptr;
 
 	// ファイルから読み込む
 	FILE *pFile = fopen("data\\TEXT\\particle.txt", "r");
@@ -223,7 +223,7 @@ void CParticle::Load(void)
 				if (m_apParticleInfo[nCntParticle] == nullptr)
 				{
 					// インスタンス生成
-					m_apParticleInfo[nCntParticle] = new PARTICLE_INFO;
+					m_apParticleInfo[nCntParticle] = new S_PARTICLE_INFO;
 				}
 
 				pInfo = m_apParticleInfo[nCntParticle];

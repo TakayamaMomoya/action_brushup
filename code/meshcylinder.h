@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _MESHCYLINDER_H_
+#ifndef _MESHCYLINDER_H_	// 二重インクルード防止
 #define _MESHCYLINDER_H_
 
 //*****************************************************
@@ -16,7 +15,7 @@
 //*****************************************************
 // 定数定義
 //*****************************************************
-namespace meshCylinder
+namespace MeshCylinder
 {
 const float  MESH_RADIUS = 100.0f;	// 半径
 const int MESH_U = 16;	// 横の分割数
@@ -35,8 +34,9 @@ public:
 	CMeshCylinder(int nPriority = 2);	// コンストラクタ
 	~CMeshCylinder();	// デストラクタ
 
-	typedef struct
-	{
+	// 構造体定義
+	struct S_MeshCylinder
+	{// 自身の情報
 		D3DXVECTOR3 pos;	//位置
 		D3DXVECTOR3 rot;	//向き
 		D3DXMATRIX mtxWorld;	//ワールドマトリックス
@@ -48,41 +48,48 @@ public:
 		int nMeshV;	// 縦の分割数
 		int nTexU;	// テクスチャの横の分割数
 		int nTexV;	// テクスチャの縦の分割数
-	}MeshCylinder;
+		// コンストラクタ
+		S_MeshCylinder() : pos{}, rot{}, mtxWorld{}, nNumIdx(0), nNumVtx(0),fRadius(0.0f), fHeight(0.0f), nMeshU(0), nMeshV(0), nTexU(0), nTexV(0) {}
+	};
 
-	static CMeshCylinder *Create
-	(
-		int nMeshU = meshCylinder::MESH_U,
-		int nMeshV = meshCylinder::MESH_V,
-		int nTexU = meshCylinder::SPLIT_TEX_U,
-		int nTexV = meshCylinder::SPLIT_TEX_V
-	);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void JustDraw(void);
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
-	void SetPosition(D3DXVECTOR3 pos) { m_meshCylinder.pos = pos; }
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+	void SetVtx(void);	// 頂点の設定
+
+	// 変数取得・設定関数
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }	// 頂点バッファ
+	void SetPosition(D3DXVECTOR3 pos) { m_meshCylinder.pos = pos; }	// 位置
 	D3DXVECTOR3 GetPosition(void) { return m_meshCylinder.pos; }
-	void SetRotation(D3DXVECTOR3 rot) { m_meshCylinder.rot = rot; }
+	void SetRotation(D3DXVECTOR3 rot) { m_meshCylinder.rot = rot; }	// 向き
 	D3DXVECTOR3 GetRotation(void) { return m_meshCylinder.rot; }
-	int GetNumVtx(void) { return m_meshCylinder.nNumVtx; }
-	void SetRadius(float fRadius) { m_meshCylinder.fRadius = fRadius; }
-	void SetHeight(float fHeight) { m_meshCylinder.fHeight = fHeight; }
-	void SetIdxTexture(int nIdx) { m_nIdxTexture = nIdx; }
-	void SetNumMeshU(int nNumMesh) { m_meshCylinder.nMeshU = nNumMesh; }
-	void SetNumMeshV(int nNumMesh) { m_meshCylinder.nMeshV = nNumMesh; }
-	MeshCylinder *GetMeshCylinder(void) { return &m_meshCylinder; }
-	void SetCol(D3DXCOLOR col);
+	int GetNumVtx(void) { return m_meshCylinder.nNumVtx; }	// 頂点数
+	void SetRadius(float fRadius) { m_meshCylinder.fRadius = fRadius; }	// 半径
+	void SetHeight(float fHeight) { m_meshCylinder.fHeight = fHeight; }	// 高さ
+	void SetIdxTexture(int nIdx) { m_nIdxTexture = nIdx; }	// テクスチャ番号
+	void SetNumMeshU(int nNumMesh) { m_meshCylinder.nMeshU = nNumMesh; }	// メッシュの横の分割数
+	void SetNumMeshV(int nNumMesh) { m_meshCylinder.nMeshV = nNumMesh; }	// メッシュの縦の分割数
+	S_MeshCylinder *GetMeshCylinder(void) { return &m_meshCylinder; }	// 自身の情報の構造体
+	void SetCol(D3DXCOLOR col);	// 色
 	D3DXCOLOR GetCol(void) { return m_col; }
-	void SetMtx(D3DXMATRIX mtx) { m_meshCylinder.mtxWorld = mtx; }
-	void SetVtx(void);
+	void SetMtx(D3DXMATRIX mtx) { m_meshCylinder.mtxWorld = mtx; }	// マトリックス
+
+	// 静的メンバ関数
+	static CMeshCylinder *Create	// 生成処理
+	(
+		int nMeshU = MeshCylinder::MESH_U,
+		int nMeshV = MeshCylinder::MESH_V,
+		int nTexU = MeshCylinder::SPLIT_TEX_U,
+		int nTexV = MeshCylinder::SPLIT_TEX_V
+	);
 
 private:
+	// メンバ変数
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	//インデックスバッファへのポインタ
-	MeshCylinder m_meshCylinder;	//構造体の情報
+	S_MeshCylinder m_meshCylinder;	//構造体の情報
 	D3DXCOLOR m_col;	// 色
 	int m_nIdxTexture;	// テクスチャ番号
 };

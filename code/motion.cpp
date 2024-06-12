@@ -112,7 +112,7 @@ void CMotion::Update(void)
 				D3DXMATRIX *pMtx = m_apParts[m_aMotionInfo[m_motionType].pParticle[nCntParticle].nIdxParent]->m_pParts->GetMatrix();
 				pos = D3DXVECTOR3(pMtx->_41, pMtx->_42, pMtx->_43) + m_aMotionInfo[m_motionType].pParticle[nCntParticle].offset;
 
-				CParticle::Create(pos, (CParticle::TYPE)m_aMotionInfo[m_motionType].pParticle[nCntParticle].nType);
+				CParticle::Create(pos, (CParticle::E_TYPE)m_aMotionInfo[m_motionType].pParticle[nCntParticle].nType);
 			}
 		}
 	}

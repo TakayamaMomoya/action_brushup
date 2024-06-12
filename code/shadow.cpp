@@ -19,7 +19,7 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CShadow::CShadow(int nPriority) : CObject3D(nPriority)
+CShadow::CShadow(int nPriority) : CPolygon3D(nPriority)
 {
 
 }
@@ -37,9 +37,9 @@ CShadow::~CShadow()
 //=====================================================
 HRESULT CShadow::Init(void)
 {
-	CObject3D::Init();
+	CPolygon3D::Init();
 
-	SetMode(MODE::MODE_NORMAL);
+	SetMode(E_MODE::MODE_NORMAL);
 
 	return S_OK;
 }
@@ -50,7 +50,7 @@ HRESULT CShadow::Init(void)
 void CShadow::Uninit(void)
 {
 	// 継承クラスの終了
-	CObject3D::Uninit();
+	CPolygon3D::Uninit();
 }
 
 //=====================================================
@@ -59,7 +59,7 @@ void CShadow::Uninit(void)
 void CShadow::Update(void)
 {
 	// 継承クラスの更新
-	CObject3D::Update();
+	CPolygon3D::Update();
 
 	// 変数宣言
 	float fHeight = 0.0f;
@@ -77,7 +77,7 @@ void CShadow::Update(void)
 void CShadow::Draw(void)
 {
 	// 継承クラスの描画
-	CObject3D::Draw();
+	CPolygon3D::Draw();
 
 	CDebugProc::GetInstance()->Print("\n影の位置：[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 }

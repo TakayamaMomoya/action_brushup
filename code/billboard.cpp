@@ -15,7 +15,7 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CBillboard::CBillboard(int nPriority) : CObject3D(nPriority)
+CBillboard::CBillboard(int nPriority) : CPolygon3D(nPriority)
 {
 
 }
@@ -55,7 +55,7 @@ CBillboard *CBillboard::Create(D3DXVECTOR3 pos, float width, float height)
 //=====================================================
 HRESULT CBillboard::Init(void)
 {
-	CObject3D::Init();
+	CPolygon3D::Init();
 
 	return S_OK;
 }
@@ -65,7 +65,7 @@ HRESULT CBillboard::Init(void)
 //=====================================================
 void CBillboard::Uninit(void)
 {
-	CObject3D::Uninit();
+	CPolygon3D::Uninit();
 }
 
 //=====================================================
@@ -73,7 +73,7 @@ void CBillboard::Uninit(void)
 //=====================================================
 void CBillboard::Update(void)
 {
-	CObject3D::Update();
+	CPolygon3D::Update();
 }
 
 //=====================================================

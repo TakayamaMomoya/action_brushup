@@ -17,18 +17,12 @@
 //*****************************************************
 #define SPEED_MOVE	(7.0f)	// 移動速度
 
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-LPDIRECT3DTEXTURE9 CEffect2D::m_pTexture = nullptr;	// テクスチャのポインタ
-
 //=====================================================
 // コンストラクタ
 //=====================================================
-CEffect2D::CEffect2D(int nPriority) : CObject2D(nPriority)
+CEffect2D::CEffect2D(int nPriority) : CObject2D(nPriority),m_nLife(0),m_fDecrease(0.0f)
 {
-	m_nLife = 0;
-	m_fDecrease = 0.0f;
+
 }
 
 //=====================================================
@@ -131,37 +125,4 @@ CEffect2D *CEffect2D::Create(D3DXVECTOR3 pos, float fRadius, int nLife, D3DXCOLO
 	pEffect2D->SetCol(col);
 
 	return pEffect2D;
-}
-
-//=====================================================
-// 読込処理
-//=====================================================
-HRESULT CEffect2D::Load(void)
-{
-	if (m_pTexture == nullptr)
-	{
-		// デバイスの取得
-		LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
-
-		D3DXCreateTextureFromFile
-		(
-			pDevice,
-			"data\\TEXTURE\\EFFECT\\effect000.png",
-			&m_pTexture
-		);
-	}
-
-	return S_OK;
-}
-
-//=====================================================
-// テクスチャ破棄
-//=====================================================
-void CEffect2D::Unload(void)
-{
-	if (m_pTexture != nullptr)
-	{
-		m_pTexture->Release();
-		m_pTexture = nullptr;
-	}
 }

@@ -22,7 +22,7 @@
 #include "object.h"
 #include "camera.h"
 #include "light.h"
-#include "object3D.h"
+#include "polygon3D.h"
 #include "objectX.h"
 #include "billboard.h"
 #include "model.h"
