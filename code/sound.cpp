@@ -9,7 +9,7 @@
 //*****************************************************************************
 // 静的メンバ変数宣言
 //*****************************************************************************
-CSound *CSound::m_pSound = nullptr;	// 自身のポインタ
+CSound *CSound::s_pSound = nullptr;	// 自身のポインタ
 
 //=============================================================================
 // コンストラクタ
@@ -41,17 +41,17 @@ CSound::~CSound()
 //=============================================================================
 CSound *CSound::Create(HWND hWnd)
 {
-	if (m_pSound == nullptr)
+	if (s_pSound == nullptr)
 	{
-		m_pSound = new CSound;
+		s_pSound = new CSound;
 
-		if (m_pSound != nullptr)
+		if (s_pSound != nullptr)
 		{
-			m_pSound->Init(hWnd);
+			s_pSound->Init(hWnd);
 		}
 	}
 
-	return m_pSound;
+	return s_pSound;
 }
 
 //=============================================================================

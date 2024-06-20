@@ -15,7 +15,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CBlurEvent *CBlurEvent::m_pBlurEvent = nullptr;	// 自身のポインタ
+CBlurEvent *CBlurEvent::s_pBlurEvent = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -38,20 +38,20 @@ CBlurEvent::~CBlurEvent()
 //=====================================================
 CBlurEvent *CBlurEvent::Create(float fTime, float fDensity, float fSize)
 {
-	if (m_pBlurEvent == nullptr)
+	if (s_pBlurEvent == nullptr)
 	{
-		m_pBlurEvent = new CBlurEvent;
+		s_pBlurEvent = new CBlurEvent;
 
-		if (m_pBlurEvent != nullptr)
+		if (s_pBlurEvent != nullptr)
 		{
-			m_pBlurEvent->m_fTimerBlur = fTime;
-			m_pBlurEvent->m_fDensityBlur = fDensity;
-			m_pBlurEvent->m_fSizeBlur = fSize;
-			m_pBlurEvent->Init();
+			s_pBlurEvent->m_fTimerBlur = fTime;
+			s_pBlurEvent->m_fDensityBlur = fDensity;
+			s_pBlurEvent->m_fSizeBlur = fSize;
+			s_pBlurEvent->Init();
 		}
 	}
 
-	return m_pBlurEvent;
+	return s_pBlurEvent;
 }
 
 //=====================================================
@@ -69,7 +69,7 @@ HRESULT CBlurEvent::Init(void)
 //=====================================================
 void CBlurEvent::Uninit(void)
 {
-	m_pBlurEvent = nullptr;
+	s_pBlurEvent = nullptr;
 
 	Release();
 }
@@ -79,7 +79,7 @@ void CBlurEvent::Uninit(void)
 //=====================================================
 void CBlurEvent::Update(void)
 {
-	m_fTimerBlur -= CManager::GetDeltaTime();
+	m_fTimerBlur -= Manager::GetDeltaTime();
 
 	if (m_fTimerBlur < 0.0f)
 	{// イベントの終了とともに自身を破棄

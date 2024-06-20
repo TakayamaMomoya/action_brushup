@@ -92,7 +92,7 @@ HRESULT CRanking::Init(void)
 	Sort();
 
 	// スコアの取得
-	int nScore = CManager::GetScore();
+	int nScore = Manager::GetScore();
 
 	// 取得したスコアでランキング設定
 	Set(nScore);
@@ -124,7 +124,7 @@ HRESULT CRanking::Init(void)
 	}
 
 	// カメラ位置の設定
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera == nullptr)
 		return E_FAIL;

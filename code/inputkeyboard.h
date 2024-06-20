@@ -42,7 +42,7 @@ public:
 
 	// 静的メンバ関数
 	static CInputKeyboard *Create(HINSTANCE hInstance, HWND hWnd);	// 生成処理
-	static CInputKeyboard *GetInstance(void) { return m_pKeyboard; }	// インスタンスの取得
+	static CInputKeyboard *GetInstance(void) { return s_pKeyboard; }	// インスタンスの取得
 
 private:
 	// メンバ変数
@@ -53,7 +53,7 @@ private:
 	int m_aCntRepeat[NUM_KEY_MAX];	// リピートカウンター
 
 	// 静的メンバ変数
-	static CInputKeyboard *m_pKeyboard;	// 自身のポインタ
+	static CInputKeyboard *s_pKeyboard;	// 自身のポインタ
 };
 
 #endif

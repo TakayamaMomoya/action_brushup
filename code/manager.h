@@ -33,24 +33,44 @@ public:
 	void Update();
 	void Draw();
 
-	// 静的メンバ関数
-	static CCamera *GetCamera(void) { return m_pCamera; }	// カメラ取得
-	static CLight *GetLight(void) { return m_pLight; }	// ライト取得
-	static void SetMode(CScene::MODE mode);	// モードの設定
-	static CScene::MODE GetMode(void) { return m_mode; }	// モードの取得
-	static void SetScore(int nScore) { m_nScore = nScore; }	// スコアの設定
-	static int GetScore(void) { return m_nScore; }	// スコアの取得
-	static void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }	// デルタタイムの設定
-	static float GetDeltaTime(void) { return m_fDeltaTime; }	// デルタタイムの取得
+	// 変数取得・設定関数
+	CCamera *GetCamera(void) { return m_pCamera; }	// カメラ取得
+	CLight *GetLight(void) { return m_pLight; }	// ライト取得
+	void SetMode(CScene::MODE mode);	// モードの設定
+	CScene::MODE GetMode(void) { return m_mode; }	// モードの取得
+	void SetScore(int nScore) { m_nScore = nScore; }	// スコアの設定
+	int GetScore(void) { return m_nScore; }	// スコアの取得
+	void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }	// デルタタイムの設定
+	float GetDeltaTime(void) { return m_fDeltaTime; }	// デルタタイムの取得
 
+	// 静的メンバ関数
+	static CManager *Create(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);	// 生成処理
+	static CManager *GetInstace(void) { return s_pManager; };	// インスタンスの取得
 private:
+	// メンバ変数
+	CCamera *m_pCamera;	// カメラのポインタ
+	CLight *m_pLight;	// ライトのポインタ
+	CScene *m_pScene;	// 現在のシーン
+	CScene::MODE m_mode;	// 現在のモード
+	int m_nScore;	// スコア
+	float m_fDeltaTime;	// 前回のフレームからかかった時間
+
 	// 静的メンバ変数
-	static CCamera *m_pCamera;	// カメラのポインタ
-	static CLight *m_pLight;	// ライトのポインタ
-	static CScene *m_pScene;	// 現在のシーン
-	static CScene::MODE m_mode;	// 現在のモード
-	static int m_nScore;	// スコア
-	static float m_fDeltaTime;	// 前回のフレームからかかった時間
+	static CManager *s_pManager;	// 自身のポインタ
 };
+
+namespace Manager
+{
+//*****************************************************
+// ショートカット関数
+//*****************************************************
+CCamera *GetCamera(void);	// カメラ取得
+CLight *GetLight(void);	// ライト取得
+void SetMode(CScene::MODE mode);	// モードの設定
+CScene::MODE GetMode(void);	// モードの取得
+void SetScore(int nScore);	// スコアの設定
+int GetScore(void);	// スコアの取得
+float GetDeltaTime(void);	// デルタタイムの取得
+}
 
 #endif

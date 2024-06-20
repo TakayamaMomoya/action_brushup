@@ -41,7 +41,7 @@ const float SLOW_SCALE_DEATH = 0.3f;	// 死亡時にかけるスローのタイムスケール
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-int CEnemy::m_nNumAll = 0;	// 総数
+int CEnemy::s_nNumAll = 0;	// 総数
 
 //=====================================================
 // コンストラクタ
@@ -50,7 +50,7 @@ CEnemy::CEnemy() : m_fLife(0.0f),m_nScore(0),m_fTimerState(0.0f),m_pCollisionCub
 					m_state(STATE_NORMAL),m_pNext(nullptr),m_pPrev(nullptr)
 {
 	// 総数カウントアップ
-	m_nNumAll++;
+	s_nNumAll++;
 
 	// 先頭、最後尾アドレス取得
 	CEnemyManager *pManager = CEnemyManager::GetInstance();
@@ -102,7 +102,7 @@ CEnemy::~CEnemy()
 
 	if (m_state != STATE_DEATH)
 	{
-		m_nNumAll--;
+		s_nNumAll--;
 	}
 
 	if (pHead == this)
@@ -274,7 +274,7 @@ void CEnemy::ManageState(void)
 {
 	D3DXCOLOR col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
-	float fAddTime = CManager::GetDeltaTime() * Slow::GetTimeScale();
+	float fAddTime = Manager::GetDeltaTime() * Slow::GetTimeScale();
 
 	switch (m_state)
 	{

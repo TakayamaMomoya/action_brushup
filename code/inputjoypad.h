@@ -85,7 +85,7 @@ public:
 
 	// 静的メンバ関数
 	static CInputJoypad *Create(void);	// 生成処理
-	static CInputJoypad *GetInstance(void) { return m_pJoyPad; }	// インスタンスの取得
+	static CInputJoypad *GetInstance(void) { return s_pJoyPad; }	// インスタンスの取得
 
 private:
 	// メンバ関数
@@ -103,7 +103,7 @@ private:
 	bool m_abTrigggerLStick[Joypad::MAX_PLAYER][DIRECTION_MAX];	// スティックのトリガー判定
 
 	// 静的メンバ変数
-	static CInputJoypad *m_pJoyPad;	// 自身のポインタ
+	static CInputJoypad *s_pJoyPad;	// 自身のポインタ
 };
 
 #endif

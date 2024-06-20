@@ -30,7 +30,7 @@ public:
 
 	// 静的メンバ関数
 	static CDebugProc *Create(void);
-	static CDebugProc *GetInstance(void) { return m_pDebugProc; }
+	static CDebugProc *GetInstance(void) { return s_pDebugProc; }
 
 private:
 	// メンバ変数
@@ -38,8 +38,8 @@ private:
 	bool m_bDisp;		// デバッグ表示のON/OFF
 
 	// 静的メンバ変数
-	static LPD3DXFONT m_pFont;	// フォントへのポインタ
-	static CDebugProc *m_pDebugProc;	// 自身のポインタ
+	static LPD3DXFONT s_pFont;	// フォントへのポインタ
+	static CDebugProc *s_pDebugProc;	// 自身のポインタ
 };
 
 #endif

@@ -161,5 +161,5 @@ void CScore::SetResultScore(void)
 	// ボーナスを加算
 	nScore += nBonus;
 
-	CManager::SetScore(nScore);
+	Manager::SetScore(nScore);
 }

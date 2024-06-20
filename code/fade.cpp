@@ -23,7 +23,7 @@ const float FADE_SPEED = 0.05f;	// フェードのスピード
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CFade *CFade::m_pFade = nullptr;	// 自身のポインタ
+CFade *CFade::s_pFade = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -46,17 +46,17 @@ CFade::~CFade()
 //=====================================================
 CFade *CFade::Create(void)
 {
-	if (m_pFade == nullptr)
+	if (s_pFade == nullptr)
 	{
-		m_pFade = new CFade;
+		s_pFade = new CFade;
 
-		if (m_pFade != nullptr)
+		if (s_pFade != nullptr)
 		{
-			m_pFade->Init();
+			s_pFade->Init();
 		}
 	}
 
-	return m_pFade;
+	return s_pFade;
 }
 
 //=====================================================
@@ -140,7 +140,7 @@ void CFade::Update(void)
 				m_fade = STATE_OUT;
 
 				// モード設定
-				CManager::SetMode(m_modeNext);
+				Manager::SetMode(m_modeNext);
 			}
 		}
 		else if (m_fade == STATE_OUT)

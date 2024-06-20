@@ -57,7 +57,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static int GetNumAll(void) { return m_nNumAll; }
+	static int GetNumAll(void) { return s_nNumAll; }
 	void SetLife(float fLife);
 	float GetLife(void) { return m_fLife; }
 	void Hit(float fDamage);
@@ -81,7 +81,7 @@ protected:
 private:
 	void ManageState(void);
 
-	static int m_nNumAll;	// 総数
+	// メンバ変数
 	float m_fLife;	// 体力
 	float m_fTimerState;	// 状態遷移カウンター
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
@@ -89,9 +89,11 @@ private:
 	CShadow *m_pShadow;	// 影のポインタ
 	STATE m_state;	// 状態
 	int m_nScore;	// スコア値
-
 	CEnemy *m_pPrev;	// 前のアドレス
 	CEnemy *m_pNext;	// 次のアドレス
+
+	// 静的メンバ変数
+	static int s_nNumAll;	// 総数
 };
 
 #endif

@@ -40,7 +40,7 @@ public:
 	CEnemyNormal *GetNext(void) { return m_pNext; }	// リストの次のポインタ
 
 	// 静的メンバ関数
-	static int GetNumAll(void) { return m_nNumAll; }	// 総数取得
+	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 
 private:
 	// メンバ関数
@@ -58,7 +58,7 @@ private:
 	CEnemyNormal *m_pNext;	// 次のアドレス
 
 	// 静的メンバ変数
-	static int m_nNumAll;	// 総数
+	static int s_nNumAll;	// 総数
 };
 
 #endif

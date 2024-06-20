@@ -37,7 +37,7 @@ public:
 
 	// 静的メンバ関数
 	static CEnemyManager *Create(void);	// 生成処理
-	static CEnemyManager *GetInstance(void) { return m_pEnemyManager; }	// インスタンスの取得
+	static CEnemyManager *GetInstance(void) { return s_pEnemyManager; }	// インスタンスの取得
 
 private:
 	// メンバ関数
@@ -48,7 +48,7 @@ private:
 	CEnemy *m_pTail;	// 最後尾のアドレス
 	
 	// 静的メンバ変数
-	static CEnemyManager *m_pEnemyManager;	// 自身のポインタ
+	static CEnemyManager *s_pEnemyManager;	// 自身のポインタ
 };
 
 #endif

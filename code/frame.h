@@ -27,15 +27,19 @@ public:
 	CFrame(int nPriority = 0);
 	~CFrame();
 
-	static CFrame *Create(int nTimeIn,int nTimeWait,int nTimeOut);	// 生成処理
+	// メンバ関数
 	HRESULT Init(void);	// 初期化
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
 
+	// 静的メンバ関数
+	static CFrame *Create(int nTimeIn, int nTimeWait, int nTimeOut);	// 生成処理
+
 private:
+	// 列挙型定義
 	enum STATE
-	{
+	{// 状態
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_IN,	// イン状態
 		STATE_WAIT,	// 待機状態
@@ -43,8 +47,9 @@ private:
 		STATE_MAX
 	};
 
+	// 構造体定義
 	struct SInfo
-	{
+	{// 自身の情報
 		CObject2D *pUpper;
 		CObject2D *pUnder;
 		STATE state;
@@ -54,10 +59,12 @@ private:
 		int nCntFade;
 	};
 
+	// メンバ関数
 	void ManageState(void);
 	void ManageUpper(void);
 	void ManageUnder(void);
 
+	// メンバ変数
 	SInfo m_info;
 };
 

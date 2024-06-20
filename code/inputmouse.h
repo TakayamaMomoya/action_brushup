@@ -56,7 +56,7 @@ public:
 
 	// 静的メンバ関数
 	static CInputMouse *Create(HINSTANCE hInstance, HWND hWnd);	// 生成処理
-	static CInputMouse *GetInstance(void) { return m_pMouse; }	// インスタンスの取得
+	static CInputMouse *GetInstance(void) { return s_pMouse; }	// インスタンスの取得
 
 private:
 	// メンバ変数
@@ -68,7 +68,7 @@ private:
 	int m_aCntRepeat[Mouse::NUM_BUTTON_MAX];	// リピートカウンター
 
 	// 静的メンバ変数
-	static CInputMouse *m_pMouse;	// 自身のポインタ
+	static CInputMouse *s_pMouse;	// 自身のポインタ
 };
 
 #endif

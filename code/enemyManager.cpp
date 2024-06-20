@@ -26,7 +26,7 @@ const char* FILE_PATH = "data\\MAP\\enemies.txt";	// 配置データのパス
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CEnemyManager *CEnemyManager::m_pEnemyManager = nullptr;	// 自身のポインタ
+CEnemyManager *CEnemyManager::s_pEnemyManager = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -49,15 +49,15 @@ CEnemyManager::~CEnemyManager()
 //=====================================================
 CEnemyManager *CEnemyManager::Create(void)
 {
-	if (m_pEnemyManager == nullptr)
+	if (s_pEnemyManager == nullptr)
 	{
-		m_pEnemyManager = new CEnemyManager;
+		s_pEnemyManager = new CEnemyManager;
 
-		if (m_pEnemyManager != nullptr)
-			m_pEnemyManager->Init();
+		if (s_pEnemyManager != nullptr)
+			s_pEnemyManager->Init();
 	}
 
-	return m_pEnemyManager;
+	return s_pEnemyManager;
 }
 
 //=====================================================
@@ -197,7 +197,7 @@ void CEnemyManager::Load(void)
 //=====================================================
 void CEnemyManager::Uninit(void)
 {
-	m_pEnemyManager = nullptr;
+	s_pEnemyManager = nullptr;
 
 	Release();
 }

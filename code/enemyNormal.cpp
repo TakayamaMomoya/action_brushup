@@ -36,7 +36,7 @@ const int TIME_DEATH = 30;	// 死亡までのタイム
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-int CEnemyNormal::m_nNumAll = 0;	// 総数
+int CEnemyNormal::s_nNumAll = 0;	// 総数
 
 //=====================================================
 // コンストラクタ
@@ -44,7 +44,7 @@ int CEnemyNormal::m_nNumAll = 0;	// 総数
 CEnemyNormal::CEnemyNormal() : m_fLife(0.0f),m_nScore(0),m_fCntAttack(0.0f),m_nTimerState(0),m_pCollisionSphere(nullptr),
 								m_pCollisionCube(nullptr),m_pNext(nullptr),m_pPrev(nullptr)
 {
-	m_nNumAll++;
+	s_nNumAll++;
 }
 
 //=====================================================
@@ -134,7 +134,7 @@ void CEnemyNormal::Update(void)
 	if (state != STATE_DEATH)
 	{
 		float fScale = Slow::GetTimeScale();
-		float DeltaTime = CManager::GetDeltaTime();
+		float DeltaTime = Manager::GetDeltaTime();
 
 		m_fCntAttack += DeltaTime * fScale;
 

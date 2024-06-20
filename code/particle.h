@@ -80,7 +80,7 @@ private:
 	int m_nPriorityEffect;	// 描画プライオリティ
 	
 	// 静的メンバ変数
-	static S_PARTICLE_INFO *m_apParticleInfo[TYPE_MAX + 1];	// パーティクルの情報
+	static S_PARTICLE_INFO *s_apParticleInfo[TYPE_MAX + 1];	// パーティクルの情報
 };
 
 #endif

@@ -13,7 +13,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-LPDIRECTINPUT8 CInput::m_pInput = nullptr;	// DirectInputオブジェクトへのポインタ
+LPDIRECTINPUT8 CInput::s_pInput = nullptr;	// DirectInputオブジェクトへのポインタ
 
 //=====================================================
 // コンストラクタ
@@ -36,10 +36,10 @@ CInput::~CInput()
 //=====================================================
 HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	if (m_pInput == nullptr)
+	if (s_pInput == nullptr)
 	{
 		// DirectInputオブジェクトの生成
-		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, nullptr)))
+		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&s_pInput, nullptr)))
 		{
 			return E_FAIL;
 		}
@@ -60,9 +60,9 @@ void CInput::Uninit(void)
 		m_pDevice = nullptr;
 	}
 
-	if (m_pInput != nullptr)
+	if (s_pInput != nullptr)
 	{// DirectInputオブジェクトの破棄
-		m_pInput->Release();
-		m_pInput = nullptr;
+		s_pInput->Release();
+		s_pInput = nullptr;
 	}
 }

@@ -70,7 +70,7 @@ public:
 
 	// 静的メンバ関数
 	static CEnemyBoss *Create(void);	// 生成処理
-	static CEnemyBoss *GetInstance(void) { return m_pEnemyBoss; }	// インスタンスの取得
+	static CEnemyBoss *GetInstance(void) { return s_pEnemyBoss; }	// インスタンスの取得
 
 private:
 	// 列挙型定義
@@ -111,7 +111,7 @@ private:
 	CEnemyBossState *m_pState;	// ステイトのポインタ
 
 	// 静的メンバ変数
-	static CEnemyBoss *m_pEnemyBoss;	// 自身のポインタ
+	static CEnemyBoss *s_pEnemyBoss;	// 自身のポインタ
 };
 
 #endif

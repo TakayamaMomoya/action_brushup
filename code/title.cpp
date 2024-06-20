@@ -106,7 +106,7 @@ HRESULT CTitle::Init(void)
 	}
 
 	// カメラのステイト変更
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera != nullptr)
 	{

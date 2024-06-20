@@ -19,8 +19,8 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-bool CRenderer::m_bFog = false;	// フォグをかけるかどうか
-CRenderer *CRenderer::m_pRenderer = nullptr;	// 自身のポインタ
+bool CRenderer::s_bFog = false;	// フォグをかけるかどうか
+CRenderer *CRenderer::s_pRenderer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -45,17 +45,17 @@ CRenderer::~CRenderer()
 //=====================================================
 CRenderer *CRenderer::Create(HWND hWnd, BOOL bWindow)
 {
-	if (m_pRenderer == nullptr)
+	if (s_pRenderer == nullptr)
 	{
-		m_pRenderer = new CRenderer;
+		s_pRenderer = new CRenderer;
 
-		if (m_pRenderer != nullptr)
+		if (s_pRenderer != nullptr)
 		{
-			m_pRenderer->Init(hWnd, bWindow);
+			s_pRenderer->Init(hWnd, bWindow);
 		}
 	}
 
-	return m_pRenderer;
+	return s_pRenderer;
 }
 
 //=====================================================

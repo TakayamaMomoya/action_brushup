@@ -25,7 +25,7 @@ const D3DXCOLOR COL_POLYGON_INITIAL = { 1.0f,1.0f,1.0f,0.1f };  // ‰Šú‚Ìd‚Ë‚éƒ
 //*****************************************************
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
 //*****************************************************
-CBlur *CBlur::m_pBlur = nullptr;    // Ž©g‚Ìƒ|ƒCƒ“ƒ^
+CBlur *CBlur::s_pBlur = nullptr;    // Ž©g‚Ìƒ|ƒCƒ“ƒ^
 
 //=====================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -49,17 +49,17 @@ CBlur::~CBlur()
 //=====================================================
 CBlur *CBlur::Create(void)
 {
-    if (m_pBlur == nullptr)
+    if (s_pBlur == nullptr)
     {
-        m_pBlur = new CBlur;
+        s_pBlur = new CBlur;
 
-        if (m_pBlur != nullptr)
+        if (s_pBlur != nullptr)
         {
-            m_pBlur->Init();
+            s_pBlur->Init();
         }
     }
 
-    return m_pBlur;
+    return s_pBlur;
 }
 
 //=====================================================
@@ -171,7 +171,7 @@ void CBlur::Init(void)
 //=====================================================
 void CBlur::Uninit(void)
 {
-    m_pBlur = nullptr;
+    s_pBlur = nullptr;
 
     for (int i = 0; i < Blur::NUM_RENDER; i++)
     {
@@ -287,7 +287,7 @@ void CBlur::SaveRenderInfo(void)
 //=====================================================
 void CBlur::ChangeTarget(void)
 {
-    CCamera *pCamera = CManager::GetCamera();
+    CCamera *pCamera = Manager::GetCamera();
 
     if (pCamera == nullptr)
         return;

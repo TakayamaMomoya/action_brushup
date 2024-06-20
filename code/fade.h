@@ -43,7 +43,7 @@ public:
 
 	// 静的メンバ関数
 	static CFade *Create(void);	// 生成処理
-	static CFade *GetInstance(void) { return m_pFade; }	// インスタンスの取得
+	static CFade *GetInstance(void) { return s_pFade; }	// インスタンスの取得
 
 private:
 	// メンバ変数
@@ -53,6 +53,6 @@ private:
 	D3DXCOLOR m_col;	// ポリゴンの色
 
 	// 静的メンバ変数
-	static CFade *m_pFade;	// 自身のポインタ
+	static CFade *s_pFade;	// 自身のポインタ
 };
 #endif

@@ -18,9 +18,9 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CObject *CObject::m_apTop[NUM_PRIORITY] = {};	// 先頭のオブジェクトのポインタ
-CObject *CObject::m_apCur[NUM_PRIORITY] = {};	// 最後尾のオブジェクトのポインタ
-int CObject::m_nNumAll = 0;	// 総数
+CObject *CObject::s_apTop[NUM_PRIORITY] = {};	// 先頭のオブジェクトのポインタ
+CObject *CObject::s_apCur[NUM_PRIORITY] = {};	// 最後尾のオブジェクトのポインタ
+int CObject::s_nNumAll = 0;	// 総数
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -28,24 +28,24 @@ int CObject::m_nNumAll = 0;	// 総数
 CObject::CObject(int nPriority) : m_pPrev(nullptr),m_pNext(nullptr),m_bDeath(false),m_bWire(false),m_bZtest(false),
 									m_bLighting(true),m_bAdd(false),m_bFog(true),m_bCull(true),m_type(E_TYPE::TYPE_NONE),m_nID(-1), m_dwAlpha(0)
 {
-	m_nNumAll++;
+	s_nNumAll++;
 
 	// プライオリティ設定
 	m_nPriority = nPriority;
 
-	if (m_apTop[nPriority] == nullptr)
+	if (s_apTop[nPriority] == nullptr)
 	{// 先頭と最後尾アドレスの代入
-		m_apTop[nPriority] = this;
-		m_apCur[nPriority] = this;
+		s_apTop[nPriority] = this;
+		s_apCur[nPriority] = this;
 
 		return;
 	}
 
 	// 前のアドレスに最後尾のアドレスを代入する
-	m_pPrev = m_apCur[nPriority];
+	m_pPrev = s_apCur[nPriority];
 
 	// 最後尾のアドレスを自分にする
-	m_apCur[nPriority] = this;
+	s_apCur[nPriority] = this;
 
 	if (m_pPrev != nullptr)
 	{
@@ -59,7 +59,7 @@ CObject::CObject(int nPriority) : m_pPrev(nullptr),m_pNext(nullptr),m_bDeath(fal
 //=====================================================
 CObject::~CObject()
 {
-	m_nNumAll--;
+	s_nNumAll--;
 }
 
 //=====================================================
@@ -76,7 +76,7 @@ void CObject::Release(void)
 //=====================================================
 void CObject::Delete(void)
 {
-	if (m_apCur[m_nPriority] != this && m_apTop[m_nPriority] != this)
+	if (s_apCur[m_nPriority] != this && s_apTop[m_nPriority] != this)
 	{// 真ん中のアドレスの破棄
 		if (m_pPrev != nullptr)
 		{
@@ -91,7 +91,7 @@ void CObject::Delete(void)
 		}
 	}
 
-	if (m_apTop[m_nPriority] == this)
+	if (s_apTop[m_nPriority] == this)
 	{// 先頭アドレスの破棄
 		if (m_pNext != nullptr)
 		{
@@ -99,10 +99,10 @@ void CObject::Delete(void)
 		}
 
 		// 先頭アドレスを次のアドレスに引き継ぐ
-		m_apTop[m_nPriority] = m_pNext;
+		s_apTop[m_nPriority] = m_pNext;
 	}
 	
-	if (m_apCur[m_nPriority] == this)
+	if (s_apCur[m_nPriority] == this)
 	{// 最後尾アドレスの破棄
 		if (m_pPrev != nullptr)
 		{
@@ -110,7 +110,7 @@ void CObject::Delete(void)
 		}
 
 		// 最後尾アドレスを前のアドレスに引き継ぐ
-		m_apCur[m_nPriority] = m_pPrev;
+		s_apCur[m_nPriority] = m_pPrev;
 	}
 
 	// 自身の破棄
@@ -127,7 +127,7 @@ void CObject::ReleaseAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -145,7 +145,7 @@ void CObject::ReleaseAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -172,7 +172,7 @@ void CObject::UpdateAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -190,7 +190,7 @@ void CObject::UpdateAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -217,7 +217,7 @@ void CObject::DeleteAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -259,7 +259,7 @@ void CObject::DrawAll(void)
 	}
 
 	// カメラの取得
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera != nullptr)
 	{// カメラの設定
@@ -269,7 +269,7 @@ void CObject::DrawAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{

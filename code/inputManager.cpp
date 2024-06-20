@@ -18,7 +18,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CInputManager *CInputManager::m_pInputManager = nullptr;	// 自身のポインタ
+CInputManager *CInputManager::s_pInputManager = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -41,15 +41,15 @@ CInputManager::~CInputManager()
 //=====================================================
 CInputManager *CInputManager::Create(HINSTANCE hInstance, HWND hWnd)
 {
-	if (m_pInputManager == nullptr)
+	if (s_pInputManager == nullptr)
 	{// インスタンス生成
-		m_pInputManager = new CInputManager;
+		s_pInputManager = new CInputManager;
 
 		// 初期化処理
-		m_pInputManager->Init(hInstance, hWnd);
+		s_pInputManager->Init(hInstance, hWnd);
 	}
 
-	return m_pInputManager;
+	return s_pInputManager;
 }
 
 //=====================================================
@@ -94,7 +94,7 @@ void CInputManager::Uninit(void)
 	}
 
 	// 自身のポインタ破棄
-	m_pInputManager = nullptr;
+	s_pInputManager = nullptr;
 	delete this;
 }
 

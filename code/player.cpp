@@ -64,7 +64,7 @@ const float SIZE_BLUR_DASH = 0.4f;	// ダッシュのブラーサイズ
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPlayer *CPlayer::m_pPlayer = nullptr;	// 自身のポインタ
+CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -164,20 +164,20 @@ HRESULT CPlayer::Init(void)
 		CFrame::Create(20, 120, 70);
 
 		// カメラ距離の設定
-		CCamera *pCamera = CManager::GetCamera();
+		CCamera *pCamera = Manager::GetCamera();
 
 		if (pCamera != nullptr)
 		{
 			pCamera->SetDist(100.0f);
 
-			pCamera->ChangeBehavior(new CCameraStateApperPlayer);
+			pCamera->ChangeState(new CCameraStateApperPlayer);
 		}
 	}
-	else 
+	else
 #endif
 	{
 		// カメラに追従ステイトを設定
-		CCamera *pCamera = CManager::GetCamera();
+		CCamera *pCamera = Manager::GetCamera();
 
 		if (pCamera != nullptr)
 		{
@@ -217,9 +217,9 @@ void CPlayer::Uninit(void)
 		m_info.pClsnHit = nullptr;
 	}
 
-	if (m_pPlayer != nullptr)
+	if (s_pPlayer != nullptr)
 	{// 自身のポインタを空にする
-		m_pPlayer = nullptr;
+		s_pPlayer = nullptr;
 	}
 
 	// 自身の破棄
@@ -291,7 +291,7 @@ void CPlayer::Update(void)
 				}
 
 				// カメラ距離の設定
-				CCamera *pCamera = CManager::GetCamera();
+				CCamera *pCamera = Manager::GetCamera();
 
 				if (pCamera != nullptr)
 				{
@@ -1024,7 +1024,7 @@ void CPlayer::Hit(float fDamage)
 			m_info.state = STATE_DAMAGE;
 
 			// ダメージの画面揺れ
-			CManager::GetCamera()->SetQuake(0.03f, 10);
+			Manager::GetCamera()->SetQuake(0.03f, 10);
 
 			if (m_info.pBody != nullptr)
 			{// 体を赤くする
@@ -1101,17 +1101,17 @@ void CPlayer::Draw(void)
 //=====================================================
 CPlayer *CPlayer::Create(void)
 {
-	if (m_pPlayer == nullptr)
+	if (s_pPlayer == nullptr)
 	{
-		m_pPlayer = new CPlayer;
+		s_pPlayer = new CPlayer;
 
-		if (m_pPlayer != nullptr)
+		if (s_pPlayer != nullptr)
 		{
-			m_pPlayer->Init();
+			s_pPlayer->Init();
 		}
 	}
 
-	return m_pPlayer;
+	return s_pPlayer;
 }
 
 //=====================================================

@@ -31,9 +31,12 @@ public:
 	void Draw(void);
 
 private:
-	static int m_nNumAll;	// 総数
+	// メンバ変数
 	int m_nLife;	// 体力
 	float m_fDecAlpha;	// 透明度減少量
+
+	// 静的メンバ変数
+	static int s_nNumAll;	// 総数
 };
 
 #endif

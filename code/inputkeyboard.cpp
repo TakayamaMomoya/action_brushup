@@ -15,7 +15,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CInputKeyboard *CInputKeyboard::m_pKeyboard = nullptr;	// 自身のポインタ
+CInputKeyboard *CInputKeyboard::s_pKeyboard = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -38,17 +38,17 @@ CInputKeyboard::~CInputKeyboard()
 //=====================================================
 CInputKeyboard *CInputKeyboard::Create(HINSTANCE hInstance, HWND hWnd)
 {
-	if (m_pKeyboard == nullptr)
+	if (s_pKeyboard == nullptr)
 	{
-		m_pKeyboard = new CInputKeyboard;
+		s_pKeyboard = new CInputKeyboard;
 
-		if (m_pKeyboard != nullptr)
+		if (s_pKeyboard != nullptr)
 		{
-			m_pKeyboard->Init(hInstance, hWnd);
+			s_pKeyboard->Init(hInstance, hWnd);
 		}
 	}
 
-	return m_pKeyboard;
+	return s_pKeyboard;
 }
 
 //=====================================================
@@ -59,7 +59,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 	CInput::Init(hInstance, hWnd);
 
 	//入力デバイスの生成
-	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
+	if (FAILED(s_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
 	{
 		return E_FAIL;
 	}
@@ -87,7 +87,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 //=====================================================
 void CInputKeyboard::Uninit(void)
 {
-	m_pKeyboard = nullptr;
+	s_pKeyboard = nullptr;
 
 	// 基本クラスの終了処理
 	CInput::Uninit();

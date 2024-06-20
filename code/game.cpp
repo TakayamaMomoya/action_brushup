@@ -81,7 +81,7 @@ HRESULT CGame::Init(void)
 	m_state = STATE_NORMAL;
 
 	// ƒJƒƒ‰‹——£‚Ìİ’è
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera != nullptr)
 	{

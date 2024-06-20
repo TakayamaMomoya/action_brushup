@@ -44,8 +44,8 @@ public:
 
 	// 静的メンバ関数
 	static CTexture *Create(void);
-	static int GetNumAll(void) { return m_nNumAll; }
-	static CTexture *GetInstance(void) { return m_pTexture; }
+	static int GetNumAll(void) { return s_nNumAll; }
+	static CTexture *GetInstance(void) { return s_pTexture; }
 
 private:
 	// メンバ変数
@@ -53,7 +53,7 @@ private:
 	char *m_apFilename[Texture::MAX_TEX];	// ファイル名の配列
 
 	// 静的メンバ変数
-	static int m_nNumAll;	// 総数
-	static CTexture *m_pTexture;	// 自身のポインタ
+	static int s_nNumAll;	// 総数
+	static CTexture *s_pTexture;	// 自身のポインタ
 };
 #endif

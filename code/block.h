@@ -70,21 +70,24 @@ public:
 	static void Save(void);	// 保存
 	static void Delete(int nIdx);	// 部分削除処理
 	static void DeleteAll(void);	// 全削除処理
-	static int GetNumAll(void) { return m_nNumAll; }
-	static CBlock **GetBlock(void) { return &m_apBlock[0]; }
+	static int GetNumAll(void) { return s_nNumAll; }
+	static CBlock **GetBlock(void) { return &s_apBlock[0]; }
 	static float CheckShadow(D3DXVECTOR3 pos);
 	static void LoadModel(void);
 	static void DeleteIdx(void);
-	static int *GetIndex(void) { return m_pIdxObject; }
+	static int *GetIndex(void) { return s_pIdxObject; }
 	//void Hit(float fDamage);
 
 private:
+	// メンバ変数
 	TYPE m_type;
-	static int *m_pIdxObject;	// モデルのタイプ番号のポインタ
-	static CBlock *m_apBlock[NUM_OBJECT];	// ブロックの配列
-	static int m_nNumAll;	// 総数
 	CCollisionCube *m_pCollisionCube;	// 立方体の当たり判定
 	int m_nLife;	// 体力
+
+	// 静的メンバ変数
+	static int *s_pIdxObject;	// モデルのタイプ番号のポインタ
+	static CBlock *s_apBlock[NUM_OBJECT];	// ブロックの配列
+	static int s_nNumAll;	// 総数
 };
 
 #endif

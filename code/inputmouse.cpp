@@ -15,7 +15,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CInputMouse *CInputMouse::m_pMouse = nullptr;	// 自身のポインタ
+CInputMouse *CInputMouse::s_pMouse = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -43,17 +43,17 @@ CInputMouse::~CInputMouse()
 //=====================================================
 CInputMouse *CInputMouse::Create(HINSTANCE hInstance, HWND hWnd)
 {
-	if (m_pMouse == nullptr)
+	if (s_pMouse == nullptr)
 	{
-		m_pMouse = new CInputMouse;
+		s_pMouse = new CInputMouse;
 
-		if (m_pMouse != nullptr)
+		if (s_pMouse != nullptr)
 		{
-			m_pMouse->Init(hInstance, hWnd);
+			s_pMouse->Init(hInstance, hWnd);
 		}
 	}
 
-	return m_pMouse;
+	return s_pMouse;
 }
 
 //=====================================================
@@ -65,7 +65,7 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 	CInput::Init(hInstance, hWnd);
 
 	//入力デバイスの生成
-	if (FAILED(m_pInput->CreateDevice(GUID_SysMouse, &m_pDevice, nullptr)))
+	if (FAILED(s_pInput->CreateDevice(GUID_SysMouse, &m_pDevice, nullptr)))
 	{
 		return E_FAIL;
 	}
@@ -105,7 +105,7 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 //=====================================================
 void CInputMouse::Uninit(void)
 {
-	m_pMouse = nullptr;
+	s_pMouse = nullptr;
 
 	// 基本クラスの終了処理
 	CInput::Uninit();

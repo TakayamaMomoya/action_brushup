@@ -51,7 +51,7 @@ public:
 
 	// 静的メンバ関数
 	static CInputManager *Create(HINSTANCE hInstance, HWND hWnd);
-	static CInputManager *GetInstance(void) { return m_pInputManager; }
+	static CInputManager *GetInstance(void) { return s_pInputManager; }
 
 private:
 	// 構造体定義
@@ -68,7 +68,7 @@ private:
 	S_Info m_info;	// 情報
 
 	// 静的メンバ変数
-	static CInputManager *m_pInputManager;	// 自身のポインタ
+	static CInputManager *s_pInputManager;	// 自身のポインタ
 };
 
 #endif

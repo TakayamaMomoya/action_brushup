@@ -37,7 +37,7 @@ protected:
 	LPDIRECTINPUTDEVICE8 m_pDevice;	// 各デバイスへのポインタ
 
 	// 静的メンバ変数
-	static LPDIRECTINPUT8 m_pInput;	// DirectInputオブジェクトへのポインタ
+	static LPDIRECTINPUT8 s_pInput;	// DirectInputオブジェクトへのポインタ
 };
 
 #endif

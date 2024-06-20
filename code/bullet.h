@@ -43,19 +43,23 @@ public:
 	CBullet(int nPriority = 6);	// コンストラクタ
 	~CBullet();	// デストラクタ
 
-	static CBullet *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, int nLife, TYPE type, bool bPierce = false, float fRadius = 10.0f, float fDamage = 5.0f, D3DXCOLOR col = { 1.0f,1.0f,1.0f,1.0f });
+	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static int GetNumAll(void) { return m_nNumAll; }
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }
 	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }
+
+	// 静的メンバ関数
+	static CBullet *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, int nLife, TYPE type, bool bPierce = false, float fRadius = 10.0f, float fDamage = 5.0f, D3DXCOLOR col = { 1.0f,1.0f,1.0f,1.0f });
+	static int GetNumAll(void) { return s_nNumAll; }
 
 private:
 	bool BulletHit(CCollision::TAG tag);
 	void Death(void);
 
+	// メンバ変数
 	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3 m_move;	// 移動量
 	D3DXVECTOR3 m_rot;	// 向き
@@ -63,13 +67,15 @@ private:
 	D3DXVECTOR3 m_posOld;	// 前回の位置
 	int m_nLife;	// 寿命
 	TYPE m_type;	// 種類
-	static int m_nNumAll;	// 総数
 	bool m_bPierce;	// 貫通するかどうか
 	CCollisionSphere *m_pCollisionSphere;	// 球の当たり判定
 	COrbit *m_apOrbit[NUM_ORBIT];	// 軌跡のポインタ
 	D3DXCOLOR m_col;	// 色
 	float m_fDamage;	// 与ダメージ
 	float m_fSize;	// 弾のサイズ
+
+	// 静的メンバ変数
+	static int s_nNumAll;	// 総数
 };
 
 #endif

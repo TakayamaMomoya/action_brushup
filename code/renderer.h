@@ -26,9 +26,9 @@ public:
 	LPDIRECT3DDEVICE9 GetDevice(void) { return m_pD3DDevice; }	// デバイスの取得
 
 	// 静的メンバ関数
-	static bool IsFog(void) { return m_bFog; }
-	static void EnableFog(bool bFog) { m_bFog = bFog; }
-	static CRenderer *GetInstance(void) { return m_pRenderer; }
+	static bool IsFog(void) { return s_bFog; }
+	static void EnableFog(bool bFog) { s_bFog = bFog; }
+	static CRenderer *GetInstance(void) { return s_pRenderer; }
 
 private:
 	// メンバ変数
@@ -36,8 +36,8 @@ private:
 	LPDIRECT3DDEVICE9 m_pD3DDevice;	// デバイス
 
 	// 静的メンバ変数
-	static bool m_bFog;	// フォグをかけるかどうか
-	static CRenderer *m_pRenderer;	// 自身のポインタ
+	static bool s_bFog;	// フォグをかけるかどうか
+	static CRenderer *s_pRenderer;	// 自身のポインタ
 };
 
 namespace Renderer

@@ -191,7 +191,7 @@ void CPolygon3D::SetVtxStretchBillboard(void)
 		return;
 	}
 
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera == nullptr)
 	{

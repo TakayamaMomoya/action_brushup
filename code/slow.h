@@ -34,7 +34,7 @@ public:
 
 	// 静的メンバ変数
 	static CSlow *Create(void);
-	static CSlow *GetInstance(void) { return m_pSlow; }
+	static CSlow *GetInstance(void) { return s_pSlow; }
 
 private:
 	// メンバ変数
@@ -42,7 +42,7 @@ private:
 	float m_fTimeSlow;	// スローにする時間
 
 	// 静的メンバ変数
-	static CSlow *m_pSlow;	// 自身のポインタ
+	static CSlow *s_pSlow;	// 自身のポインタ
 };
 
 namespace Slow

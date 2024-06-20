@@ -15,7 +15,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CInputJoypad *CInputJoypad::m_pJoyPad = nullptr;
+CInputJoypad *CInputJoypad::s_pJoyPad = nullptr;
 
 //====================================================
 // コンストラクタ
@@ -45,17 +45,17 @@ CInputJoypad::~CInputJoypad()
 //====================================================
 CInputJoypad *CInputJoypad::Create(void)
 {
-	if (m_pJoyPad == nullptr)
+	if (s_pJoyPad == nullptr)
 	{
-		m_pJoyPad = new CInputJoypad;
+		s_pJoyPad = new CInputJoypad;
 
-		if (m_pJoyPad != nullptr)
+		if (s_pJoyPad != nullptr)
 		{
-			m_pJoyPad->Init();
+			s_pJoyPad->Init();
 		}
 	}
 
-	return m_pJoyPad;
+	return s_pJoyPad;
 }
 
 //====================================================
@@ -83,7 +83,7 @@ HRESULT CInputJoypad::Init(void)
 //====================================================
 void CInputJoypad::Uninit(void)
 {
-	m_pJoyPad = nullptr;
+	s_pJoyPad = nullptr;
 
 	//xinputを無効化する
 	XInputEnable(false);

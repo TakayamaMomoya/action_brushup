@@ -104,7 +104,6 @@ public:
 	void SetMotion(int nMotionType);
 	int GetMotion(void) { return m_motionType; }
 	void SetKeyOld(void);
-	static CMotion *Create(char *pPath);
 	Parts *GetParts(int nIdx) { return m_apParts[nIdx]; }
 	D3DXMATRIX *GetMatrix(void) { return &m_mtxWorld; }
 	bool IsFinish(void) { return m_bFinish; }
@@ -117,6 +116,9 @@ public:
 	void ResetAllCol(void);
 	void InitPose(int nMotion);
 	void EnableShadow(bool bShadow) { m_bShadow = bShadow; }
+
+	// 静的メンバ関数
+	static CMotion *Create(char *pPath);
 
 private:
 	Parts *m_apParts[MAX_PARTS];	// パーツの構造体

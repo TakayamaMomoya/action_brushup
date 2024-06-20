@@ -51,7 +51,7 @@ public:
 
 	// 静的メンバ関数
 	static CAnimManager *Create(void);	// 生成処理
-	static CAnimManager *GetInstance(void) { return m_pAnimEffect3D; }	//	インスタンスの取得
+	static CAnimManager *GetInstance(void) { return s_pAnimEffect3D; }	//	インスタンスの取得
 
 private:
 	// 構造体定義
@@ -74,7 +74,7 @@ private:
 	S_InfoAnimEffect *m_apAnimEffect[TYPE_MAX];	// 情報のポインタ
 
 	// 静的メンバ変数
-	static CAnimManager *m_pAnimEffect3D;	// 自身のポインタ
+	static CAnimManager *s_pAnimEffect3D;	// 自身のポインタ
 };
 
 namespace Anim3D

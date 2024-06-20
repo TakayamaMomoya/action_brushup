@@ -50,7 +50,7 @@ const float SIZE_SHADOW = 40.0f;	// 影のサイズ
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CEnemyBoss *CEnemyBoss::m_pEnemyBoss = nullptr;	// 自身のポインタ
+CEnemyBoss *CEnemyBoss::s_pEnemyBoss = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -73,12 +73,12 @@ CEnemyBoss::~CEnemyBoss()
 //=====================================================
 CEnemyBoss *CEnemyBoss::Create(void)
 {
-	if (m_pEnemyBoss == nullptr)
+	if (s_pEnemyBoss == nullptr)
 	{
-		m_pEnemyBoss = new CEnemyBoss;
+		s_pEnemyBoss = new CEnemyBoss;
 	}
 
-	return m_pEnemyBoss;
+	return s_pEnemyBoss;
 }
 
 //=====================================================
@@ -118,7 +118,7 @@ HRESULT CEnemyBoss::Init(void)
 	}
 
 	// カメラをボス出現のものに変更
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera *pCamera = Manager::GetCamera();
 
 	if (pCamera != nullptr)
 	{
@@ -145,7 +145,7 @@ void CEnemyBoss::Uninit(void)
 		pSound->Play(CSound::LABEL_SE_EXPLOSION);
 	}
 
-	m_pEnemyBoss = nullptr;
+	s_pEnemyBoss = nullptr;
 
 	// 継承クラスの終了
 	CEnemy::Uninit();
@@ -182,7 +182,7 @@ void CEnemyBoss::ManageState(void)
 	CEnemy::STATE state = CEnemy::GetState();
 
 	float fTimer = GetCntState();
-	float fAddTime = CManager::GetDeltaTime() * Slow::GetTimeScale();
+	float fAddTime = Manager::GetDeltaTime() * Slow::GetTimeScale();
 
 	switch (state)
 	{

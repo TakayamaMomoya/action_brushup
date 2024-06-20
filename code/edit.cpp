@@ -27,7 +27,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CEdit *CEdit::m_pEdit = nullptr;	// 自身のポインタ
+CEdit *CEdit::s_pEdit = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -52,15 +52,15 @@ CEdit::~CEdit()
 //=====================================================
 CEdit *CEdit::Create(void)
 {
-	if (m_pEdit == nullptr)
+	if (s_pEdit == nullptr)
 	{// インスタンス生成
-		m_pEdit = new CEdit;
+		s_pEdit = new CEdit;
 
 		// 初期化処理
-		m_pEdit->Init();
+		s_pEdit->Init();
 	}
 
-	return m_pEdit;
+	return s_pEdit;
 }
 
 //=====================================================
@@ -98,7 +98,7 @@ void CEdit::Uninit(void)
 		m_pObjectCursor = nullptr;
 	}
 
-	m_pEdit = nullptr;
+	s_pEdit = nullptr;
 
 	Release();
 }

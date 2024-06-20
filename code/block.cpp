@@ -24,9 +24,9 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CBlock *CBlock::m_apBlock[NUM_OBJECT] = {};	// ブロックの配列
-int CBlock::m_nNumAll = 0;	// 総数
-int *CBlock::m_pIdxObject = nullptr;	// 番号のポインタ
+CBlock *CBlock::s_apBlock[NUM_OBJECT] = {};	// ブロックの配列
+int CBlock::s_nNumAll = 0;	// 総数
+int *CBlock::s_pIdxObject = nullptr;	// 番号のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -37,15 +37,15 @@ CBlock::CBlock(int nPriority)
 
 	for (int nCntBlock = 0;nCntBlock < NUM_OBJECT;nCntBlock++)
 	{
-		if (m_apBlock[nCntBlock] == nullptr)
+		if (s_apBlock[nCntBlock] == nullptr)
 		{// 保存用配列にコピー
-			m_apBlock[nCntBlock] = this;
+			s_apBlock[nCntBlock] = this;
 
 			break;
 		}
 	}
 
-	m_nNumAll++;
+	s_nNumAll++;
 }
 
 //=====================================================
@@ -53,7 +53,7 @@ CBlock::CBlock(int nPriority)
 //=====================================================
 CBlock::~CBlock()
 {
-	m_nNumAll--;
+	s_nNumAll--;
 }
 
 //=====================================================
@@ -128,8 +128,8 @@ CBlock *CBlock::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot ,TYPE type)
 		pBlock->Init();
 
 		// 種類ごとのモデル読込
-		pBlock->SetIdxModel(m_pIdxObject[type]);
-		pBlock->BindModel(m_pIdxObject[type]);
+		pBlock->SetIdxModel(s_pIdxObject[type]);
+		pBlock->BindModel(s_pIdxObject[type]);
 
 		if (pBlock->m_pCollisionCube == nullptr)
 		{// 当たり判定生成
@@ -152,20 +152,20 @@ CBlock *CBlock::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot ,TYPE type)
 //=====================================================
 void CBlock::Delete(int nIdx)
 {
-	if (m_apBlock[nIdx] != nullptr)
+	if (s_apBlock[nIdx] != nullptr)
 	{// 削除処理
-		m_apBlock[nIdx]->Uninit();
+		s_apBlock[nIdx]->Uninit();
 
-		m_apBlock[nIdx] = nullptr;
+		s_apBlock[nIdx] = nullptr;
 	}
 
 	// 配列を詰める
 	for (int nCntBlock = nIdx; nCntBlock < NUM_OBJECT - 1; nCntBlock++)
 	{
-		if (m_apBlock[nCntBlock + 1] != nullptr)
+		if (s_apBlock[nCntBlock + 1] != nullptr)
 		{
-			m_apBlock[nCntBlock] = m_apBlock[nCntBlock + 1];
-			m_apBlock[nCntBlock + 1] = nullptr;
+			s_apBlock[nCntBlock] = s_apBlock[nCntBlock + 1];
+			s_apBlock[nCntBlock + 1] = nullptr;
 		}
 	}
 }
@@ -177,9 +177,9 @@ void CBlock::DeleteAll(void)
 {
 	for (int nCntBlock = 0;nCntBlock < NUM_OBJECT;nCntBlock++)
 	{
-		if (m_apBlock[nCntBlock] != nullptr)
+		if (s_apBlock[nCntBlock] != nullptr)
 		{
-			m_apBlock[nCntBlock] = nullptr;
+			s_apBlock[nCntBlock] = nullptr;
 		}
 	}
 }
@@ -189,10 +189,10 @@ void CBlock::DeleteAll(void)
 //=====================================================
 void CBlock::DeleteIdx(void)
 {
-	if (m_pIdxObject != nullptr)
+	if (s_pIdxObject != nullptr)
 	{// 番号ポインタの破棄
-		delete m_pIdxObject;
-		m_pIdxObject = nullptr;
+		delete s_pIdxObject;
+		s_pIdxObject = nullptr;
 	}
 }
 
@@ -244,12 +244,12 @@ float CBlock::CheckShadow(D3DXVECTOR3 pos)
 
 	for (int i = 0; i < NUM_OBJECT; i++)
 	{
-		if (m_apBlock[i] != nullptr)
+		if (s_apBlock[i] != nullptr)
 		{
 			// ブロックの情報取得
-			D3DXVECTOR3 posBlock = m_apBlock[i]->GetPosition();
-			D3DXVECTOR3 vtxMax = m_apBlock[i]->GetVtxMax() + posBlock;
-			D3DXVECTOR3 vtxMin = m_apBlock[i]->GetVtxMin() + posBlock;
+			D3DXVECTOR3 posBlock = s_apBlock[i]->GetPosition();
+			D3DXVECTOR3 vtxMax = s_apBlock[i]->GetVtxMax() + posBlock;
+			D3DXVECTOR3 vtxMin = s_apBlock[i]->GetVtxMin() + posBlock;
 
 			if (pos.x >= vtxMin.x && pos.x <= vtxMax.x &&
 				vtxMax.z >= pos.z && vtxMin.z <= pos.z)
@@ -305,17 +305,17 @@ void CBlock::LoadModel(void)
 		"data\\MODEL\\BLOCK\\longdesk.x",	// 長机
 	};
 
-	if (m_pIdxObject == nullptr)
+	if (s_pIdxObject == nullptr)
 	{
 		// 番号の生成
-		m_pIdxObject = new int[CBlock::TYPE_MAX];
+		s_pIdxObject = new int[CBlock::TYPE_MAX];
 
 		// 値の初期化
-		ZeroMemory(m_pIdxObject,sizeof(int) * CBlock::TYPE_MAX);
+		ZeroMemory(s_pIdxObject,sizeof(int) * CBlock::TYPE_MAX);
 
 		for (int nCntBlock = 0; nCntBlock < CBlock::TYPE_MAX; nCntBlock++)
 		{
-			m_pIdxObject[nCntBlock] = CModel::Load(pPath[nCntBlock]);
+			s_pIdxObject[nCntBlock] = CModel::Load(pPath[nCntBlock]);
 		}
 	}
 }
@@ -336,15 +336,15 @@ void CBlock::Save(void)
 
 	if (pFile != nullptr)
 	{//ファイルが開けた場合
-		fwrite(&m_nNumAll, sizeof(int), 1, pFile);
+		fwrite(&s_nNumAll, sizeof(int), 1, pFile);
 
-		for (int nCntBlock = 0; nCntBlock < m_nNumAll; nCntBlock++)
+		for (int nCntBlock = 0; nCntBlock < s_nNumAll; nCntBlock++)
 		{
-			if (m_apBlock[nCntBlock] != nullptr)
+			if (s_apBlock[nCntBlock] != nullptr)
 			{
-				memBlock.pos = m_apBlock[nCntBlock]->GetPosition();
-				memBlock.rot = m_apBlock[nCntBlock]->GetRot();
-				memBlock.type = m_apBlock[nCntBlock]->m_type;
+				memBlock.pos = s_apBlock[nCntBlock]->GetPosition();
+				memBlock.rot = s_apBlock[nCntBlock]->GetRot();
+				memBlock.type = s_apBlock[nCntBlock]->m_type;
 
 				//バイナリファイルに書き込む
 				fwrite(&memBlock, sizeof(MemBlock), 1, pFile);

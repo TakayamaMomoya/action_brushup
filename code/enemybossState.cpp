@@ -81,7 +81,7 @@ void CEnemyBossStateApper::Update(CEnemyBoss *pBoss)
 		pBoss->SwitchState();
 
 		// カメラをボス戦に切り替え
-		CCamera *pCamera = CManager::GetCamera();
+		CCamera *pCamera = Manager::GetCamera();
 
 		if (pCamera != nullptr)
 		{
@@ -155,7 +155,7 @@ void CEnemyBossStateShot::Update(CEnemyBoss *pBoss)
 
 	if (nKey == 3)
 	{
-		m_fTimerAttack += CManager::GetDeltaTime();
+		m_fTimerAttack += Manager::GetDeltaTime();
 
 		if (m_fTimerAttack >= DELAY_SHOT)
 		{
@@ -263,7 +263,7 @@ void CEnemyBossStateMissile::Update(CEnemyBoss *pBoss)
 	// ミサイルを発射する
 	if (bArrival)
 	{// 目標地点に着いていたら攻撃する
-		m_fTimerAttack += CManager::GetDeltaTime();
+		m_fTimerAttack += Manager::GetDeltaTime();
 
 		if (DELAY_MISSILE <= m_fTimerAttack)
 		{// 一定時間ごとにミサイルを発射

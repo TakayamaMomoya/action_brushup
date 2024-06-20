@@ -52,7 +52,7 @@ public:
 
     // 静的メンバ関数
     static CBlur *Create(void);   // 生成
-    static CBlur *GetInstance(void) { return m_pBlur; }    // 取得処理
+    static CBlur *GetInstance(void) { return s_pBlur; }    // 取得処理
 
 private:
     // メンバ関数
@@ -73,7 +73,7 @@ private:
     D3DXCOLOR m_colPolygon; // ポリゴンの色
 
     // 静的メンバ変数
-    static CBlur *m_pBlur;  // 自身のポインタ
+    static CBlur *s_pBlur;  // 自身のポインタ
 };
 
 #endif

@@ -95,10 +95,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	if (pManager == nullptr)
 	{
 		// インスタンス生成
-		pManager = new CManager;
-
-		// マネージャーの初期化
-		pManager->Init(hInstance, hWnd, TRUE);
+		pManager = CManager::Create(hInstance, hWnd, TRUE);
 	}
 
 	// 分解能を設定
@@ -154,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 				if (pManager != nullptr)
 				{
 					// ティックの設定
-					CManager::SetDeltaTime(fDeltaTime);
+					pManager->SetDeltaTime(fDeltaTime);
 
 					// 更新処理
 					pManager->Update();

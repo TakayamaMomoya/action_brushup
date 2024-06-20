@@ -13,8 +13,8 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-LPD3DXFONT CDebugProc::m_pFont = nullptr;	// デバッグフォントへのポインタ
-CDebugProc *CDebugProc::m_pDebugProc = nullptr;	// 自身のポインタ
+LPD3DXFONT CDebugProc::s_pFont = nullptr;	// デバッグフォントへのポインタ
+CDebugProc *CDebugProc::s_pDebugProc = nullptr;	// 自身のポインタ
 
 //*****************************************************
 // 定数定義
@@ -31,7 +31,7 @@ CDebugProc::CDebugProc()
 {
 	//デバッグ表示情報のクリア
 	m_bDisp = false;
-	m_pFont = nullptr;
+	s_pFont = nullptr;
 	memset(&m_aStr[0], NULL, sizeof(m_aStr));
 }
 
@@ -48,17 +48,17 @@ CDebugProc::~CDebugProc()
 //=====================================================
 CDebugProc *CDebugProc::Create(void)
 {
-	if (m_pDebugProc == nullptr)
+	if (s_pDebugProc == nullptr)
 	{
-		m_pDebugProc = new CDebugProc;
+		s_pDebugProc = new CDebugProc;
 
-		if (m_pDebugProc != nullptr)
+		if (s_pDebugProc != nullptr)
 		{
-			m_pDebugProc->Init();
+			s_pDebugProc->Init();
 		}
 	}
 
-	return m_pDebugProc;
+	return s_pDebugProc;
 }
 
 //=====================================================
@@ -72,7 +72,7 @@ void CDebugProc::Init(void)
 	pDevice = Renderer::GetDevice();
 
 	// デバッグ表示用フォントの生成
-	D3DXCreateFont(pDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &m_pFont);
+	D3DXCreateFont(pDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &s_pFont);
 
 	// 初期表示設定
 #if _DEBUG
@@ -88,10 +88,10 @@ void CDebugProc::Init(void)
 void CDebugProc::Uninit(void)
 {
 	// デバッグ表示用フォントの廃棄
-	if (m_pFont != nullptr)
+	if (s_pFont != nullptr)
 	{
-		m_pFont->Release();
-		m_pFont = nullptr;
+		s_pFont->Release();
+		s_pFont = nullptr;
 	}
 
 	delete this;
@@ -123,7 +123,7 @@ void CDebugProc::Draw(void)
 	if (m_bDisp == true)
 	{// デバックモードがオンの時
 		// テキストの描画
-		m_pFont->DrawText(nullptr, &m_aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+		s_pFont->DrawText(nullptr, &m_aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 	}
 
 	// デバッグ表示情報のクリア

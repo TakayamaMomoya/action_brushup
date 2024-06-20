@@ -79,7 +79,7 @@ public:
 	D3DXVECTOR3 GetPositionOld(void) { return m_info.posOld; }
 	void SetRot(D3DXVECTOR3 rot) { m_info.rot = rot; }
 	D3DXVECTOR3 GetRot(void) { return m_info.rot; }
-	static CPlayer *GetInstance(void) { return m_pPlayer; }
+	static CPlayer *GetInstance(void) { return s_pPlayer; }
 	int GetLife(void) { return m_info.nLife; }
 	SParam GetParam(void) { return m_param; }
 	CMotion *GetBody(void) { return m_info.pBody; }
@@ -153,10 +153,12 @@ private:
 	void Death(void);
 	void SetMotion(MOTION motion);
 
+	// メンバ変数
 	SInfo m_info;	// 自身の情報
 	SParam m_param;	// パラメーター
 
-	static CPlayer *m_pPlayer;	// 自身のポインタ
+	// 静的メンバ変数
+	static CPlayer *s_pPlayer;	// 自身のポインタ
 };
 
 #endif

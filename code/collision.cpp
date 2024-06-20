@@ -23,8 +23,8 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CCollision *CCollision::m_apCollision[NUM_OBJECT] = {};	// 当たり判定管理用の配列
-int CCollision::m_nNumAll = 0;
+CCollision *CCollision::s_apCollision[NUM_OBJECT] = {};	// 当たり判定管理用の配列
+int CCollision::s_nNumAll = 0;
 
 //=====================================================
 // コンストラクタ
@@ -38,14 +38,14 @@ CCollision::CCollision()
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (m_apCollision[nCnt] == nullptr)
+		if (s_apCollision[nCnt] == nullptr)
 		{// 保管する
-			m_apCollision[nCnt] = this;
+			s_apCollision[nCnt] = this;
 
 			// ID記憶
 			m_nID = nCnt;
 
-			m_nNumAll++;
+			s_nNumAll++;
 
 			break;
 		}
@@ -57,7 +57,7 @@ CCollision::CCollision()
 //=====================================================
 CCollision::~CCollision()
 {
-	m_nNumAll--;
+	s_nNumAll--;
 }
 
 //=====================================================
@@ -73,9 +73,9 @@ HRESULT CCollision::Init(void)
 //=====================================================
 void CCollision::Uninit(void)
 {
-	if (m_apCollision[m_nID] != nullptr)
+	if (s_apCollision[m_nID] != nullptr)
 	{
-		m_apCollision[m_nID] = nullptr;
+		s_apCollision[m_nID] = nullptr;
 	}
 
 	if (m_pObjectOwner != nullptr)
@@ -98,9 +98,9 @@ void CCollision::DeleteAll(void)
 {
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (m_apCollision[nCnt] != nullptr)
+		if (s_apCollision[nCnt] != nullptr)
 		{// 削除する
-			m_apCollision[nCnt]->Uninit();
+			s_apCollision[nCnt]->Uninit();
 		}
 	}
 }

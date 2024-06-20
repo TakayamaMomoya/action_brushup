@@ -25,15 +25,21 @@ public:
 	CEdit();	// コンストラクタ
 	~CEdit();	// デストラクタ
 
-	static CEdit *Create(void);
+	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	static CEdit *GetInstatnce(void) { return m_pEdit; }
+
+	// 静的メンバ関数
+	static CEdit *Create(void);
+	static CEdit *GetInstatnce(void) { return s_pEdit; }
 
 private:
+	// メンバ変数
 	CObjectX *m_pObjectCursor;	// カーソルのオブジェクトXへのポインタ
 	int m_nIdxObject;
 	CBlock::TYPE m_type;
-	static CEdit *m_pEdit;	// 自身のポインタ
+
+	// 静的メンバ変数
+	static CEdit *s_pEdit;	// 自身のポインタ
 };

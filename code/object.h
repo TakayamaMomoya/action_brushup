@@ -72,7 +72,7 @@ public:
 	static void UpdateAll(void);	// 全て更新
 	static void DeleteAll(void);	// 全削除処理
 	static void DrawAll(void);	// 全て描画
-	static int GetNumAll(void) { return m_nNumAll; }	// 総数取得
+	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 
 protected:
 	// メンバ関数
@@ -98,9 +98,9 @@ private:
 	DWORD m_dwAlpha;	// アルファテストの値
 
 	// 静的メンバ変数
-	static int m_nNumAll;	// 総数
-	static CObject *m_apTop[NUM_PRIORITY];	// 先頭のオブジェクトのアドレス
-	static CObject *m_apCur[NUM_PRIORITY];	// 最後尾のオブジェクトのアドレス
+	static int s_nNumAll;	// 総数
+	static CObject *s_apTop[NUM_PRIORITY];	// 先頭のオブジェクトのアドレス
+	static CObject *s_apCur[NUM_PRIORITY];	// 最後尾のオブジェクトのアドレス
 };
 
 namespace Object

@@ -24,7 +24,7 @@ const float DEFAULT_TIMESCALE = 1.0f;	// タイムスケールのデフォルト値
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CSlow *CSlow::m_pSlow = nullptr;	// 自身のポインタ
+CSlow *CSlow::s_pSlow = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -47,17 +47,17 @@ CSlow::~CSlow()
 //=====================================================
 CSlow *CSlow::Create(void)
 {
-	if (m_pSlow == nullptr)
+	if (s_pSlow == nullptr)
 	{
-		m_pSlow = new CSlow;
+		s_pSlow = new CSlow;
 
-		if (m_pSlow != nullptr)
+		if (s_pSlow != nullptr)
 		{
-			m_pSlow->Init();
+			s_pSlow->Init();
 		}
 	}
 
-	return m_pSlow;
+	return s_pSlow;
 }
 
 //=====================================================
@@ -75,7 +75,7 @@ HRESULT CSlow::Init(void)
 //=====================================================
 void CSlow::Uninit(void)
 {
-	m_pSlow = nullptr;
+	s_pSlow = nullptr;
 
 	Release();
 }
@@ -87,7 +87,7 @@ void CSlow::Update(void)
 {
 	if (m_fTimeSlow > 0.0f)
 	{
-		float fDeltaTime = CManager::GetDeltaTime();
+		float fDeltaTime = Manager::GetDeltaTime();
 
 		m_fTimeSlow -= fDeltaTime;
 

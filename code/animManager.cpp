@@ -17,7 +17,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CAnimManager *CAnimManager::m_pAnimEffect3D = nullptr;	// 自身のポインタ
+CAnimManager *CAnimManager::s_pAnimEffect3D = nullptr;	// 自身のポインタ
 
 //*****************************************************
 // マクロ定義
@@ -201,7 +201,7 @@ void CAnimManager::Load(void)
 //=====================================================
 void CAnimManager::Uninit(void)
 {
-	m_pAnimEffect3D = nullptr;
+	s_pAnimEffect3D = nullptr;
 
 	for (int i = 0; i < TYPE_MAX; i++)
 	{
@@ -236,18 +236,18 @@ void CAnimManager::Draw(void)
 //=====================================================
 CAnimManager *CAnimManager::Create(void)
 {
-	if (m_pAnimEffect3D == nullptr)
+	if (s_pAnimEffect3D == nullptr)
 	{
-		m_pAnimEffect3D = new CAnimManager;
+		s_pAnimEffect3D = new CAnimManager;
 
-		if (m_pAnimEffect3D != nullptr)
+		if (s_pAnimEffect3D != nullptr)
 		{
 			// 初期化処理
-			m_pAnimEffect3D->Init();
+			s_pAnimEffect3D->Init();
 		}
 	}
 
-	return m_pAnimEffect3D;
+	return s_pAnimEffect3D;
 }
 
 //=====================================================

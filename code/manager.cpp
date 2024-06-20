@@ -10,24 +10,13 @@
 //*****************************************************
 #include "manager.h"
 #include "renderer.h"
-#include "object2D.h"
-#include "inputkeyboard.h"
-#include "inputmouse.h"
 #include "debugproc.h"
-#include "effect2D.h"
-#include "effect3D.h"
 #include "sound.h"
-#include "score.h"
-#include "timer.h"
 #include "object.h"
 #include "camera.h"
 #include "light.h"
-#include "polygon3D.h"
-#include "objectX.h"
-#include "billboard.h"
 #include "model.h"
 #include "texture.h"
-#include "universal.h"
 #include "particle.h"
 #include "fade.h"
 #include "block.h"
@@ -36,12 +25,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CCamera *CManager::m_pCamera = nullptr;	// カメラのポインタ
-CLight *CManager::m_pLight = nullptr;	// ライトのポインタ
-CScene *CManager::m_pScene = nullptr;	// シーンへのポインタ
-CScene::MODE CManager::m_mode = CScene::MODE_RANKING;	// 現在のモード
-int CManager::m_nScore = 0;	// スコア保存用
-float CManager::m_fDeltaTime = 0.0f;	// 前のフレームからかかった時間
+CManager *CManager::s_pManager = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -57,6 +41,24 @@ CManager::CManager()
 CManager::~CManager()
 {
 
+}
+
+//=====================================================
+// 生成処理
+//=====================================================
+CManager *CManager::Create(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
+{
+	if (s_pManager == nullptr)
+	{
+		s_pManager = new CManager;
+
+		if (s_pManager != nullptr)
+		{
+			s_pManager->Init(hInstance, hWnd, bWindow);
+		}
+	}
+
+	return s_pManager;
 }
 
 //=====================================================
@@ -315,4 +317,94 @@ void CManager::SetMode(CScene::MODE mode)
 
 	// モード設定
 	m_mode = mode;
+}
+
+namespace Manager
+{
+//=====================================================
+// カメラ取得(ショートカット)
+//=====================================================
+CCamera *GetCamera(void)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		return pManager->GetCamera();
+
+	return nullptr;
+}
+
+//=====================================================
+// ライト取得(ショートカット)
+//=====================================================
+CLight *GetLight(void)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		return pManager->GetLight();
+
+	return nullptr;
+}
+
+//=====================================================
+// モード設定(ショートカット)
+//=====================================================
+void SetMode(CScene::MODE mode)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		pManager->SetMode(mode);
+}
+
+//=====================================================
+// モード取得(ショートカット)
+//=====================================================
+CScene::MODE GetMode(void)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		return pManager->GetMode();
+
+	return CScene::MODE::MODE_TITLE;
+}
+
+//=====================================================
+// スコア設定(ショートカット)
+//=====================================================
+void SetScore(int nScore)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		pManager->SetScore(nScore);
+}
+
+//=====================================================
+// スコア取得(ショートカット)
+//=====================================================
+int GetScore(void)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		return pManager->GetScore();
+
+	return 0;
+}
+
+//=====================================================
+// デルタタイム取得(ショートカット)
+//=====================================================
+float GetDeltaTime(void)
+{
+	CManager *pManager = CManager::GetInstace();
+
+	if (pManager != nullptr)
+		return pManager->GetDeltaTime();
+
+	return 0.0f;
+}
 }

@@ -14,7 +14,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CParticle::S_PARTICLE_INFO *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
+CParticle::S_PARTICLE_INFO *CParticle::s_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -61,10 +61,10 @@ void CParticle::Unload(void)
 {
 	for (int nCntParticle = 0;nCntParticle < TYPE_MAX;nCntParticle++)
 	{
-		if (m_apParticleInfo[nCntParticle] != nullptr)
+		if (s_apParticleInfo[nCntParticle] != nullptr)
 		{
-			delete m_apParticleInfo[nCntParticle];
-			m_apParticleInfo[nCntParticle] = nullptr;
+			delete s_apParticleInfo[nCntParticle];
+			s_apParticleInfo[nCntParticle] = nullptr;
 		}
 	}
 }
@@ -82,14 +82,14 @@ void CParticle::Update(void)
 	D3DXVECTOR3 move = { 0.0f,0.0f,0.0f };
 	CEffect3D *pEffect3D = nullptr;
 
-	for (int nCntEffect = 0; nCntEffect < m_apParticleInfo[m_type]->nNumEffect; nCntEffect++)
+	for (int nCntEffect = 0; nCntEffect < s_apParticleInfo[m_type]->nNumEffect; nCntEffect++)
 	{
-		if (m_apParticleInfo[m_type]->nRot)
+		if (s_apParticleInfo[m_type]->nRot)
 		{// 向きの反映
-			if (m_apParticleInfo[m_type]->fRangeRot > 0.1f)
+			if (s_apParticleInfo[m_type]->fRangeRot > 0.1f)
 			{
-				fRot = m_rot.x + (float)(rand() % (int)(m_apParticleInfo[m_type]->fRangeRot * 100.0f) - m_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f;
-				fRot2 = m_rot.y + (float)(rand() % (int)(m_apParticleInfo[m_type]->fRangeRot * 100.0f) - m_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f * 2;
+				fRot = m_rot.x + (float)(rand() % (int)(s_apParticleInfo[m_type]->fRangeRot * 100.0f) - s_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f;
+				fRot2 = m_rot.y + (float)(rand() % (int)(s_apParticleInfo[m_type]->fRangeRot * 100.0f) - s_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f * 2;
 			}
 			else
 			{
@@ -103,35 +103,35 @@ void CParticle::Update(void)
 			fRot2 = rand() % 628 - 314 / 100.0f;
 		}
 
-		if (m_apParticleInfo[m_type]->fSpeed > 0.1f)
+		if (s_apParticleInfo[m_type]->fSpeed > 0.1f)
 		{
-			fMove = (float)(rand() % (int)(m_apParticleInfo[m_type]->fSpeed * 10)) * 0.1f + m_apParticleInfo[m_type]->fSpeed * 0.5f;
+			fMove = (float)(rand() % (int)(s_apParticleInfo[m_type]->fSpeed * 10)) * 0.1f + s_apParticleInfo[m_type]->fSpeed * 0.5f;
 		}
-		if (m_apParticleInfo[m_type]->fRadiusEffect > 0.1f)
+		if (s_apParticleInfo[m_type]->fRadiusEffect > 0.1f)
 		{
-			fRadius = (float)(rand() % (int)(m_apParticleInfo[m_type]->fRadiusEffect * 10)) * 0.1f + m_apParticleInfo[m_type]->fRadiusEffect * 0.5f;
+			fRadius = (float)(rand() % (int)(s_apParticleInfo[m_type]->fRadiusEffect * 10)) * 0.1f + s_apParticleInfo[m_type]->fRadiusEffect * 0.5f;
 		}
-		if (m_apParticleInfo[m_type]->nLifeEffect != 0)
+		if (s_apParticleInfo[m_type]->nLifeEffect != 0)
 		{
-			nLife = rand() % m_apParticleInfo[m_type]->nLifeEffect + m_apParticleInfo[m_type]->nLifeEffect / 2;
+			nLife = rand() % s_apParticleInfo[m_type]->nLifeEffect + s_apParticleInfo[m_type]->nLifeEffect / 2;
 		}
 
 		move.x = sinf(fRot) * sinf(fRot2) * fMove;
 		move.y = cosf(fRot) * fMove;
 		move.z = sinf(fRot) * cosf(fRot2) * fMove;
 
-		if (m_apParticleInfo[m_type]->bTurn)
+		if (s_apParticleInfo[m_type]->bTurn)
 		{
 			// エフェクト生成
 			pEffect3D = CEffect3D::Create(
 				m_pos + move * (float)nLife, 
 				fRadius, 
 				nLife, 
-				m_apParticleInfo[m_type]->col, 
+				s_apParticleInfo[m_type]->col, 
 				-move, 
-				m_apParticleInfo[m_type]->fGravity, 
-				m_apParticleInfo[m_type]->nAdd != 0, 
-				m_apParticleInfo[m_type]->fDecrease, 
+				s_apParticleInfo[m_type]->fGravity, 
+				s_apParticleInfo[m_type]->nAdd != 0, 
+				s_apParticleInfo[m_type]->fDecrease, 
 				m_pPosOwner, 
 				m_nPriorityEffect,
 				true);
@@ -143,11 +143,11 @@ void CParticle::Update(void)
 				m_pos, 
 				fRadius, 
 				nLife, 
-				m_apParticleInfo[m_type]->col, 
+				s_apParticleInfo[m_type]->col, 
 				move, 
-				m_apParticleInfo[m_type]->fGravity, 
-				m_apParticleInfo[m_type]->nAdd != 0, 
-				m_apParticleInfo[m_type]->fDecrease, 
+				s_apParticleInfo[m_type]->fGravity, 
+				s_apParticleInfo[m_type]->nAdd != 0, 
+				s_apParticleInfo[m_type]->fDecrease, 
 				m_pPosOwner, 
 				m_nPriorityEffect);
 		}
@@ -188,7 +188,7 @@ CParticle *CParticle::Create(D3DXVECTOR3 pos, E_TYPE type,D3DXVECTOR3 rot, D3DXV
 
 		pParticle->m_rot = rot;
 
-		pParticle->m_nLife = m_apParticleInfo[type]->nLife;
+		pParticle->m_nLife = s_apParticleInfo[type]->nLife;
 		
 		pParticle->m_pPosOwner = pPosOwner;
 
@@ -220,13 +220,13 @@ void CParticle::Load(void)
 
 			if (strcmp(cTemp, "PARTICLESET") == 0)
 			{// 読込開始
-				if (m_apParticleInfo[nCntParticle] == nullptr)
+				if (s_apParticleInfo[nCntParticle] == nullptr)
 				{
 					// インスタンス生成
-					m_apParticleInfo[nCntParticle] = new S_PARTICLE_INFO;
+					s_apParticleInfo[nCntParticle] = new S_PARTICLE_INFO;
 				}
 
-				pInfo = m_apParticleInfo[nCntParticle];
+				pInfo = s_apParticleInfo[nCntParticle];
 
 				while (true)
 				{

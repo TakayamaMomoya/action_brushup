@@ -20,15 +20,15 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-int CTexture::m_nNumAll = 0;	// 総数
-CTexture *CTexture::m_pTexture = nullptr;	// 自身のポインタ
+int CTexture::s_nNumAll = 0;	// 総数
+CTexture *CTexture::s_pTexture = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
 //=====================================================
 CTexture::CTexture()
 {
-	m_pTexture = this;
+	s_pTexture = this;
 
 	ZeroMemory(&m_apFilename[0], sizeof(m_apFilename));
 	ZeroMemory(&m_apTexture[0], sizeof(m_apTexture));
@@ -39,7 +39,7 @@ CTexture::CTexture()
 //=====================================================
 CTexture::~CTexture()
 {
-	m_pTexture = nullptr;
+	s_pTexture = nullptr;
 }
 
 //=====================================================
@@ -47,17 +47,17 @@ CTexture::~CTexture()
 //=====================================================
 CTexture *CTexture::Create(void)
 {
-	if (m_pTexture == nullptr)
+	if (s_pTexture == nullptr)
 	{
-		m_pTexture = new CTexture;
+		s_pTexture = new CTexture;
 
-		if (m_pTexture != nullptr)
+		if (s_pTexture != nullptr)
 		{
-			m_pTexture->Load();
+			s_pTexture->Load();
 		}
 	}
 
-	return m_pTexture;
+	return s_pTexture;
 }
 
 //=====================================================
@@ -97,7 +97,7 @@ HRESULT CTexture::Load(void)
 			m_apFilename[nCntTex] = apFileName[nCntTex];
 
 			// 総数カウントアップ
-			m_nNumAll++;
+			s_nNumAll++;
 		}
 	}
 
@@ -117,7 +117,7 @@ void CTexture::Unload(void)
 			{
 				m_apTexture[nCntTex]->Release();
 				m_apTexture[nCntTex] = nullptr;
-				m_nNumAll--;
+				s_nNumAll--;
 			}
 		}
 	}
@@ -151,18 +151,18 @@ int CTexture::Regist(const char *pFileName)
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile
-	(pDevice, pFileName, &m_apTexture[m_nNumAll]);
+	(pDevice, pFileName, &m_apTexture[s_nNumAll]);
 
-	m_apFilename[m_nNumAll] = new char[MAX_STRING];
+	m_apFilename[s_nNumAll] = new char[MAX_STRING];
 
 	// ファイル名の保存
-	strcpy(m_apFilename[m_nNumAll], pFileName);
+	strcpy(m_apFilename[s_nNumAll], pFileName);
 
 	// 現在の番号を保存
-	int nIdx = m_nNumAll;
+	int nIdx = s_nNumAll;
 
 	// 総数カウントアップ
-	m_nNumAll++;
+	s_nNumAll++;
 
 	return nIdx;
 }

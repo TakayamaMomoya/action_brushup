@@ -60,7 +60,7 @@ public:
 
 	// 静的メンバ関数
 	static CSound *Create(HWND hWnd);	// 生成処理
-	static CSound *GetInstance(void) { return m_pSound; }	// インスタンスの取得
+	static CSound *GetInstance(void) { return s_pSound; }	// インスタンスの取得
 
 private:
 	// 構造体定義
@@ -107,7 +107,7 @@ private:
 	};
 
 	// 静的メンバ変数
-	static CSound *m_pSound;	// 自身のポインタ
+	static CSound *s_pSound;	// 自身のポインタ
 };
 
 namespace Sound
