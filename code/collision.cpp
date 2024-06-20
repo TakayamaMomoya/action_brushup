@@ -18,7 +18,10 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define NUM_EDGE	(4)	// 辺の数
+namespace
+{
+const int NUM_EDGE = 4;	// 辺の数
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -38,17 +41,18 @@ CCollision::CCollision()
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (s_apCollision[nCnt] == nullptr)
-		{// 保管する
-			s_apCollision[nCnt] = this;
+		if (s_apCollision[nCnt] != nullptr)
+			continue;
 
-			// ID記憶
-			m_nID = nCnt;
+		// 保管する
+		s_apCollision[nCnt] = this;
 
-			s_nNumAll++;
+		// ID記憶
+		m_nID = nCnt;
 
-			break;
-		}
+		s_nNumAll++;
+
+		break;
 	}
 }
 
@@ -134,29 +138,27 @@ bool CCollision::TriggerCube(TAG tag)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
-		{
-			if (ppCollision[nCnt]->GetType() == TYPE_CUBE)
-			{
-				if (ppCollision[nCnt]->GetTag() != tag && tag != TAG_NONE)
-				{
-					continue;
-				}
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
 
-				vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
-				vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+		if (ppCollision[nCnt]->GetType() != TYPE_CUBE)
+			continue;	// キューブ以外は判定しない
 
-				if (pos.y > vtxMin.y && pos.y < vtxMax.y &&
-					pos.x > vtxMin.x && pos.x < vtxMax.x &&
-					pos.z > vtxMin.z && pos.z < vtxMax.z)
-				{// 現在ブロックの中にいる
-					if (posOld.y < vtxMin.y || posOld.y > vtxMax.y ||
-						posOld.x < vtxMin.x || posOld.x > vtxMax.x ||
-						posOld.z < vtxMin.z || posOld.z > vtxMax.z)
-					{// 前回ブロックの中にいない
-						bHit = true;
-					}
-				}
+		if (ppCollision[nCnt]->GetTag() != tag && tag != TAG_NONE)
+			continue;	// タグに合わなければ判定しない
+
+		vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
+		vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+
+		if (pos.y > vtxMin.y && pos.y < vtxMax.y &&
+			pos.x > vtxMin.x && pos.x < vtxMax.x &&
+			pos.z > vtxMin.z && pos.z < vtxMax.z)
+		{// 現在ブロックの中にいる
+			if (posOld.y < vtxMin.y || posOld.y > vtxMax.y ||
+				posOld.x < vtxMin.x || posOld.x > vtxMax.x ||
+				posOld.z < vtxMin.z || posOld.z > vtxMax.z)
+			{// 前回ブロックの中にいない
+				bHit = true;
 			}
 		}
 	}
@@ -190,47 +192,49 @@ bool CCollision::ChckObstclBtwn(CObject *pObj, D3DXVECTOR3 vecDiff)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_CUBE)
+			continue;	// キューブ以外は判定しない
+
+		if (ppCollision[nCnt] == this)
+			continue;	// 自身と同じであれば判定しない
+
+		if (ppCollision[nCnt]->GetTag() != TAG_BLOCK)
+			continue;	// ブロック以外は判定しない
+
+		// 最大・最小頂点の取得
+		vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
+		vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+		vtxMaxOwn = GetVtxMax();
+		vtxMinOwn = GetVtxMin();
+
+		// 四点の位置を設定
+		aVector[0] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
+		aVector[1] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
+		aVector[2] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
+		aVector[3] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
+
+		// どのベクトルにトリガー判定が入ったのか確認
+		for (int nCntEdge = 0; nCntEdge < NUM_EDGE; nCntEdge++)
 		{
-			if (ppCollision[nCnt]->GetType() == TYPE_CUBE && ppCollision[nCnt] != this)
-			{
-				if (ppCollision[nCnt]->GetTag() != TAG_BLOCK)
-				{// タグに合わなければ繰り返し
-					continue;
-				}
+			nIdx = (nCntEdge + 1) % NUM_EDGE;
 
-				// 最大・最小頂点の取得
-				vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
-				vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
-				vtxMaxOwn = GetVtxMax();
-				vtxMinOwn = GetVtxMin();
+			// 外積による判定
+			if (!IsCross(pos, aVector[nCntEdge], aVector[nIdx], &fRate, vecDiff))
+				continue;
+			if (IsCross(posTarget, aVector[nCntEdge], aVector[nIdx], &fRate, vecDiff))
+				continue;
 
-				// 四点の位置を設定
-				aVector[0] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
-				aVector[1] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
-				aVector[2] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
-				aVector[3] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
-				
-				// どのベクトルにトリガー判定が入ったのか確認
-				for (int nCntEdge = 0; nCntEdge < NUM_EDGE; nCntEdge++)
+			fRate *= 1;
+
+			if (fRate < 1.0f && fRate > 0.0f)
+			{// 線分が辺に接触していたら
+
+				if (pos.y < vtxMax.y)
 				{
-					nIdx = (nCntEdge + 1) % NUM_EDGE;
-
-					if (IsCross(pos, aVector[nCntEdge], aVector[nIdx], &fRate, vecDiff) &&
-						IsCross(posTarget, aVector[nCntEdge], aVector[nIdx], &fRate, vecDiff) == false)
-					{
-						fRate *= 1;
-
-						if (fRate < 1.0f && fRate > 0.0f)
-						{// 線分が辺に接触していたら
-
-							if (pos.y < vtxMax.y)
-							{
-								return true;
-							}
-						}
-					}
-
+					return true;
 				}
 			}
 		}
@@ -252,7 +256,7 @@ bool CCollision::IsCross(D3DXVECTOR3 posTarget, D3DXVECTOR3 vecSorce, D3DXVECTOR
 	{
 		D3DXVECTOR3 vecToPos = posTarget - vecSorce;
 
-		if (pRate != nullptr)
+		if (pRate == nullptr)
 		{
 			// 割合を算出
 			float fAreaMax = (vecDest.z * move.x) - (vecDest.x * move.z);
@@ -374,32 +378,29 @@ bool CCollisionSphere::SphereCollision(TAG tag)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_SPHERE)
+			continue;	// 球以外は判定しない
+
+		if (ppCollision[nCnt]->GetTag() != tag)
+		{// タグチェック
+			if (tag != TAG_NONE)
+				continue;	// NONEなら判定する
+		}
+
+		// 差分ベクトル取得
+		D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
+
+		float fLength = D3DXVec3Length(&vecDiff);
+
+		if (fLength < ppCollision[nCnt]->GetRadius() + GetRadius())
 		{
-			if (ppCollision[nCnt]->GetType() == TYPE_SPHERE)
-			{
-				if (tag == TAG_NONE)
-				{
+			// ぶつかった相手の持ち主を判別
+			SetOther(ppCollision[nCnt]->GetOwner());
 
-				}
-				else if (ppCollision[nCnt]->GetTag() != tag)
-				{
-					continue;
-				}
-
-				// 差分取得
-				D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
-
-				float fLength = D3DXVec3Length(&vecDiff);
-
-				if (fLength < ppCollision[nCnt]->GetRadius() + GetRadius())
-				{
-					// ぶつかった相手の持ち主を判別
-					SetOther(ppCollision[nCnt]->GetOwner());
-
-					return true;
-				}
-			}
+			return true;
 		}
 	}
 
@@ -417,41 +418,38 @@ bool CCollisionSphere::IsTriggerExit(TAG tag)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_SPHERE)
+			continue;	// 球以外は判定しない
+		
+		if (ppCollision[nCnt]->GetTag() != tag)
+		{// タグチェック
+			if (tag != TAG_NONE)
+				continue;	// NONEなら判定する
+		}
+
+		// 差分取得
+		D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
+
+		// 差分の長さ
+		float fLengthDiff = D3DXVec3Length(&vecDiff);
+
+		// 前回の位置との差分
+		vecDiff = ppCollision[nCnt]->GetOwner()->GetPositionOld() - GetPositionOld();
+
+		float fLengthOld = D3DXVec3Length(&vecDiff);
+
+		// ぶつかる時の距離
+		float fLength = ppCollision[nCnt]->GetRadius() + GetRadius();
+
+		if (fLengthDiff >= fLength && fLengthOld < fLength)
 		{
-			if (ppCollision[nCnt]->GetType() == TYPE_SPHERE)
-			{
-				if (tag == TAG_NONE)
-				{
+			// ぶつかった相手の持ち主を判別
+			SetOther(ppCollision[nCnt]->GetOwner());
 
-				}
-				else if (ppCollision[nCnt]->GetTag() != tag)
-				{
-					continue;
-				}
-
-				// 差分取得
-				D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
-
-				// 差分の長さ
-				float fLengthDiff = D3DXVec3Length(&vecDiff);
-
-				// 前回の位置との差分
-				vecDiff = ppCollision[nCnt]->GetOwner()->GetPositionOld() - GetPositionOld();
-
-				float fLengthOld = D3DXVec3Length(&vecDiff);
-
-				// ぶつかる時の距離
-				float fLength = ppCollision[nCnt]->GetRadius() + GetRadius();
-
-				if (fLengthDiff >= fLength && fLengthOld < fLength)
-				{
-					// ぶつかった相手の持ち主を判別
-					SetOther(ppCollision[nCnt]->GetOwner());
-
-					return true;
-				}
-			}
+			return true;
 		}
 	}
 
@@ -469,41 +467,38 @@ bool CCollisionSphere::IsTriggerEnter(TAG tag)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_SPHERE)
+			continue;	// 球以外は判定しない
+
+		if (ppCollision[nCnt]->GetTag() != tag)
+		{// タグチェック
+			if (tag != TAG_NONE)
+				continue;	// NONEなら判定する
+		}
+
+		// 差分取得
+		D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
+
+		// 差分の長さ
+		float fLengthDiff = D3DXVec3Length(&vecDiff);
+
+		// 前回の位置との差分
+		vecDiff = ppCollision[nCnt]->GetOwner()->GetPositionOld() - GetPositionOld();
+
+		float fLengthOld = D3DXVec3Length(&vecDiff);
+
+		// ぶつかる時の距離
+		float fLength = ppCollision[nCnt]->GetRadius() + GetRadius();
+
+		if (fLengthDiff <= fLength && fLengthOld > fLength)
 		{
-			if (ppCollision[nCnt]->GetType() == TYPE_SPHERE)
-			{
-				if (tag == TAG_NONE)
-				{
+			// ぶつかった相手の持ち主を判別
+			SetOther(ppCollision[nCnt]->GetOwner());
 
-				}
-				else if (ppCollision[nCnt]->GetTag() != tag)
-				{
-					continue;
-				}
-
-				// 差分取得
-				D3DXVECTOR3 vecDiff = ppCollision[nCnt]->GetPosition() - GetPosition();
-
-				// 差分の長さ
-				float fLengthDiff = D3DXVec3Length(&vecDiff);
-
-				// 前回の位置との差分
-				vecDiff = ppCollision[nCnt]->GetOwner()->GetPositionOld() - GetPositionOld();
-
-				float fLengthOld = D3DXVec3Length(&vecDiff);
-
-				// ぶつかる時の距離
-				float fLength = ppCollision[nCnt]->GetRadius() + GetRadius();
-
-				if (fLengthDiff <= fLength && fLengthOld > fLength)
-				{
-					// ぶつかった相手の持ち主を判別
-					SetOther(ppCollision[nCnt]->GetOwner());
-
-					return true;
-				}
-			}
+			return true;
 		}
 	}
 
@@ -543,8 +538,8 @@ CCollisionSphere *CCollisionSphere::Create(TAG tag, TYPE type, CObject *obj)
 //=====================================================
 CCollisionCube::CCollisionCube()
 {
-	m_vtxMax = { 0.0f,0.0f,0.0f };
-	m_vtxMin = { 0.0f,0.0f,0.0f };
+	m_vtxMax = {};
+	m_vtxMin = {};
 
 	SetType(TYPE_CUBE);
 }
@@ -608,100 +603,102 @@ bool CCollisionCube::CubeCollision(TAG tag, D3DXVECTOR3 *pMove)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
-		{
-			if (ppCollision[nCnt]->GetType() == TYPE_CUBE)
-			{
-				if (ppCollision[nCnt]->GetTag() != tag && tag != TAG_NONE)
-				{// タグに合わなければ繰り返し
-					continue;
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_CUBE)
+			continue;	// 球以外は判定しない
+
+		if (ppCollision[nCnt]->GetTag() != tag)
+		{// タグチェック
+			if (tag != TAG_NONE)
+				continue;	// NONEなら判定する
+		}
+
+		// 相手の位置を取得
+		pos = ppCollision[nCnt]->GetPosition();
+
+		// 相手の最大頂点を取得
+		vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
+		vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+
+		if (posOwn.y >= vtxMin.y - vtxMaxOwn.y &&
+			posOwn.y <= vtxMax.y)
+		{//上下で当っている場合
+			if (posOwn.z >= vtxMin.z - vtxMaxOwn.z &&
+				posOwn.z <= vtxMax.z + vtxMaxOwn.z &&
+				posOwn.x >= vtxMin.x - vtxMaxOwn.x &&
+				posOwn.x <= vtxMax.x - vtxMinOwn.x)
+			{// XZ平面の中にいる場合
+				if (posOwnOld.y <= vtxMin.y - vtxMaxOwn.y)
+				{// 下から当たった場合
+					posOwn.y = vtxMin.y - vtxMaxOwn.y;
 				}
+				else if (posOwnOld.y >= vtxMax.y)
+				{// 上から当たった場合
+					posOwn.y = vtxMax.y;
 
-				// 相手の位置を取得
-				pos = ppCollision[nCnt]->GetPosition();
+					// 移動量をなくす
+					pMove->y = 0.0f;
 
-				// 相手の最大頂点を取得
-				vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
-				vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
-
-				if (posOwn.y >= vtxMin.y - vtxMaxOwn.y &&
-					posOwn.y <= vtxMax.y)
-				{//上下で当っている場合
-					if (posOwn.z >= vtxMin.z - vtxMaxOwn.z &&
-						posOwn.z <= vtxMax.z + vtxMaxOwn.z &&
-						posOwn.x >= vtxMin.x - vtxMaxOwn.x &&
-						posOwn.x <= vtxMax.x - vtxMinOwn.x)
-					{// XZ平面の中にいる場合
-						if (posOwnOld.y <= vtxMin.y - vtxMaxOwn.y)
-						{// 下から当たった場合
-							posOwn.y = vtxMin.y - vtxMaxOwn.y;
-						}
-						else if (posOwnOld.y >= vtxMax.y)
-						{// 上から当たった場合
-							posOwn.y = vtxMax.y;
-
-							// 移動量をなくす
-							pMove->y = 0.0f;
-
-							bLand = true;
-						}
-					}
+					bLand = true;
 				}
-
-				GetOwner()->SetPosition(posOwn);
 			}
 		}
+
+		GetOwner()->SetPosition(posOwn);
 	}
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
-		{
-			if (ppCollision[nCnt]->GetType() == TYPE_CUBE)
-			{
-				if (ppCollision[nCnt]->GetTag() != tag && tag != TAG_NONE)
-				{// タグに合わなければ繰り返し
-					continue;
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_SPHERE)
+			continue;	// 球以外は判定しない
+
+		if (ppCollision[nCnt]->GetTag() != tag)
+		{// タグチェック
+			if (tag != TAG_NONE)
+				continue;	// NONEなら判定する
+		}
+
+		// 相手の位置を取得
+		pos = ppCollision[nCnt]->GetPosition();
+
+		// 相手の最大頂点を取得
+		vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
+		vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+
+		if (posOwn.y >= vtxMin.y - vtxMaxOwn.y &&
+			posOwn.y <= vtxMax.y)
+		{//上下で当っている場合
+			if (posOwn.z >= vtxMin.z - vtxMaxOwn.z &&
+				posOwn.z <= vtxMax.z + vtxMaxOwn.z)
+			{//横からの当たり判定
+				if (posOwnOld.x >= vtxMax.x - vtxMinOwn.x &&
+					posOwn.x <= vtxMax.x - vtxMinOwn.x)
+				{//右から当たった場合
+					//右に戻す
+					posOwn.x = vtxMax.x - vtxMinOwn.x;
+
+					//移動量をなくす
+					pMove->x = 0;
 				}
 
-				// 相手の位置を取得
-				pos = ppCollision[nCnt]->GetPosition();
+				if (posOwnOld.x <= vtxMin.x - vtxMaxOwn.x &&
+					posOwn.x >= vtxMin.x - vtxMaxOwn.x)
+				{//左から当たった場合
+					//左に戻す
+					posOwn.x = vtxMin.x - vtxMaxOwn.x;
 
-				// 相手の最大頂点を取得
-				vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
-				vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
-
-				if (posOwn.y >= vtxMin.y - vtxMaxOwn.y &&
-					posOwn.y <= vtxMax.y)
-				{//上下で当っている場合
-					if (posOwn.z >= vtxMin.z - vtxMaxOwn.z &&
-						posOwn.z <= vtxMax.z + vtxMaxOwn.z)
-					{//横からの当たり判定
-						if (posOwnOld.x >= vtxMax.x - vtxMinOwn.x &&
-							posOwn.x <= vtxMax.x - vtxMinOwn.x)
-						{//右から当たった場合
-							//右に戻す
-							posOwn.x = vtxMax.x - vtxMinOwn.x;
-
-							//移動量をなくす
-							pMove->x = 0;
-						}
-
-						if (posOwnOld.x <= vtxMin.x - vtxMaxOwn.x &&
-							posOwn.x >= vtxMin.x - vtxMaxOwn.x)
-						{//左から当たった場合
-							//左に戻す
-							posOwn.x = vtxMin.x - vtxMaxOwn.x;
-
-							//移動量をなくす
-							pMove->x = 0;
-						}
-					}
+					//移動量をなくす
+					pMove->x = 0;
 				}
-
-				GetOwner()->SetPosition(posOwn);
 			}
 		}
+
+		GetOwner()->SetPosition(posOwn);
 	}
 
 	return bLand;
@@ -749,62 +746,65 @@ D3DXVECTOR3 CCollisionCube::CollisionVector(CObject *pObj)
 
 	for (int nCnt = 0; nCnt < NUM_OBJECT; nCnt++)
 	{
-		if (ppCollision[nCnt] != nullptr)
-		{
-			if (ppCollision[nCnt]->GetType() == TYPE_CUBE && ppCollision[nCnt] != this)
+		if (ppCollision[nCnt] == nullptr)
+			continue;	// nullチェック
+
+		if (ppCollision[nCnt]->GetType() != TYPE_CUBE)
+			continue;	// キューブ以外は判定しない
+
+		if (ppCollision[nCnt] == this)
+			continue;	// 自身とは判定しない
+
+		if (ppCollision[nCnt]->GetTag() != TAG_BLOCK)
+		{// タグに合わなければ繰り返し
+			continue;
+		}
+
+		vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
+		vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
+		vtxMaxOwn = GetVtxMax();
+		vtxMinOwn = GetVtxMin();
+
+		if (pos.z >= vtxMin.z - vtxMaxOwn.z &&
+			pos.z <= vtxMax.z - vtxMinOwn.z &&
+			pos.x >= vtxMin.x - vtxMaxOwn.x &&
+			pos.x <= vtxMax.x - vtxMinOwn.x &&
+			pos.y >= vtxMin.y - vtxMaxOwn.y &&
+			pos.y <= vtxMax.y - vtxMinOwn.y)
+		{// 現在ブロックの中にいる
+			aVector[0] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
+			aVector[1] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
+			aVector[2] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
+			aVector[3] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
+
+			// どのベクトルにトリガー判定が入ったのか確認
+			for (int nCntEdge = 0; nCntEdge < NUM_EDGE; nCntEdge++)
 			{
-				if (ppCollision[nCnt]->GetTag() != TAG_BLOCK)
-				{// タグに合わなければ繰り返し
-					continue;
+				nIdx = (nCntEdge + 1) % NUM_EDGE;
+
+				if (!IsCrossTrigger(pos, posOld, aVector[nCntEdge], aVector[nIdx]))
+					continue;	// 辺とのトリガー判定
+
+				vecDest = aVector[nIdx] - aVector[nCntEdge];
+
+				vecToPos = pos - aVector[nIdx];
+
+				// 割合を算出
+				float fAreaMax = (vecDest.z * move.x) - (vecDest.x * move.z);
+				float fArea = (vecToPos.z * move.x) - (vecToPos.x * move.z);
+				float fRate = fArea / fAreaMax;
+
+				fLengthDest = D3DXVec3Length(&aVector[nIdx]);
+				fLengthSorce = D3DXVec3Length(&aVector[nCntEdge]);
+
+				// 最短距離によって目標ベクトル反転
+				if (fLengthSorce < fLengthDest)
+				{
+					vecDest *= -1.0f - fRate;
 				}
-
-				vtxMax = ppCollision[nCnt]->GetVtxMax() + ppCollision[nCnt]->GetPosition();
-				vtxMin = ppCollision[nCnt]->GetVtxMin() + ppCollision[nCnt]->GetPosition();
-				vtxMaxOwn = GetVtxMax();
-				vtxMinOwn = GetVtxMin();
-
-				if (pos.z >= vtxMin.z - vtxMaxOwn.z &&
-					pos.z <= vtxMax.z - vtxMinOwn.z &&
-					pos.x >= vtxMin.x - vtxMaxOwn.x &&
-					pos.x <= vtxMax.x - vtxMinOwn.x &&
-					pos.y >= vtxMin.y - vtxMaxOwn.y &&
-					pos.y <= vtxMax.y - vtxMinOwn.y)
-				{// 現在ブロックの中にいる
-					aVector[0] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
-					aVector[1] = D3DXVECTOR3(vtxMin.x - vtxMaxOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
-					aVector[2] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMax.z - vtxMinOwn.z);
-					aVector[3] = D3DXVECTOR3(vtxMax.x - vtxMinOwn.x, 0.0f, vtxMin.z - vtxMaxOwn.z);
-
-					// どのベクトルにトリガー判定が入ったのか確認
-					for (int nCntEdge = 0; nCntEdge < NUM_EDGE; nCntEdge++)
-					{
-						nIdx = (nCntEdge + 1) % NUM_EDGE;
-
-						if (IsCrossTrigger(pos, posOld, aVector[nCntEdge], aVector[nIdx]))
-						{
-							vecDest = aVector[nIdx] - aVector[nCntEdge];
-
-							vecToPos = pos - aVector[nIdx];
-
-							// 割合を算出
-							float fAreaMax = (vecDest.z * move.x) - (vecDest.x * move.z);
-							float fArea = (vecToPos.z * move.x) - (vecToPos.x * move.z);
-							float fRate = fArea / fAreaMax;
-
-							fLengthDest = D3DXVec3Length(&aVector[nIdx]);
-							fLengthSorce = D3DXVec3Length(&aVector[nCntEdge]);
-
-							// 最短距離によって目標ベクトル反転
-							if (fLengthSorce < fLengthDest)
-							{
-								vecDest *= -1.0f - fRate;
-							}
-							else
-							{
-								vecDest *= -fRate;
-							}
-						}
-					}
+				else
+				{
+					vecDest *= -fRate;
 				}
 			}
 		}
