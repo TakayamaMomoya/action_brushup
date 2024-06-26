@@ -703,7 +703,7 @@ void CPlayer::Parry(void)
 			pAnim3D->CreateEffect(pos, CAnimManager::TYPE_FLASH);
 		}
 
-		CParticle::Create(pos,CParticle::TYPE_FLASH);
+		CParticle::Create(pos,CParticle::TYPE_SPARK);
 
 		CSound *pSound = CSound::GetInstance();
 

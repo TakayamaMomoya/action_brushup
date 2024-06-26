@@ -10,11 +10,12 @@
 //*****************************************************
 #include "particle.h"
 #include "effect3D.h"
+#include <stdio.h>
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CParticle::S_PARTICLE_INFO *CParticle::s_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
+CParticle::PARTICLE_INFO *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -26,6 +27,7 @@ CParticle::CParticle(int nPriority) : CObject(nPriority)
 	m_type = TYPE_NONE;
 	m_pPosOwner = nullptr;
 	m_nPriorityEffect = 0;
+	m_nLife = 0;
 
 	SetType(TYPE_PARTICLE);
 }
@@ -61,10 +63,10 @@ void CParticle::Unload(void)
 {
 	for (int nCntParticle = 0;nCntParticle < TYPE_MAX;nCntParticle++)
 	{
-		if (s_apParticleInfo[nCntParticle] != nullptr)
+		if (m_apParticleInfo[nCntParticle] != nullptr)
 		{
-			delete s_apParticleInfo[nCntParticle];
-			s_apParticleInfo[nCntParticle] = nullptr;
+			delete m_apParticleInfo[nCntParticle];
+			m_apParticleInfo[nCntParticle] = nullptr;
 		}
 	}
 }
@@ -82,14 +84,14 @@ void CParticle::Update(void)
 	D3DXVECTOR3 move = { 0.0f,0.0f,0.0f };
 	CEffect3D *pEffect3D = nullptr;
 
-	for (int nCntEffect = 0; nCntEffect < s_apParticleInfo[m_type]->nNumEffect; nCntEffect++)
+	for (int nCntEffect = 0; nCntEffect < m_apParticleInfo[m_type]->nNumEffect; nCntEffect++)
 	{
-		if (s_apParticleInfo[m_type]->nRot)
+		if (m_apParticleInfo[m_type]->nRot)
 		{// 向きの反映
-			if (s_apParticleInfo[m_type]->fRangeRot > 0.1f)
+			if (m_apParticleInfo[m_type]->fRangeRot > 0.1f)
 			{
-				fRot = m_rot.x + (float)(rand() % (int)(s_apParticleInfo[m_type]->fRangeRot * 100.0f) - s_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f;
-				fRot2 = m_rot.y + (float)(rand() % (int)(s_apParticleInfo[m_type]->fRangeRot * 100.0f) - s_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f * 2;
+				fRot = m_rot.x + (float)(rand() % (int)(m_apParticleInfo[m_type]->fRangeRot * 100.0f) - m_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f;
+				fRot2 = m_rot.y + (float)(rand() % (int)(m_apParticleInfo[m_type]->fRangeRot * 100.0f) - m_apParticleInfo[m_type]->fRangeRot * 50.0f) / 100.0f * 2;
 			}
 			else
 			{
@@ -103,35 +105,35 @@ void CParticle::Update(void)
 			fRot2 = rand() % 628 - 314 / 100.0f;
 		}
 
-		if (s_apParticleInfo[m_type]->fSpeed > 0.1f)
+		if (m_apParticleInfo[m_type]->fSpeed > 0.1f)
 		{
-			fMove = (float)(rand() % (int)(s_apParticleInfo[m_type]->fSpeed * 10)) * 0.1f + s_apParticleInfo[m_type]->fSpeed * 0.5f;
+			fMove = (float)(rand() % (int)(m_apParticleInfo[m_type]->fSpeed * 10)) * 0.1f + m_apParticleInfo[m_type]->fSpeed * 0.5f;
 		}
-		if (s_apParticleInfo[m_type]->fRadiusEffect > 0.1f)
+		if (m_apParticleInfo[m_type]->fRadiusEffect > 0.1f)
 		{
-			fRadius = (float)(rand() % (int)(s_apParticleInfo[m_type]->fRadiusEffect * 10)) * 0.1f + s_apParticleInfo[m_type]->fRadiusEffect * 0.5f;
+			fRadius = (float)(rand() % (int)(m_apParticleInfo[m_type]->fRadiusEffect * 10)) * 0.1f + m_apParticleInfo[m_type]->fRadiusEffect * 0.5f;
 		}
-		if (s_apParticleInfo[m_type]->nLifeEffect != 0)
+		if (m_apParticleInfo[m_type]->nLifeEffect != 0)
 		{
-			nLife = rand() % s_apParticleInfo[m_type]->nLifeEffect + s_apParticleInfo[m_type]->nLifeEffect / 2;
+			nLife = rand() % m_apParticleInfo[m_type]->nLifeEffect + m_apParticleInfo[m_type]->nLifeEffect / 2;
 		}
 
 		move.x = sinf(fRot) * sinf(fRot2) * fMove;
 		move.y = cosf(fRot) * fMove;
 		move.z = sinf(fRot) * cosf(fRot2) * fMove;
 
-		if (s_apParticleInfo[m_type]->bTurn)
+		if (m_apParticleInfo[m_type]->bTurn)
 		{
 			// エフェクト生成
 			pEffect3D = CEffect3D::Create(
 				m_pos + move * (float)nLife, 
 				fRadius, 
 				nLife, 
-				s_apParticleInfo[m_type]->col, 
+				m_apParticleInfo[m_type]->col, 
 				-move, 
-				s_apParticleInfo[m_type]->fGravity, 
-				s_apParticleInfo[m_type]->nAdd != 0, 
-				s_apParticleInfo[m_type]->fDecrease, 
+				m_apParticleInfo[m_type]->fGravity, 
+				m_apParticleInfo[m_type]->nAdd != 0, 
+				m_apParticleInfo[m_type]->fDecrease, 
 				m_pPosOwner, 
 				m_nPriorityEffect,
 				true);
@@ -140,18 +142,29 @@ void CParticle::Update(void)
 		{
 			// エフェクト生成
 			pEffect3D = CEffect3D::Create(
-				m_pos, 
-				fRadius, 
-				nLife, 
-				s_apParticleInfo[m_type]->col, 
+				m_pos,
+				fRadius,
+				nLife,
+				m_apParticleInfo[m_type]->col, 
 				move, 
-				s_apParticleInfo[m_type]->fGravity, 
-				s_apParticleInfo[m_type]->nAdd != 0, 
-				s_apParticleInfo[m_type]->fDecrease, 
+				m_apParticleInfo[m_type]->fGravity, 
+				m_apParticleInfo[m_type]->nAdd != 0, 
+				m_apParticleInfo[m_type]->fDecrease, 
 				m_pPosOwner, 
 				m_nPriorityEffect);
 		}
 
+		if (pEffect3D != nullptr)
+		{
+			pEffect3D->SetMode((CObject3D::MODE)m_apParticleInfo[m_type]->modeRender);
+
+			if (m_apParticleInfo[m_type]->modeRender == CObject3D::MODE_STRETCHBILLBOARD)
+			{
+				pEffect3D->SetSize(fRadius, fRadius * 10.0f);
+			}
+
+			pEffect3D->SetVtx();
+		}
 	}
 
 	m_nLife--;
@@ -188,7 +201,7 @@ CParticle *CParticle::Create(D3DXVECTOR3 pos, E_TYPE type,D3DXVECTOR3 rot, D3DXV
 
 		pParticle->m_rot = rot;
 
-		pParticle->m_nLife = s_apParticleInfo[type]->nLife;
+		pParticle->m_nLife = m_apParticleInfo[type]->nLife;
 		
 		pParticle->m_pPosOwner = pPosOwner;
 
@@ -206,7 +219,7 @@ void CParticle::Load(void)
 	// 変数宣言
 	char cTemp[256];
 	int nCntParticle = 1;
-	S_PARTICLE_INFO *pInfo = nullptr;
+	PARTICLE_INFO *pInfo = nullptr;
 
 	// ファイルから読み込む
 	FILE *pFile = fopen("data\\TEXT\\particle.txt", "r");
@@ -216,103 +229,115 @@ void CParticle::Load(void)
 		while (true)
 		{
 			// 文字読み込み
-			fscanf(pFile, "%s", &cTemp[0]);
+			(void)fscanf(pFile, "%s", &cTemp[0]);
 
 			if (strcmp(cTemp, "PARTICLESET") == 0)
 			{// 読込開始
-				if (s_apParticleInfo[nCntParticle] == nullptr)
+				if (m_apParticleInfo[nCntParticle] == nullptr)
 				{
 					// インスタンス生成
-					s_apParticleInfo[nCntParticle] = new S_PARTICLE_INFO;
+					m_apParticleInfo[nCntParticle] = new PARTICLE_INFO;
+
+					if (m_apParticleInfo[nCntParticle] != nullptr)
+					{
+						m_apParticleInfo[nCntParticle]->modeRender = 1;
+					}
 				}
 
-				pInfo = s_apParticleInfo[nCntParticle];
+				pInfo = m_apParticleInfo[nCntParticle];
 
 				while (true)
 				{
 					// 文字読み込み
-					fscanf(pFile, "%s", &cTemp[0]);
+					(void)fscanf(pFile, "%s", &cTemp[0]);
 
 					if (strcmp(cTemp, "END_PARTICLESET") == 0)
 					{// パーティクル情報終了条件
 						break;
 					}
 
+					if (strcmp(cTemp, "TEXTURE_PATH") == 0)
+					{// パーティクル寿命取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						(void)fscanf(pFile, "%s", &pInfo->acTexPath[0]);
+					}
+
 					if (strcmp(cTemp, "LIFE_PARTICLE") == 0)
 					{// パーティクル寿命取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &pInfo->nLife);
+						(void)fscanf(pFile, "%d", &pInfo->nLife);
 					}
 
 					if (strcmp(cTemp, "NUM_EFFECT") == 0)
 					{// エフェクト数取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &pInfo->nNumEffect);
+						(void)fscanf(pFile, "%d", &pInfo->nNumEffect);
 					}
 
 					if (strcmp(cTemp, "LIFE_EFFECT") == 0)
 					{// エフェクト寿命取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &pInfo->nLifeEffect);
+						(void)fscanf(pFile, "%d", &pInfo->nLifeEffect);
 					}
 
 					if (strcmp(cTemp, "RADIUS_EFFECT") == 0)
 					{// エフェクト半径取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->fRadiusEffect);
+						(void)fscanf(pFile, "%f", &pInfo->fRadiusEffect);
 					}
 
 					if (strcmp(cTemp, "SPEED_EFFECT") == 0)
 					{// エフェクト速度取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->fSpeed);
+						(void)fscanf(pFile, "%f", &pInfo->fSpeed);
 					}
 
 					if (strcmp(cTemp, "GRAVITY") == 0)
 					{// 重力取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->fGravity);
+						(void)fscanf(pFile, "%f", &pInfo->fGravity);
 					}
 
 					if (strcmp(cTemp, "DECREASE") == 0)
 					{// 重力取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->fDecrease);
+						(void)fscanf(pFile, "%f", &pInfo->fDecrease);
 					}
 
 					if (strcmp(cTemp, "RANGEROT") == 0)
 					{// 向きのランダム幅取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->fRangeRot);
+						(void)fscanf(pFile, "%f", &pInfo->fRangeRot);
 					}
 
 					if (strcmp(cTemp, "IS_ADD") == 0)
 					{// 加算合成かどうか取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &pInfo->nAdd);
+						(void)fscanf(pFile, "%d", &pInfo->nAdd);
 					}
 
 					if (strcmp(cTemp, "IS_ROT") == 0)
 					{// 加算合成かどうか取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%d", &pInfo->nRot);
+						(void)fscanf(pFile, "%d", &pInfo->nRot);
 					}
 
 					if (strcmp(cTemp, "IS_TURN") == 0)
 					{// 加算合成かどうか取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
 						if (strcmp(cTemp, "1") == 0)
 						{
@@ -324,14 +349,21 @@ void CParticle::Load(void)
 						}
 					}
 
+					if (strcmp(cTemp, "MODE_RENDER") == 0)
+					{// 加算合成かどうか取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						(void)fscanf(pFile, "%d", &pInfo->modeRender);
+					}
+
 					if (strcmp(cTemp, "COLOR") == 0)
 					{// 色取得
-						fscanf(pFile, "%s", &cTemp[0]);
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-						fscanf(pFile, "%f", &pInfo->col.r);
-						fscanf(pFile, "%f", &pInfo->col.g);
-						fscanf(pFile, "%f", &pInfo->col.b);
-						fscanf(pFile, "%f", &pInfo->col.a);
+						(void)fscanf(pFile, "%f", &pInfo->col.r);
+						(void)fscanf(pFile, "%f", &pInfo->col.g);
+						(void)fscanf(pFile, "%f", &pInfo->col.b);
+						(void)fscanf(pFile, "%f", &pInfo->col.a);
 					}
 				}
 
@@ -347,5 +379,9 @@ void CParticle::Load(void)
 
 		// ファイルを閉じる
 		fclose(pFile);
+	}
+	else
+	{
+		assert(("パーティクル情報読み込みに失敗", false));
 	}
 }

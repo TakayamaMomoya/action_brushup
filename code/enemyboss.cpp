@@ -27,6 +27,7 @@
 #include "slow.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "inputkeyboard.h"
 
 //*****************************************************
 // 定数定義
@@ -152,6 +153,17 @@ void CEnemyBoss::Uninit(void)
 }
 
 //=====================================================
+// 死亡時の処理
+//=====================================================
+void CEnemyBoss::Death(void)
+{
+	// 最後の爆発のパーティクル
+	CParticle::Create(GetMtxPos(IDXPARTS::IDX_WAIST), CParticle::E_TYPE::TYPE_EXPLOSION);
+
+	CEnemy::Death();
+}
+
+//=====================================================
 // 更新処理
 //=====================================================
 void CEnemyBoss::Update(void)
@@ -172,6 +184,18 @@ void CEnemyBoss::Update(void)
 	
 	// 当たり判定管理
 	ManageCollision();
+
+#ifdef _DEBUG
+	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
+
+	if (pKeyboard != nullptr)
+	{
+		if (pKeyboard->GetTrigger(DIK_Q))
+		{
+			Hit(500000);
+		}
+	}
+#endif
 }
 
 //=====================================================

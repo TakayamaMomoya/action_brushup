@@ -61,7 +61,7 @@ public:
 	void SetLife(float fLife);
 	float GetLife(void) { return m_fLife; }
 	void Hit(float fDamage);
-	void Death(void);
+	virtual void Death(void);
 	void SetSpherePosition(D3DXVECTOR3 pos);
 	STATE GetState(void) { return m_state; }
 	void SetState(STATE state) { m_state = state; }

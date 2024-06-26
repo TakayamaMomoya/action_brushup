@@ -63,6 +63,7 @@ public:
 	bool FollowDest(void);	// 目標に向かう処理
 	void SwitchState(void);	// 状態の変更
 	void FollowCollision(void);	// 当たり判定の追従
+	void Death(void) override;	// 死亡時の処理
 
 	// 変数取得・設定関数
 	void SetPosDest(D3DXVECTOR3 posDest) { m_info.posDest = posDest; }	// 目標位置

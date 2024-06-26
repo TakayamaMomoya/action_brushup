@@ -126,7 +126,6 @@
     <ClCompile Include="code\ranking.cpp" />
     <ClCompile Include="code\score.cpp" />
     <ClCompile Include="code\shadow.cpp" />
-    <ClCompile Include="code\shockwave.cpp" />
     <ClCompile Include="code\precompile.cpp">
       <Filter>base</Filter>
     </ClCompile>
@@ -156,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="code\blurEvent.cpp">
       <Filter>VFX</Filter>
+    </ClCompile>
+    <ClCompile Include="code\object3D.cpp">
+      <Filter>mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,7 +286,6 @@
     <ClInclude Include="code\ranking.h" />
     <ClInclude Include="code\score.h" />
     <ClInclude Include="code\shadow.h" />
-    <ClInclude Include="code\shockwave.h" />
     <ClInclude Include="code\precompile.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -314,6 +315,9 @@
     </ClInclude>
     <ClInclude Include="code\blurEvent.h">
       <Filter>VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="code\object3D.h">
+      <Filter>mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
