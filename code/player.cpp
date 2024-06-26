@@ -71,7 +71,7 @@ CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 CPlayer::CPlayer(int nPriority)
 {
-	ZeroMemory(&m_info, sizeof(CPlayer::SInfo));
+	ZeroMemory(&m_info, sizeof(CPlayer::S_Info));
 }
 
 //=====================================================
@@ -896,7 +896,7 @@ void CPlayer::ManageAttack(void)
 //=====================================================
 // 攻撃判定の設定
 //=====================================================
-void CPlayer::SetAttackCollision(AttackInfo attackInfo)
+void CPlayer::SetAttackCollision(S_AttackInfo attackInfo)
 {
 	bool bHit = false;
 	D3DXMATRIX mtx;
@@ -1040,7 +1040,7 @@ void CPlayer::Hit(float fDamage)
 //=====================================================
 // モーション設定
 //=====================================================
-void CPlayer::SetMotion(MOTION motion)
+void CPlayer::SetMotion(E_MOTION motion)
 {
 	if (m_info.pBody == nullptr)
 	{
@@ -1145,11 +1145,11 @@ void CPlayer::Load(void)
 				
 				if (m_info.pAttackInfo == nullptr)
 				{// 判定情報の生成
-					m_info.pAttackInfo = new AttackInfo[m_info.nNumAttack];
+					m_info.pAttackInfo = new S_AttackInfo[m_info.nNumAttack];
 
 					for (int i = 0; i < m_info.nNumAttack; i++)
 					{// 情報のクリア
-						ZeroMemory(&m_info.pAttackInfo[i], sizeof(AttackInfo));
+						ZeroMemory(&m_info.pAttackInfo[i], sizeof(S_AttackInfo));
 
 						// ヒットストップ情報の初期化
 						m_info.pAttackInfo[i].fScaleHitStop = 1.0f;

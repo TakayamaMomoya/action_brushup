@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _SCORE_H_
+#ifndef _SCORE_H_	// 二重インクルード防止
 #define _SCORE_H_
 
 //*****************************************************
@@ -27,27 +26,30 @@ public:
 	CScore();	// コンストラクタ
 	~CScore();	// デストラクタ
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void) {}
-	static CScore *Create(void);
-	int AddScore(int nValue);
-	void SetPosition(D3DXVECTOR3 pos) {};
-	D3DXVECTOR3 GetPosition(void) { return D3DXVECTOR3(); }
-	D3DXVECTOR3 GetPositionOld(void) { return D3DXVECTOR3(); };	// 位置取得処理
-	float GetWidth(void) { return 0.0f; }	// サイズ取得
-	float GetHeight(void) { return 0.0f; }	// サイズ取得
+	// メンバ関数
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void) {}	// 描画
+	void SetResultScore(void);	// 最終スコアの設定
+
+	// 変数取得・設定関数
+	int AddScore(int nValue);	// スコア
 	int GetScore(void) { return m_nSocreDest; }
-	static CScore *GetInstance(void) { return m_pScore; }
-	void SetResultScore(void);
+
+	// 静的メンバ関数
+	static CScore *Create(void);	// 生成処理
+	static CScore *GetInstance(void) { return s_pScore; }	// インスタンスの取得
 
 private:
+	// メンバ変数
 	CNumber *m_pObjNumber;	// スコア値のポインタ
 	int m_nScore;	// スコアの値
 	int m_nSocreDest;	// 目標のスコア値
 	int m_nIdxTexture;	// テクスチャ番号
-	static CScore *m_pScore;	// 自身のポインタ
+	
+	// 静的メンバ変数
+	static CScore *s_pScore;	// 自身のポインタ
 };
 
 #endif

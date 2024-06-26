@@ -151,7 +151,7 @@ void CLife::UpdatePulse(void)
 
 	// ‘Ì—Í‚Æ‰Šú‘Ì—Í‚Ìæ“¾
 	int nLife = pPlayer->GetLife();
-	CPlayer::SParam param = pPlayer->GetParam();
+	CPlayer::S_Param param = pPlayer->GetParam();
 
 	// Š„‡‚ÌZo
 	float fRate = (float)nLife / (float)param.nInitialLife;

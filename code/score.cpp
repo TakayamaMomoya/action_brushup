@@ -30,7 +30,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CScore *CScore::m_pScore = nullptr;	// 自身のポインタ
+CScore *CScore::s_pScore = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -69,7 +69,7 @@ void CScore::Uninit(void)
 		m_pObjNumber = nullptr;
 	}
 
-	m_pScore = nullptr;
+	s_pScore = nullptr;
 
 	Release();
 }
@@ -110,15 +110,15 @@ int CScore::AddScore(int nValue)
 //=====================================================
 CScore *CScore::Create(void)
 {
-	if (m_pScore == nullptr)
+	if (s_pScore == nullptr)
 	{
-		m_pScore = new CScore;
+		s_pScore = new CScore;
 
-		if (m_pScore->m_pObjNumber == nullptr)
+		if (s_pScore->m_pObjNumber == nullptr)
 		{
-			m_pScore->m_pObjNumber = CNumber::Create(NUM_PLACE, m_pScore->m_nScore);
-			m_pScore->m_pObjNumber->SetPosition(D3DXVECTOR3(1100.0f, 80.0f, 0.0f));
-			m_pScore->m_pObjNumber->SetSizeAll(15.0f,32.5f);
+			s_pScore->m_pObjNumber = CNumber::Create(NUM_PLACE, s_pScore->m_nScore);
+			s_pScore->m_pObjNumber->SetPosition(D3DXVECTOR3(1100.0f, 80.0f, 0.0f));
+			s_pScore->m_pObjNumber->SetSizeAll(15.0f,32.5f);
 
 			CUI *pObject2D = CUI::Create();
 
@@ -136,7 +136,7 @@ CScore *CScore::Create(void)
 		}
 	}
 
-	return m_pScore;
+	return s_pScore;
 }
 
 //=====================================================

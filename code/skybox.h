@@ -4,7 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _SKYBOX_H_
+#ifndef _SKYBOX_H_	// 二重インクルード防止
 #define _SKYBOX_H_
 
 //*****************************************************
@@ -21,11 +21,14 @@ public:
 	CSkybox(int nPriority = 3);	// コンストラクタ
 	~CSkybox();	// デストラクタ
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	static CSkybox *Create();
+	// メンバ関数
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void);	// 描画
+
+	// 静的メンバ関数
+	static CSkybox *Create();	// 生成処理
 
 private:
 };
