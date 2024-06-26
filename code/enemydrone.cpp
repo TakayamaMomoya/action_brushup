@@ -108,7 +108,7 @@ void CEnemyDrone::ManageAttack(void)
 		{
 			// プレイヤーの腰パーツを目標にする
 			CMotion *pMotion = pPlayer->GetBody();
-			posTarget = pMotion->GetMtxPos(0);
+			posTarget = pMotion->GetPosPart(0);
 
 			// 差分ベクトルの正規化したものを弾の移動量にする
 			move = posTarget - pos;

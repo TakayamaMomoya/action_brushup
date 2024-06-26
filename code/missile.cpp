@@ -81,9 +81,6 @@ HRESULT CMissile::Init(void)
 
 	// ƒ‚ƒfƒ‹”Ô†‚Ìİ’è
 	int nIdx = CModel::Load("data\\MODEL\\weapon\\missile.x");
-	SetIdxModel(nIdx);
-
-	// ƒ‚ƒfƒ‹î•ñ‚Ìİ’è
 	BindModel(nIdx);
 
 	if (m_pCollisionSphere == nullptr)

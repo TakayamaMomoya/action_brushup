@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _BULLET_H_
+#ifndef _BULLET_H_	// 二重インクルード防止
 #define _BULLET_H_
 
 //*****************************************************
@@ -48,16 +47,19 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	D3DXVECTOR3 GetPosition(void) { return m_pos; }
-	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }
+
+	// 変数取得・設定関数
+	D3DXVECTOR3 GetPosition(void) { return m_pos; }	// 位置
+	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }	// 前回の位置
 
 	// 静的メンバ関数
 	static CBullet *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, int nLife, TYPE type, bool bPierce = false, float fRadius = 10.0f, float fDamage = 5.0f, D3DXCOLOR col = { 1.0f,1.0f,1.0f,1.0f });
-	static int GetNumAll(void) { return s_nNumAll; }
+	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 
 private:
-	bool BulletHit(CCollision::TAG tag);
-	void Death(void);
+	// メンバ関数
+	bool BulletHit(CCollision::E_TAG tag);	// 弾のヒット
+	void Death(void);	// 死亡処理
 
 	// メンバ変数
 	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス

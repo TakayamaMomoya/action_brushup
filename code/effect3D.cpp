@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "texture.h"
 #include "slow.h"
+#include "universal.h"
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`

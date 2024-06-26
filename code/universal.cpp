@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "universal.h"
 #include "debugproc.h"
+#include <stdio.h>
 
 namespace universal
 {
@@ -153,14 +154,6 @@ void Horming(D3DXVECTOR3 pos, D3DXVECTOR3 posTarget, float fSpeedChase, D3DXVECT
 }
 
 //========================================
-// ディグリーからラジアンへの変換
-//========================================
-float DegreeToRadian(float fDegree)
-{
-	return (fDegree) * (D3DX_PI / 180.0f);
-}
-
-//========================================
 // ベクトルを長さで補正する処理
 //========================================
 void VecConvertLength(D3DXVECTOR3 *pVec, float fLength)
@@ -228,23 +221,6 @@ D3DXVECTOR3 VecToOffset(D3DXMATRIX mtx, D3DXVECTOR3 posOffset)
 }
 
 //========================================
-// 極座標の計算
-//========================================
-D3DXVECTOR3 PolarCoordinates(D3DXVECTOR3 rot)
-{
-	D3DXVECTOR3 vec;
-
-	vec =
-	{
-		sinf(rot.x) * sinf(rot.y),
-		cosf(rot.x),
-		sinf(rot.x) * cosf(rot.y),
-	};
-
-	return vec;
-}
-
-//========================================
 // オフセット設定処理
 //========================================
 void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR3 posOffset, D3DXVECTOR3 rot)
@@ -277,19 +253,22 @@ void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR
 //========================================
 // 向き補正処理
 //========================================
-void FactingRot(float *pfRot, float fRotDest, float rotateFact)
+void FactingRot(float *pfRot, float fRotDest, float rotateFact, float fLineStop)
 {
 	// 引数の角度の補正
 	LimitRot(pfRot);
 	LimitRot(&fRotDest);
 
-	//差分角度を取得
+	// 差分角度を取得
 	float fRotDiff = fRotDest - *pfRot;
 
-	//角度の修正
+	if (fRotDiff * fRotDiff < fLineStop * fLineStop)	// 補正をやめるしきい値
+		return;
+
+	// 角度の修正
 	LimitRot(&fRotDiff);
 
-	//角度補正
+	// 角度補正
 	*pfRot += fRotDiff * rotateFact;
 
 	LimitRot(pfRot);

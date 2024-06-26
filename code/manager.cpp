@@ -289,7 +289,7 @@ void CManager::Draw(void)
 //=====================================================
 // モード設定
 //=====================================================
-void CManager::SetMode(CScene::MODE mode)
+void CManager::SetMode(CScene::E_MODE mode)
 {
 	CSound *pSound = CSound::GetInstance();
 
@@ -350,7 +350,7 @@ CLight *GetLight(void)
 //=====================================================
 // モード設定(ショートカット)
 //=====================================================
-void SetMode(CScene::MODE mode)
+void SetMode(CScene::E_MODE mode)
 {
 	CManager *pManager = CManager::GetInstace();
 
@@ -361,14 +361,14 @@ void SetMode(CScene::MODE mode)
 //=====================================================
 // モード取得(ショートカット)
 //=====================================================
-CScene::MODE GetMode(void)
+CScene::E_MODE GetMode(void)
 {
 	CManager *pManager = CManager::GetInstace();
 
 	if (pManager != nullptr)
 		return pManager->GetMode();
 
-	return CScene::MODE::MODE_TITLE;
+	return CScene::E_MODE::MODE_TITLE;
 }
 
 //=====================================================

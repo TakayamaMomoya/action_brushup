@@ -53,7 +53,7 @@ const float LINE_STOP = 0.3f;	// 動いてる判定のしきい値
 const int TIME_AFTERIMAGE = 4;	// 残像を出す頻度
 const float BULLET_SPEED = 5.0f;	// 弾いた弾速度
 const float BULLET_SIZE = 3.0f;	// 弾いた弾サイズ
-const CScene::MODE MODE_DEATH = CScene::MODE_GAME;	// 死んだ後に遷移するモード
+const CScene::E_MODE MODE_DEATH = CScene::MODE_GAME;	// 死んだ後に遷移するモード
 const float TIME_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップ時間
 const float SCALE_HITSTOP_SLASH = 0.1f;	// 斬撃のヒットストップタイムスケール
 const float TIME_BLUR_DASH = 0.4f;	// ダッシュのブラー時間
@@ -682,7 +682,7 @@ void CPlayer::Parry(void)
 		}
 
 		// 差分ベクトルから移動量を設定
-		posTarget = pLockEnemy->GetMtxPos(0);
+		posTarget = pLockEnemy->GetPosPart(0);
 
 		move = posTarget - pos;
 
@@ -780,7 +780,7 @@ void CPlayer::ManageMotion(void)
 		if (m_info.nCntAfterImage >= TIME_AFTERIMAGE)
 		{
 			// 残像の生成
-			m_info.pBody->SetAfterImage(D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f), 20);
+			m_info.pBody->CreateAfterImage(D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f), 20);
 
 			m_info.nCntAfterImage = 0;
 		}
@@ -805,7 +805,7 @@ void CPlayer::ManageCollision(void)
 		D3DXVECTOR3 move = GetMove();
 
 		// 押し出しの当たり判定
-		bLandBlock = m_info.pCollisionCube->CubeCollision(CCollision::TAG_BLOCK, &move);
+		bLandBlock = m_info.pCollisionCube->CollideCube(CCollision::TAG_BLOCK, &move);
 
 		SetMove(move);
 

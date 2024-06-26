@@ -373,7 +373,7 @@ void CMotion::MultiplyMtx(void)
 		//ワールドマトリックス設定
 		pDevice->SetTransform(D3DTS_WORLD, pMtx);
 
-		m_apParts[nCntParts]->m_pParts->Draw();
+		m_apParts[nCntParts]->m_pParts->JustDraw();
 	}
 }
 
@@ -434,15 +434,14 @@ void CMotion::Load(char *pPath)
 						// モデルパス読込
 						fscanf(pFile, "%s", &aPath[0]);
 
-						m_apParts[nCntFile] = new Parts;
+						m_apParts[nCntFile] = new S_Part;
 
 						m_apParts[nCntFile]->m_pParts = CParts::Create();
 
 						int nIdx = CModel::Load(&aPath[0]);
 
 						// モデル読込
-						m_apParts[nCntFile]->m_pParts->SetIdxModel(nIdx);
-						m_apParts[nCntFile]->m_pParts->BindModel(m_apParts[nCntFile]->m_pParts->GetIdxModel());
+						m_apParts[nCntFile]->m_pParts->BindModel(nIdx);
 
 						nCntFile++;
 					}
@@ -553,10 +552,10 @@ void CMotion::Load(char *pPath)
 						if (m_aMotionInfo[m_nNumMotion].nNumParticle != 0)
 						{
 							// パーティクル情報を生成
-							m_aMotionInfo[m_nNumMotion].pParticle = new PARTICLE_INFO[m_aMotionInfo[m_nNumMotion].nNumParticle];
+							m_aMotionInfo[m_nNumMotion].pParticle = new S_InfoParticle[m_aMotionInfo[m_nNumMotion].nNumParticle];
 
 							// パーティクル情報初期化
-							ZeroMemory(m_aMotionInfo[m_nNumMotion].pParticle, sizeof(PARTICLE_INFO) * m_aMotionInfo[m_nNumMotion].nNumParticle);
+							ZeroMemory(m_aMotionInfo[m_nNumMotion].pParticle, sizeof(S_InfoParticle) * m_aMotionInfo[m_nNumMotion].nNumParticle);
 						}
 					}
 
@@ -609,65 +608,6 @@ void CMotion::Load(char *pPath)
 
 						nCntParticle++;
 					}
-
-					//if (strcmp(cTemp, "NUM_COLLISION") == 0)
-					//{// 当たり判定数判断
-					//	fscanf(pFile, "%s", &cTemp[0]);
-
-					//	fscanf(pFile, "%d", &m_aMotionInfo[m_nNumMotion].nNumCollision);
-
-					//	if (m_aMotionInfo[m_nNumMotion].nNumCollision != 0)
-					//	{
-					//		// 当たり判定情報を生成
-					//		m_aMotionInfo[m_nNumMotion].pCollision = new COLLISION_INFO[m_aMotionInfo[m_nNumMotion].nNumCollision];
-
-					//		// 当たり判定情報初期化
-					//		ZeroMemory(m_aMotionInfo[m_nNumMotion].pCollision, sizeof(COLLISION_INFO) * m_aMotionInfo[m_nNumMotion].nNumCollision);
-					//	}
-					//}
-
-					//if (strcmp(cTemp, "COLLISIONSET") == 0 && m_aMotionInfo[m_nNumMotion].pCollision != 0)
-					//{// 当たり判定情報設定
-					//	while (strcmp(cTemp, "END_COLLISIONSET") != 0)
-					//	{//終わりまで当たり判定設定
-					//		fscanf(pFile, "%s", &cTemp[0]);
-
-					//		if (strcmp(cTemp, "KEY") == 0)
-					//		{// 再生キー取得
-					//			fscanf(pFile, "%s", &cTemp[0]);
-
-					//			fscanf(pFile, "%d", &m_aMotionInfo[m_nNumMotion].pParticle[nCntParticle].nKey);
-					//		}
-
-					//		if (strcmp(cTemp, "FRAME") == 0)
-					//		{// 再生フレーム取得
-					//			fscanf(pFile, "%s", &cTemp[0]);
-
-					//			fscanf(pFile, "%d", &m_aMotionInfo[m_nNumMotion].pParticle[nCntParticle].nFrame);
-					//		}
-
-					//		if (strcmp(cTemp, "POS") == 0)
-					//		{//位置読み込み
-					//			D3DXVECTOR3 pos;
-
-					//			fscanf(pFile, "%s", &cTemp[0]);
-
-					//			for (int nCntPos = 0; nCntPos < 3; nCntPos++)
-					//			{
-					//				fscanf(pFile, "%f", &m_aMotionInfo[m_nNumMotion].pParticle[nCntParticle].offset[nCntPos]);
-					//			}
-					//		}
-
-					//		if (strcmp(cTemp, "PARENT") == 0)
-					//		{// 親パーツ番号取得
-					//			fscanf(pFile, "%s", &cTemp[0]);
-
-					//			fscanf(pFile, "%d", &m_aMotionInfo[m_nNumMotion].pParticle[nCntParticle].nIdxParent);
-					//		}
-					//	}
-
-					//	nCntParticle++;
-					//}
 
 					if (strcmp(cTemp, "KEYSET") == 0)
 					{//キースタート
@@ -763,7 +703,7 @@ float CMotion::GetRadiusMax(void)
 //=====================================================
 // パーツの絶対位置取得
 //=====================================================
-D3DXVECTOR3 CMotion::GetMtxPos(int nIdx)
+D3DXVECTOR3 CMotion::GetPosPart(int nIdx)
 {
 	D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f };
 
@@ -794,7 +734,7 @@ D3DXVECTOR3 CMotion::GetMtxPos(int nIdx)
 //=====================================================
 // 残像の設定
 //=====================================================
-void CMotion::SetAfterImage(D3DXCOLOR col, int m_nLife)
+void CMotion::CreateAfterImage(D3DXCOLOR col, int m_nLife)
 {
 	for (int nCntParts = 0; nCntParts < m_nNumParts; nCntParts++)
 	{

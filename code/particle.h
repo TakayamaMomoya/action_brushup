@@ -47,7 +47,7 @@ public:
 	static void Unload(void);	// 破棄処理
 
 private:
-	struct S_PARTICLE_INFO
+	struct S_InfoParticle
 	{// パーティクル情報
 		char acTexPath[256];
 		int nLife;	// 寿命
@@ -74,7 +74,7 @@ private:
 	int m_nPriorityEffect;	// エフェクトのプライオリティ
 
 	// 静的メンバ変数
-	static S_PARTICLE_INFO *m_apParticleInfo[TYPE_MAX + 1];	// パーティクル情報
+	static S_InfoParticle *m_apParticleInfo[TYPE_MAX + 1];	// パーティクル情報
 };
 
 #endif

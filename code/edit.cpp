@@ -35,7 +35,7 @@ CEdit *CEdit::s_pEdit = nullptr;	// 自身のポインタ
 CEdit::CEdit()
 {
 	m_pObjectCursor = nullptr;
-	m_nIdxObject = 0;
+	m_nIdxModel = 0;
 	m_type = CBlock::TYPE_FLOOR;
 }
 
@@ -79,7 +79,6 @@ HRESULT CEdit::Init(void)
 	m_type = CBlock::TYPE_FLOOR;
 
 	// モデル番号の設定
-	m_pObjectCursor->SetIdxModel(pIdx[m_type]);
 	m_pObjectCursor->BindModel(pIdx[m_type]);
 
 	m_pObjectCursor->SetEmissiveCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
@@ -186,55 +185,53 @@ void CEdit::Update(void)
 
 		if (pKeyboard->GetTrigger(DIK_0) && CBlock::GetNumAll() != 0)
 		{// オブジェクト選択処理
-			if (pBlock[m_nIdxObject] != nullptr)
+			if (pBlock[m_nIdxModel] != nullptr)
 			{
-				pBlock[m_nIdxObject]->ResetColor();
+				pBlock[m_nIdxModel]->ResetColor();
 			}
 
-			m_nIdxObject = (m_nIdxObject + 1) % CBlock::GetNumAll();
+			m_nIdxModel = (m_nIdxModel + 1) % CBlock::GetNumAll();
 
-			if (pBlock[m_nIdxObject] != nullptr)
+			if (pBlock[m_nIdxModel] != nullptr)
 			{
-				pBlock[m_nIdxObject]->SetEmissiveCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+				pBlock[m_nIdxModel]->SetEmissiveCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 			}
 		}
 
 		if (pKeyboard->GetTrigger(DIK_MINUS) && CBlock::GetNumAll() != 0)
 		{// オブジェクト選択処理
-			if (pBlock[m_nIdxObject] != nullptr)
+			if (pBlock[m_nIdxModel] != nullptr)
 			{
-				pBlock[m_nIdxObject]->ResetColor();
+				pBlock[m_nIdxModel]->ResetColor();
 			}
 			
-			m_nIdxObject = (m_nIdxObject + CBlock::GetNumAll() - 1) % CBlock::GetNumAll();
+			m_nIdxModel = (m_nIdxModel + CBlock::GetNumAll() - 1) % CBlock::GetNumAll();
 
-			if (pBlock[m_nIdxObject] != nullptr)
+			if (pBlock[m_nIdxModel] != nullptr)
 			{
-				pBlock[m_nIdxObject]->SetEmissiveCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+				pBlock[m_nIdxModel]->SetEmissiveCol(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 			}
 		}
 
 		if (pKeyboard->GetTrigger(DIK_6))
 		{
-			m_type = (CBlock::TYPE)((m_type + CBlock::TYPE_MAX - 1) % CBlock::TYPE_MAX);
+			m_type = (CBlock::E_TYPE)((m_type + CBlock::TYPE_MAX - 1) % CBlock::TYPE_MAX);
 
 			// モデル番号の設定
-			m_pObjectCursor->SetIdxModel(pIdx[m_type]);
 			m_pObjectCursor->BindModel(pIdx[m_type]);
 		}
 
 		if (pKeyboard->GetTrigger(DIK_7))
 		{// ブロックタイプ切り替え
-			m_type = (CBlock::TYPE)((m_type + 1) % CBlock::TYPE_MAX);
+			m_type = (CBlock::E_TYPE)((m_type + 1) % CBlock::TYPE_MAX);
 
 			// モデル番号の設定
-			m_pObjectCursor->SetIdxModel(pIdx[m_type]);
 			m_pObjectCursor->BindModel(pIdx[m_type]);
 		}
 
 		if(pKeyboard->GetTrigger(DIK_9))
 		{// 指定のブロックを削除
-			CBlock::Delete(m_nIdxObject);
+			CBlock::Delete(m_nIdxModel);
 		}
 
 		if (pKeyboard->GetTrigger(DIK_8))
@@ -257,7 +254,7 @@ void CEdit::Update(void)
 		CDebugProc::GetInstance()->Print("上下移動[UO]\n");
 		CDebugProc::GetInstance()->Print("設置[ENTER]\n");
 		CDebugProc::GetInstance()->Print("保存[8]\n");
-		CDebugProc::GetInstance()->Print("選択中のブロック：[%d]:[0]\n", m_nIdxObject);
+		CDebugProc::GetInstance()->Print("選択中のブロック：[%d]:[0]\n", m_nIdxModel);
 		CDebugProc::GetInstance()->Print("選択ブロック削除[9]\n");
 		CDebugProc::GetInstance()->Print("設置するタイプ：[%d]:[7]\n", m_type);
 		CDebugProc::GetInstance()->Print("//=======================\n");

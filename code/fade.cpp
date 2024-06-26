@@ -195,7 +195,7 @@ void CFade::Draw(void)
 //=====================================================
 // ê›íËèàóù
 //=====================================================
-void CFade::SetFade(CScene::MODE modeNext)
+void CFade::SetFade(CScene::E_MODE modeNext)
 {
 	if (m_fade == STATE_NONE)
 	{

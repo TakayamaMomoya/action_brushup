@@ -21,7 +21,8 @@ class CCollisionCube;
 class CBlock : public CObjectX
 {
 public:
-	typedef enum
+	// 列挙型定義
+	enum E_TYPE
 	{// 種類
 		TYPE_FLOOR,	// 床
 		TYPE_CHAIR,	// 椅子
@@ -49,38 +50,41 @@ public:
 		TYPE_FRONTWINDOW4,	// 手前窓4
 		TYPE_LONGDESK,	// 長机
 		TYPE_MAX
-	}TYPE;
+	};
 
-	typedef struct
+	// 構造体定義
+	struct MemBlock
 	{// 保存するときの情報
-		D3DXVECTOR3 pos;
-		D3DXVECTOR3 rot;
-		TYPE type;
-	}MemBlock;
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 向き
+		E_TYPE type;	// 種類
+	};
 
 	CBlock(int nPriority = 3);	// コンストラクタ
 	~CBlock();	// デストラクタ
 
-	static CBlock *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,TYPE type);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	// メンバ関数
+	HRESULT Init(void); // 初期化
+	void Uninit(void);  // 終了
+	void Update(void);  // 更新
+	void Draw(void);  // 描画
+
+	// 静的メンバ関数
+	static CBlock *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, E_TYPE type);	// 生成処理
 	static HRESULT Load(char *pPath);	// 読込
 	static void Save(void);	// 保存
 	static void Delete(int nIdx);	// 部分削除処理
 	static void DeleteAll(void);	// 全削除処理
-	static int GetNumAll(void) { return s_nNumAll; }
-	static CBlock **GetBlock(void) { return &s_apBlock[0]; }
-	static float CheckShadow(D3DXVECTOR3 pos);
-	static void LoadModel(void);
-	static void DeleteIdx(void);
-	static int *GetIndex(void) { return s_pIdxObject; }
-	//void Hit(float fDamage);
+	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
+	static CBlock **GetBlock(void) { return &s_apBlock[0]; }	// ブロック取得
+	static float CheckShadow(D3DXVECTOR3 pos);	// 影のチェック
+	static void LoadModel(void);	// モデル読込
+	static void DeleteIdx(void);	// 番号の削除
+	static int *GetIndex(void) { return s_pIdxObject; }	// 番号の取得
 
 private:
 	// メンバ変数
-	TYPE m_type;
+	E_TYPE m_type;	// 種類
 	CCollisionCube *m_pCollisionCube;	// 立方体の当たり判定
 	int m_nLife;	// 体力
 

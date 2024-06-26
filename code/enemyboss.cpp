@@ -137,7 +137,7 @@ HRESULT CEnemyBoss::Init(void)
 //=====================================================
 void CEnemyBoss::Uninit(void)
 {
-	CParticle::Create(GetMtxPos(0), CParticle::TYPE_EXPLOSION);
+	CParticle::Create(GetPosPart(0), CParticle::TYPE_EXPLOSION);
 
 	CSound *pSound = CSound::GetInstance();
 
@@ -158,7 +158,7 @@ void CEnemyBoss::Uninit(void)
 void CEnemyBoss::Death(void)
 {
 	// 最後の爆発のパーティクル
-	CParticle::Create(GetMtxPos(IDXPARTS::IDX_WAIST), CParticle::E_TYPE::TYPE_EXPLOSION);
+	CParticle::Create(GetPosPart(IDXPARTS::IDX_WAIST), CParticle::E_TYPE::TYPE_EXPLOSION);
 
 	CEnemy::Death();
 }
@@ -264,7 +264,7 @@ void CEnemyBoss::FollowCollision(void)
 
 	if (pCollision != nullptr)
 	{
-		D3DXVECTOR3 pos = GetMtxPos(IDX_WAIST);
+		D3DXVECTOR3 pos = GetPosPart(IDX_WAIST);
 
 		pCollision->SetPositionOld(pCollision->GetPosition());
 		pCollision->SetPosition(pos);
@@ -386,7 +386,7 @@ void CEnemyBoss::Hit(float fDamage)
 			SetMotion(MOTION_DEATH);
 
 			// パーティクルの発生
-			CParticle::Create(GetMtxPos(IDX_WAIST), CParticle::TYPE_FIRE);
+			CParticle::Create(GetPosPart(IDX_WAIST), CParticle::TYPE_FIRE);
 
 			// ゲームを終了状態にする
 			CGame::SetState(CGame::STATE_END);

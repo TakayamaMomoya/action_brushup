@@ -297,8 +297,8 @@ void CCameraStateBossBattle::Update(CCamera *pCamera)
 		return;
 
 	// ボスとプレイヤーの中心を映す
-	D3DXVECTOR3 posPlayer = pPlayerBody->GetMtxPos(0);
-	D3DXVECTOR3 posBoss = pBoss->GetMtxPos(CEnemyBoss::IDXPARTS::IDX_HEAD);
+	D3DXVECTOR3 posPlayer = pPlayerBody->GetPosPart(0);
+	D3DXVECTOR3 posBoss = pBoss->GetPosPart(CEnemyBoss::IDXPARTS::IDX_HEAD);
 
 	D3DXVECTOR3 vecDiff = posBoss - posPlayer;
 
@@ -316,7 +316,7 @@ void CCameraStateBossBattle::Update(CCamera *pCamera)
 
 	float fLengthDiff = D3DXVec3Length(&vecDiff) * 0.5f;	// プレイヤーと敵の距離の半分
 
-	float fLengthToPosV = fLengthDiff / tanf(universal::DegreeToRadian(fAngleView * 0.5f));
+	float fLengthToPosV = fLengthDiff / tanf(D3DXToDegree(fAngleView * 0.5f));
 
 	universal::LimitValue(&fLengthToPosV, FLT_MAX, DIST_MIN_BOSS);
 

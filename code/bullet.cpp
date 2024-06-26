@@ -139,7 +139,7 @@ void CBullet::Update(void)
 	if (m_pCollisionSphere != nullptr)
 	{// 当たり判定の管理
 		// タグ
-		CCollision::TAG tag = CCollision::TAG_PLAYER;
+		CCollision::E_TAG tag = CCollision::TAG_PLAYER;
 
 		// 当たり判定の位置設定
 		m_pCollisionSphere->SetPositionOld(m_pCollisionSphere->GetPosition());
@@ -193,7 +193,7 @@ void CBullet::Update(void)
 //=====================================================
 // 命中したか確認する処理
 //=====================================================
-bool CBullet::BulletHit(CCollision::TAG tag)
+bool CBullet::BulletHit(CCollision::E_TAG tag)
 {
 	bool bHit = false;
 

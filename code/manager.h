@@ -36,8 +36,8 @@ public:
 	// 変数取得・設定関数
 	CCamera *GetCamera(void) { return m_pCamera; }	// カメラ取得
 	CLight *GetLight(void) { return m_pLight; }	// ライト取得
-	void SetMode(CScene::MODE mode);	// モードの設定
-	CScene::MODE GetMode(void) { return m_mode; }	// モードの取得
+	void SetMode(CScene::E_MODE mode);	// モードの設定
+	CScene::E_MODE GetMode(void) { return m_mode; }	// モードの取得
 	void SetScore(int nScore) { m_nScore = nScore; }	// スコアの設定
 	int GetScore(void) { return m_nScore; }	// スコアの取得
 	void SetDeltaTime(float fValue) { m_fDeltaTime = fValue; }	// デルタタイムの設定
@@ -51,7 +51,7 @@ private:
 	CCamera *m_pCamera;	// カメラのポインタ
 	CLight *m_pLight;	// ライトのポインタ
 	CScene *m_pScene;	// 現在のシーン
-	CScene::MODE m_mode;	// 現在のモード
+	CScene::E_MODE m_mode;	// 現在のモード
 	int m_nScore;	// スコア
 	float m_fDeltaTime;	// 前回のフレームからかかった時間
 
@@ -66,8 +66,8 @@ namespace Manager
 //*****************************************************
 CCamera *GetCamera(void);	// カメラ取得
 CLight *GetLight(void);	// ライト取得
-void SetMode(CScene::MODE mode);	// モードの設定
-CScene::MODE GetMode(void);	// モードの取得
+void SetMode(CScene::E_MODE mode);	// モードの設定
+CScene::E_MODE GetMode(void);	// モードの取得
 void SetScore(int nScore);	// スコアの設定
 int GetScore(void);	// スコアの取得
 float GetDeltaTime(void);	// デルタタイムの取得

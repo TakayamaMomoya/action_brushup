@@ -107,7 +107,7 @@ void CBlock::Draw(void)
 //=====================================================
 // ¶¬ˆ—
 //=====================================================
-CBlock *CBlock::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot ,TYPE type)
+CBlock *CBlock::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot ,E_TYPE type)
 {
 	CBlock *pBlock = nullptr;
 
@@ -128,7 +128,6 @@ CBlock *CBlock::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot ,TYPE type)
 		pBlock->Init();
 
 		// Ží—Þ‚²‚Æ‚Ìƒ‚ƒfƒ‹“Çž
-		pBlock->SetIdxModel(s_pIdxObject[type]);
 		pBlock->BindModel(s_pIdxObject[type]);
 
 		if (pBlock->m_pCollisionCube == nullptr)

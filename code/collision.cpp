@@ -120,7 +120,7 @@ void CCollision::Update(void)
 //=====================================================
 // キューブとのトリガー判定
 //=====================================================
-bool CCollision::TriggerCube(TAG tag)
+bool CCollision::TriggerCube(E_TAG tag)
 {
 	// 変数宣言
 	bool bHitOld = false;
@@ -291,7 +291,7 @@ bool CCollision::IsCrossTrigger(D3DXVECTOR3 posTarget, D3DXVECTOR3 posTargetOld,
 //=====================================================
 // 生成処理
 //=====================================================
-CCollision *CCollision::Create(TAG tag, TYPE type, CObject *obj)
+CCollision *CCollision::Create(E_TAG tag, E_TYPE type, CObject *obj)
 {
 	CCollision *pCollision = nullptr;
 
@@ -370,7 +370,7 @@ void CCollisionSphere::Update(void)
 //=====================================================
 // 球の当たり判定
 //=====================================================
-bool CCollisionSphere::SphereCollision(TAG tag)
+bool CCollisionSphere::SphereCollision(E_TAG tag)
 {
 	bool bHit = false;
 
@@ -410,7 +410,7 @@ bool CCollisionSphere::SphereCollision(TAG tag)
 //=====================================================
 // 球を通り抜けた判定
 //=====================================================
-bool CCollisionSphere::IsTriggerExit(TAG tag)
+bool CCollisionSphere::IsTriggerExit(E_TAG tag)
 {
 	bool bExit = false;
 
@@ -459,7 +459,7 @@ bool CCollisionSphere::IsTriggerExit(TAG tag)
 //=====================================================
 // 球がぶつかった瞬間の判定
 //=====================================================
-bool CCollisionSphere::IsTriggerEnter(TAG tag)
+bool CCollisionSphere::IsTriggerEnter(E_TAG tag)
 {
 	bool bExit = false;
 
@@ -508,7 +508,7 @@ bool CCollisionSphere::IsTriggerEnter(TAG tag)
 //=====================================================
 // 生成処理
 //=====================================================
-CCollisionSphere *CCollisionSphere::Create(TAG tag, TYPE type, CObject *obj)
+CCollisionSphere *CCollisionSphere::Create(E_TAG tag, E_TYPE type, CObject *obj)
 {
 	CCollisionSphere *pCollision = nullptr;
 
@@ -579,7 +579,7 @@ void CCollisionCube::Update(void)
 //=====================================================
 // 立方体の当たり判定
 //=====================================================
-bool CCollisionCube::CubeCollision(TAG tag, D3DXVECTOR3 *pMove)
+bool CCollisionCube::CollideCube(E_TAG tag, D3DXVECTOR3 *pMove)
 {
 	bool bLand = false;
 	D3DXVECTOR3 pos;
@@ -716,7 +716,7 @@ void CCollisionCube::SetVtx(D3DXVECTOR3 vtxMax, D3DXVECTOR3 vtxMin)
 //=====================================================
 // 当たったベクトルの取得
 //=====================================================
-D3DXVECTOR3 CCollisionCube::CollisionVector(CObject *pObj)
+D3DXVECTOR3 CCollisionCube::CollideVector(CObject *pObj)
 {
 	D3DXVECTOR3 vecDest = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 vecDiff;
@@ -816,7 +816,7 @@ D3DXVECTOR3 CCollisionCube::CollisionVector(CObject *pObj)
 //=====================================================
 // 生成処理
 //=====================================================
-CCollisionCube *CCollisionCube::Create(TAG tag, CObject *obj)
+CCollisionCube *CCollisionCube::Create(E_TAG tag, CObject *obj)
 {
 	CCollisionCube *pCollision = nullptr;
 

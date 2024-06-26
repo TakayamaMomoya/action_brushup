@@ -55,7 +55,6 @@ CAfterImage *CAfterImage::Create(D3DXMATRIX mtx, int nIdxModel, D3DXCOLOR col, i
 			pAlterImage->SetMatrix(mtx);
 
 			// モデル設定
-			pAlterImage->SetIdxModel(nIdxModel);
 			pAlterImage->BindModel(nIdxModel);
 
 			// パラメーター設定

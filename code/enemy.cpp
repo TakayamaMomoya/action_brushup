@@ -260,7 +260,7 @@ void CEnemy::Update(void)
 	{
 		if (m_pShadow != nullptr)
 		{// ‰e‚Ì’Ç]
-			D3DXVECTOR3 pos = GetMtxPos(0);
+			D3DXVECTOR3 pos = GetPosPart(0);
 
 			m_pShadow->SetPosition(pos);
 		}

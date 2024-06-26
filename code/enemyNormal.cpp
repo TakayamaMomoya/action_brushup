@@ -183,7 +183,7 @@ void CEnemyNormal::ManageCollision(void)
 		D3DXVECTOR3 move = GetMove();
 
 		// ‰Ÿ‚µo‚µ‚Ì“–‚½‚è”»’è
-		m_pCollisionCube->CubeCollision(CCollision::TAG_BLOCK, &move);
+		m_pCollisionCube->CollideCube(CCollision::TAG_BLOCK, &move);
 
 		SetMove(move);
 	}

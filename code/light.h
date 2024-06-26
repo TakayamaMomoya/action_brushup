@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _LIGHT_H_
+#ifndef _LIGHT_H_	// 二重インクルード防止
 #define _LIGHT_H_
 
 //*****************************************************
@@ -19,13 +18,15 @@
 class CLight
 {
 public:
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	// メンバ関数
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
 
 private:
-	D3DLIGHT9 m_aLight[MAX_LIGHT];
-	int m_nCurrent;
+	// メンバ変数
+	D3DLIGHT9 m_aLight[MAX_LIGHT];	// ライトの情報
+	int m_nCurrent;	// 選択番号
 };
 
 #endif

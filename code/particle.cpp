@@ -15,7 +15,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CParticle::PARTICLE_INFO *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
+CParticle::S_InfoParticle *CParticle::m_apParticleInfo[CParticle::TYPE_MAX + 1] = {};
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -219,7 +219,7 @@ void CParticle::Load(void)
 	// 変数宣言
 	char cTemp[256];
 	int nCntParticle = 1;
-	PARTICLE_INFO *pInfo = nullptr;
+	S_InfoParticle *pInfo = nullptr;
 
 	// ファイルから読み込む
 	FILE *pFile = fopen("data\\TEXT\\particle.txt", "r");
@@ -236,7 +236,7 @@ void CParticle::Load(void)
 				if (m_apParticleInfo[nCntParticle] == nullptr)
 				{
 					// インスタンス生成
-					m_apParticleInfo[nCntParticle] = new PARTICLE_INFO;
+					m_apParticleInfo[nCntParticle] = new S_InfoParticle;
 
 					if (m_apParticleInfo[nCntParticle] != nullptr)
 					{

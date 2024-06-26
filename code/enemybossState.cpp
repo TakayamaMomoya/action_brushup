@@ -268,7 +268,7 @@ void CEnemyBossStateMissile::Update(CEnemyBoss *pBoss)
 		if (DELAY_MISSILE <= m_fTimerAttack)
 		{// 一定時間ごとにミサイルを発射
 			// ミサイルの生成
-			D3DXVECTOR3 posMissile = pBoss->GetMtxPos(CEnemyBoss::IDX_SHOULDER_L);
+			D3DXVECTOR3 posMissile = pBoss->GetPosPart(CEnemyBoss::IDX_SHOULDER_L);
 			CMissile *pMissile = CMissile::Create(posMissile);
 
 			if (pMissile != nullptr)

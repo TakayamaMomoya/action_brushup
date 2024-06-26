@@ -4,11 +4,12 @@
 // Author:髙山桃也
 //
 //*****************************************************
+#ifndef _EDIT_H_	// 二重インクルード防止
+#define _EDIT_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
 #include "block.h"
 
 //*****************************************************
@@ -26,20 +27,22 @@ public:
 	~CEdit();	// デストラクタ
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
 
 	// 静的メンバ関数
-	static CEdit *Create(void);
-	static CEdit *GetInstatnce(void) { return s_pEdit; }
+	static CEdit *Create(void);	// 生成処理
+	static CEdit *GetInstatnce(void) { return s_pEdit; }	// インスタンスの取得
 
 private:
 	// メンバ変数
-	CObjectX *m_pObjectCursor;	// カーソルのオブジェクトXへのポインタ
-	int m_nIdxObject;
-	CBlock::TYPE m_type;
+	CObjectX *m_pObjectCursor;	// カーソルのモデルへのポインタ
+	int m_nIdxModel;	// モデルの番号
+	CBlock::E_TYPE m_type;	// 設置するブロックの種類
 
 	// 静的メンバ変数
 	static CEdit *s_pEdit;	// 自身のポインタ
 };
+
+#endif

@@ -335,12 +335,12 @@ void CPause::Input(void)
 	// 項目切り替え
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
 	{
-		m_menu = (MENU)((m_menu + 1) % MENU_MAX);
+		m_menu = (E_MENU)((m_menu + 1) % MENU_MAX);
 	}
 
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_UP))
 	{
-		m_menu = (MENU)((m_menu + MENU_MAX - 1) % MENU_MAX);
+		m_menu = (E_MENU)((m_menu + MENU_MAX - 1) % MENU_MAX);
 	}
 
 	if (m_apMenu[m_menu] != nullptr)
@@ -357,7 +357,7 @@ void CPause::Input(void)
 //====================================================
 // フェードする処理
 //====================================================
-void CPause::Fade(MENU menu)
+void CPause::Fade(E_MENU menu)
 {
 	CFade *pFade = CFade::GetInstance();
 

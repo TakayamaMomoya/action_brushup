@@ -38,7 +38,7 @@ public:
 	void Draw(void);	// 描画処理
 
 	// 変数取得・設定関数
-	void SetFade(CScene::MODE modeNext);	// フェードを開始する処理
+	void SetFade(CScene::E_MODE modeNext);	// フェードを開始する処理
 	E_STATE GetState(void);	// 状態
 
 	// 静的メンバ関数
@@ -48,7 +48,7 @@ public:
 private:
 	// メンバ変数
 	E_STATE m_fade;	// フェードの状態
-	CScene::MODE m_modeNext;	// フェード後の画面
+	CScene::E_MODE m_modeNext;	// フェード後の画面
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファ
 	D3DXCOLOR m_col;	// ポリゴンの色
 

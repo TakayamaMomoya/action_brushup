@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _FRAME_H_
+#ifndef _FRAME_H_	// 二重インクルード防止
 #define _FRAME_H_
 
 //*****************************************************
@@ -24,8 +23,8 @@ class CObject2D;
 class CFrame	: public CObject
 {
 public:
-	CFrame(int nPriority = 0);
-	~CFrame();
+	CFrame(int nPriority = 0);	// コンストラクタ
+	~CFrame();	// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);	// 初期化
