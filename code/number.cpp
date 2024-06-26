@@ -14,11 +14,6 @@
 #include "texture.h"
 #include "UI.h"
 
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-LPDIRECT3DTEXTURE9 CNumber::m_pTexture = nullptr;	// テクスチャのポインタ
-
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -32,7 +27,7 @@ CNumber::CNumber(int nPriority) : CObject(nPriority)
 }
 
 //=====================================================
-//	デストラクタ
+// デストラクタ
 //=====================================================
 CNumber::~CNumber()
 {
@@ -40,12 +35,10 @@ CNumber::~CNumber()
 }
 
 //=====================================================
-//	初期化処理
+// 初期化処理
 //=====================================================
 HRESULT CNumber::Init(void)
 {
-	//m_pos = {700.0f,50.0f,0.0f};
-
 	for (int nCount = 0; nCount < m_nNumPlace; nCount++)
 	{
 		if (m_apObject[nCount] != nullptr)
@@ -70,7 +63,7 @@ HRESULT CNumber::Init(void)
 }
 
 //=====================================================
-//	終了処理
+// 終了処理
 //=====================================================
 void CNumber::Uninit(void)
 {
@@ -83,7 +76,7 @@ void CNumber::Uninit(void)
 }
 
 //=====================================================
-//	更新処理
+// 更新処理
 //=====================================================
 void CNumber::Update(void)
 {
@@ -91,7 +84,7 @@ void CNumber::Update(void)
 }
 
 //=====================================================
-//	値設定処理
+// 値設定処理
 //=====================================================
 void CNumber::SetValue(int nValue,int nNumPlace)
 {
@@ -171,36 +164,35 @@ void CNumber::SetColor(D3DXCOLOR col)
 //=====================================================
 // 生成処理
 //=====================================================
-CNumber *CNumber::Create(int nNumPlace,int nValue)
+CNumber *CNumber::Create(int nNumPlace, int nValue)
 {
 	CNumber *pNumber = nullptr;
 
+	pNumber = new CNumber;
+
 	if (pNumber == nullptr)
-	{
-		pNumber = new CNumber;
+		return nullptr;	// 生成の失敗
 
-		pNumber->m_nNumPlace = nNumPlace;
+	pNumber->m_nNumPlace = nNumPlace;
+	pNumber->m_nValue = nValue;
 
-		pNumber->m_nValue = nValue;
+	for (int nCnt = 0; nCnt < nNumPlace; nCnt++)
+	{// 数字用のインスタンスを生成
 
-		for (int nCnt = 0; nCnt < nNumPlace; nCnt++)
-		{// 数字用のインスタンスを生成
+		pNumber->m_apObject[nCnt] = nullptr;
 
-			pNumber->m_apObject[nCnt] = nullptr;
+		if (pNumber->m_apObject[nCnt] == nullptr)
+		{
+			pNumber->m_apObject[nCnt] = CUI::Create();
 
-			if (pNumber->m_apObject[nCnt] == nullptr)
-			{
-				pNumber->m_apObject[nCnt] = CUI::Create();
-
-				pNumber->m_apObject[nCnt]->Init();
-			}
+			pNumber->m_apObject[nCnt]->Init();
 		}
-
-		// 初期化処理
-		pNumber->Init();
-
-		pNumber->SetValue(nValue,nNumPlace);
 	}
+
+	// 初期化処理
+	pNumber->Init();
+
+	pNumber->SetValue(nValue, nNumPlace);
 
 	return pNumber;
 }

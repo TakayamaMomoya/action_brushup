@@ -203,7 +203,7 @@ void CEnemyBoss::Update(void)
 //=====================================================
 void CEnemyBoss::ManageState(void)
 {
-	CEnemy::STATE state = CEnemy::GetState();
+	CEnemy::E_STATE state = CEnemy::GetState();
 
 	float fTimer = GetCntState();
 	float fAddTime = Manager::GetDeltaTime() * Slow::GetTimeScale();
@@ -363,7 +363,7 @@ void CEnemyBoss::SwitchState(void)
 //=====================================================
 void CEnemyBoss::Hit(float fDamage)
 {
-	CEnemy::STATE state = CEnemy::GetState();
+	CEnemy::E_STATE state = CEnemy::GetState();
 
 	if (state == CEnemy::STATE_NORMAL)
 	{

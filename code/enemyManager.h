@@ -27,7 +27,7 @@ public:
 	void Uninit(void);	// 終了処理
 	void Update(void);	// 更新処理
 	void Draw(void);	// 描画処理
-	CEnemy *CreateEnemy(D3DXVECTOR3 pos, CEnemy::TYPE type);	// 敵の生成
+	CEnemy *CreateEnemy(D3DXVECTOR3 pos, CEnemy::E_TYPE type);	// 敵の生成
 
 	// 変数取得・設定関数
 	CEnemy *GetHead(void) { return m_pHead; }	// リストの先頭

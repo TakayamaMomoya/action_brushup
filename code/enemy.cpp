@@ -145,7 +145,7 @@ CEnemy::~CEnemy()
 //=====================================================
 // ê∂ê¨èàóù
 //=====================================================
-CEnemy *CEnemy::Create(D3DXVECTOR3 pos, TYPE type)
+CEnemy *CEnemy::Create(D3DXVECTOR3 pos, E_TYPE type)
 {
 	CEnemy *pEnemy = nullptr;
 

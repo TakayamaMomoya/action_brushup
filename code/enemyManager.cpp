@@ -63,7 +63,7 @@ CEnemyManager *CEnemyManager::Create(void)
 //=====================================================
 // ìGÇÃê∂ê¨èàóù
 //=====================================================
-CEnemy *CEnemyManager::CreateEnemy(D3DXVECTOR3 pos, CEnemy::TYPE type)
+CEnemy *CEnemyManager::CreateEnemy(D3DXVECTOR3 pos, CEnemy::E_TYPE type)
 {
 	char *apPath[CEnemy::TYPE_MAX] = 
 	{
@@ -147,7 +147,7 @@ void CEnemyManager::Load(void)
 
 			if (strcmp(cTemp, "ENEMYSET") == 0)
 			{
-				CEnemy::TYPE type;
+				CEnemy::E_TYPE type;
 				D3DXVECTOR3 pos;
 
 				while (true)

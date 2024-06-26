@@ -4,10 +4,12 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _AFTERIMAGE_H_
+#ifndef _AFTERIMAGE_H_	// 二重インクルード防止
 #define _AFTERIMAGE_H_
 
+//*****************************************************
+// インクルード
+//*****************************************************
 #include "ObjectX.h"
 
 //*****************************************************
@@ -24,11 +26,14 @@ public:
 	CAfterImage(int nPriority = 6);	// コンストラクタ
 	~CAfterImage();	// デストラクタ
 
-	static CAfterImage *Create(D3DXMATRIX mtx, int nIdxModel,D3DXCOLOR col,int m_nLife);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	// メンバ関数
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void);	// 描画
+
+	// 静的メンバ関数
+	static CAfterImage *Create(D3DXMATRIX mtx, int nIdxModel, D3DXCOLOR col, int m_nLife);	// 生成処理
 
 private:
 	// メンバ変数

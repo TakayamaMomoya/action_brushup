@@ -73,7 +73,7 @@ void CScene::Draw(void)
 //=====================================================
 // ƒV[ƒ“‚Ì¶¬ˆ—
 //=====================================================
-CScene *CScene::Create(MODE mode)
+CScene *CScene::Create(E_MODE mode)
 {
 	CScene *pScene = nullptr;
 

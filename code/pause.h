@@ -4,8 +4,7 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _PAUSE_H_
+#ifndef _PAUSE_H_	// 二重インクルード防止
 #define _PAUSE_H_
 
 //*****************************************************
@@ -27,15 +26,19 @@ public:
 	CPause();	// コンストラクタ
 	~CPause();	// デストラクタ
 
-	static CPause *Create(void);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	static CPause *GetInstance(void) { return m_pPause; }
+	// メンバ関数
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void);	// 描画
+
+	// 静的メンバ関数
+	static CPause *Create(void);	// 生成処理
+	static CPause *GetInstance(void) { return m_pPause; }	// インスタンスの取得
 
 private:
-	enum MENU
+	// 列挙型定義
+	enum E_MENU
 	{// 項目の種類
 		MENU_RESUME = 0,	// 再開
 		MENU_RESTART,	// リトライ
@@ -43,7 +46,7 @@ private:
 		MENU_QUIT,	// 終了
 		MENU_MAX
 	};
-	enum STATE
+	enum E_STATE
 	{
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_IN,	// フェードイン状態
@@ -51,16 +54,20 @@ private:
 		STATE_MAX
 	};
 
-	void ManageState(void);
-	void ManageBg(void);
-	void Input(void);
-	void Fade(MENU menu);
+	// メンバ関数
+	void ManageState(void);	// 状態管理
+	void ManageBg(void);	// 背景の管理
+	void Input(void);	// 入力処理
+	void Fade(E_MENU menu);	// フェードする処理
 
-	MENU m_menu;	// 選択項目
+	// メンバ変数
+	E_MENU m_menu;	// 選択項目
 	CObject2D *m_apMenu[MENU_MAX];	// メニュー項目の２Dオブジェクト
 	CObject2D *m_pBg;	// 背景２Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[MENU_MAX];	// 目標の位置
-	STATE m_state;	// 状態
+	E_STATE m_state;	// 状態
+
+	// 静的メンバ関数
 	static CPause *m_pPause;	// 自身のポインタ
 };
 

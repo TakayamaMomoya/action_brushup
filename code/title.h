@@ -4,20 +4,17 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
-#ifndef _TITLE_H_
+#ifndef _TITLE_H_	// 二重インクルード防止
 #define _TITLE_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
 #include "scene.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CMenu;
 class CObject2D;
 class CMotion;
 
@@ -30,25 +27,29 @@ public:
 	CTitle();	// コンストラクタ
 	~CTitle();	// デストラクタ
 
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update();
-	virtual void Draw();
+	// メンバ関数
+	HRESULT Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update();	// 更新処理
+	void Draw();	// 描画
 
 private:
-	enum STATE
-	{
+	// 列挙型定義
+	enum E_STATE
+	{// 状態
 		STATE_NONE = 0,	// 何もしてない状態
 		STATE_MOTION,	// モーションしてる状態
 		STATE_OUT,	// フェードアウト状態
 		START_MAX
 	};
 
-	void ManageStart(void);
+	// メンバ関数
+	void ManageStart(void);	// スタート表示の管理
 
+	// メンバ変数
 	CObject2D *m_pStart;	// スタート表示のポインタ
 	CObject2D *m_pLogo;	// ロゴのポインタ
-	STATE m_state;	// 状態
+	E_STATE m_state;	// 状態
 	CMotion *m_pMotion;	// モーション
 };
 

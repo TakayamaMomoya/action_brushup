@@ -48,7 +48,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CGame::STATE CGame::m_state = STATE_NONE;	// 状態
+CGame::E_STATE CGame::m_state = STATE_NONE;	// 状態
 int CGame::m_nProgress = 0;	// 進行状況
 CGame *CGame::m_pGame = nullptr;	// 自身のポインタ
 

@@ -129,7 +129,7 @@ void CEnemyNormal::Uninit(void)
 //=====================================================
 void CEnemyNormal::Update(void)
 {
-	CEnemy::STATE state = GetState();
+	CEnemy::E_STATE state = GetState();
 
 	if (state != STATE_DEATH)
 	{
@@ -194,7 +194,7 @@ void CEnemyNormal::ManageCollision(void)
 //=====================================================
 void CEnemyNormal::ManageState(void)
 {
-	CEnemy::STATE state = GetState();
+	CEnemy::E_STATE state = GetState();
 
 	D3DXCOLOR col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
